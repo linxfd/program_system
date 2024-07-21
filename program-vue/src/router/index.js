@@ -113,6 +113,10 @@ const routes = [
       {
         path: '/noticeManage',
         component: () => import('../views/admin/NoticeManage')
+      },
+      {
+        path: '/sysMenu',
+        component: () => import('../views/admin/SysMenu')
       }
     ]
   },

@@ -6,20 +6,20 @@
         <el-menu-item index="/index" disabled style="text-align: center">
           <i class="el-icon-sunny"></i>
           <span slot="title">
-            追风考试系统
+            编程系统
           </span>
         </el-menu-item>
 
         <!-- 单独的导航 -->
         <el-menu-item @click="changeBreadInfo(menuInfo[0].topMenuName,menuInfo[0].topMenuName,menuInfo[0].url)"
                       index="/dashboard"
-                      v-if="!menuInfo[0].submenu">
+                      v-if="!menuInfo[0].children">
           <i :class="menuInfo[0].topIcon"></i>
           <span slot="title">{{ menuInfo[0].topMenuName }}</span>
         </el-menu-item>
 
         <!--具有子导航的-->
-        <el-submenu v-if="menu.submenu" v-for="(menu,index) in menuInfo" :key="index" :index="index+''">
+        <el-submenu v-if="menu.children" v-for="(menu,index) in menuInfo" :key="index" :index="index+''">
           <template slot="title">
             <i :class="menu.topIcon"></i>
             <span slot="title">{{ menu.topMenuName }}</span>
@@ -27,10 +27,10 @@
 
           <!--子导航的分组-->
           <el-menu-item-group>
-            <el-menu-item @click="changeBreadInfo(menu.topMenuName,sub.name,sub.url)" :index="sub.url"
-                          v-for="(sub,index) in menu.submenu" :key="index">
+            <el-menu-item @click="changeBreadInfo(menu.topMenuName,sub.topMenuName,sub.url)" :index="sub.url"
+                          v-for="(sub,index) in menu.children" :key="index">
               <i :class="sub.icon"></i>
-              <span slot="title">{{ sub.name }}</span>
+              <span slot="title">{{ sub.topMenuName }}</span>
             </el-menu-item>
           </el-menu-item-group>
 
@@ -278,6 +278,8 @@ export default {
       menu.getMenuInfo().then((resp) => {
         if (resp.code === 200) {
           this.menuInfo = JSON.parse(resp.data)
+          console.log("menuInfo")
+          console.log(this.menuInfo)
           //根据链接创建不存在的tag标签并高亮
           this.createHighlightTag()
         } else {//后台认证失败,跳转登录页面
@@ -400,6 +402,10 @@ export default {
     },
     //处理面包屑信息和面包屑下的标签信息
     changeBreadInfo (curTopMenuName, curMenuName, url) {
+      // console.log("ssssssssssss")
+      // console.log(curTopMenuName)
+      // console.log(curMenuName)
+      // console.log(url)
       //面包屑信息
       this.breadInfo.top = curTopMenuName
       this.breadInfo.sub = curMenuName
@@ -433,8 +439,8 @@ export default {
       //根据链接创建不存在的tag标签并高亮
       let menuName
       this.menuInfo.map(item => {
-        if (item.submenu !== undefined) {
-          item.submenu.map(subItem => {
+        if (item.children !== undefined) {
+          item.children.map(subItem => {
             if (subItem.url === this.activeMenu) menuName = subItem.name
           })
         }
@@ -455,8 +461,8 @@ export default {
     changeTopBreakInfo (subMenuName) {
       let topMenuName
       this.menuInfo.map(item => {
-        if (item.submenu !== undefined) {
-          item.submenu.map(i2 => {
+        if (item.children !== undefined) {
+          item.children.map(i2 => {
             if (i2.name === subMenuName) topMenuName = item.topMenuName
           })
         }

@@ -3,6 +3,8 @@ import App from './App.vue'
 import router from './router'
 import './plugins/element.js'
 import axios from 'axios'
+
+
 // 引入echarts
 import echarts from 'echarts'
 import axiosService from '@/utils/request'
@@ -51,6 +53,7 @@ const originalPush = Router.prototype.push
 Router.prototype.push = function push (location) {
   return originalPush.call(this, location).catch(err => err)
 }
+
 
 new Vue({
   router,
