@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="tools-div">
-      <el-button type="success" size="small" @click="addShow">添 加</el-button>
+      <el-button type="success" size="small" @click="addShow">添加顶级菜单</el-button>
     </div>
     <!--添 加的弹框  -->
     <el-dialog :visible.sync="dialogVisible" :title="dialogTitle" width="30%">
@@ -54,7 +54,7 @@
         <el-button type="primary" size="small" @click="editShow(scope.row)">
           修改
         </el-button>
-        <el-button type="danger" size="small" @click="remove(scope.row.id)">
+        <el-button type="danger" size="small" @click="remove(scope.row)">
           删除
         </el-button>
       </el-table-column>
@@ -62,146 +62,157 @@
   </div>
 </template>
 
-<script setup>
-//引入调用的方法
-import { ref, onMounted } from 'vue'
-import {
-  FindNodes,
-  SaveMenu,
-  UpdateSysMenuById,
-  RemoveSysMenuById,
-} from '@/api/sysMenu'
-import utils from '@/utils/utils'
+<script>
 
-// 定义表格数据模型
-const list = ref([])
+import sysMenu from '@/api/sysMenu'
 
-// 定义添加表单菜单表单相关数据模型
-const dialogTitle = ref('添加')
-const dialogVisible = ref(false)
 
-//页面表单数据
-const defaultForm = {
-  id: '',
-  parentId: 0,
-  topMenuName: '',
-  url: '',
-  component: '',
-  icon: '',
-  sortValue: 1,
-  status: 1,
-}
 
-// 表单响应式数据模型对象
-const sysMenu = ref(defaultForm)
+export default {
+  name: 'SysMunu', // 请根据实际情况命名
 
-//=======================加载数据=========================
-onMounted(() => {
-  fetchData()
-})
-
-//=======================添加和修改功能====================
-//进入添加
-const addShow = row => {
-  sysMenu.value = {}
-  dialogVisible.value = true  
-  if (!row.id) {
-    dialogTitle.value = '添加'
-  } else {
-    dialogTitle.value = '添加下级节点'
-    sysMenu.value.parentId = row.id
-  }
-}
-
-//进入修改
-const editShow = row => {
-  sysMenu.value = { ...row }
-  dialogVisible.value = true
-}
-
-//提交保存与修改
-const saveOrUpdate = () => {
-  //没有id，添加操作
-  if (!sysMenu.value.id) {
-    if (!sysMenu.value.parentId) {
-      sysMenu.value.parentId = 0
-    }
-    saveData()
-  } else {
-    updateData()
-  }
-}
-
-// 修改
-const updateData = async () => {
-  const code = await UpdateSysMenuById(sysMenu.value)
-  if (code === 200) {
-    // ElMessage.success('操作成功')
-    
-    this.$notify({
+  data() {
+    return {
+      list: [],
+      dialogTitle: '添加',
+      dialogVisible: false,
+      sysMenu: {
+        id: '',
+        parentId: 0,
+        topMenuName: '',
+        url: '',
+        component: '',
+        icon: '',
+        sortValue: 1,
+        status: 1,
+      },
+    };
+  },
+  // Vue 实例完成挂载后立即调用
+  mounted() {
+    this.fetchData();
+  },
+  methods: {
+    //========查看列表
+    async fetchData() {
+      sysMenu.FindNodes().then((resp)=>{
+        if (resp.code === 200) {
+            this.list = resp.data
+          }
+            this.$notify({
               title: 'Tips',
-              message: '操作成功',
+              message: resp.message,
               type: 'success',
-              duration: 2000
-            })
-  } else {
-       this.$notify({
+              duration: 2000,
+            });
+      })
+    },
+    //=======================添加和修改功能====================
+    //进入添加
+    addShow(row) {
+      this.sysMenu = {};
+      this.dialogVisible = true;
+      if (!row.id) {
+        this.dialogTitle = '添加';
+      } else {
+        this.dialogTitle = '添加下级节点';
+        this.sysMenu.parentId = row.id;
+      }
+    },
+    //进入修改
+    editShow(row) {
+      this.sysMenu = { ...row };
+      this.dialogVisible = true;
+    },
+    //提交保存与修改
+    saveOrUpdate() {
+      if (!this.sysMenu.id) {
+        if (!this.sysMenu.parentId) {
+          this.sysMenu.parentId = 0;
+        }
+        this.saveData();
+      } else {
+        this.updateData();
+      }
+    },
+    // 修改
+    updateData() {
+       sysMenu.UpdateSysMenuById(this.sysMenu).then((resp)=>{
+          if (resp.code === 200) {
+            this.$notify({
               title: 'Tips',
-              message: '操作失败',
-              type: 'error',
-              duration: 2000
-            })
-  }
-  dialogVisible.value = false
-
-  fetchData()
-}
-
-// 新增
-const saveData = async () => {
-  await SaveMenu(sysMenu.value)
-  dialogVisible.value = false
-  this.$notify({
-              title: 'Tips',
-              message: '操作成功',
+              message: resp.message,
               type: 'success',
-              duration: 2000
-            })
-  fetchData()
-}
-
-//=======================分页列表====================
-const fetchData = async () => {
-  const { code, data, message } = await FindNodes()
-
-  console.log(data)
-  list.value = data
-}
-
-//=======================删除功能====================
-const remove = async id => {
-  console.log('removeDataById:' + id)
-  ElMessageBox.confirm('此操作将永久删除该记录, 是否继续?', 'Warning', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning',
-  }
-  
-  ).then(async () => {
-    const { code, message } = await RemoveSysMenuById(id)
-    if (code === 200) {
-      ElMessage.success('删除成功')
-      fetchData()
-    } else {
-         this.$notify({
+              duration: 2000,
+            });
+          } else {
+            this.$notify({
               title: 'Tips',
-              message: '操作失败',
+              message: resp.message,
               type: 'error',
-              duration: 2000
-            })
-    }
-  })
-}
+              duration: 2000,
+            });
+          }
+          this.dialogVisible = false;
+          this.fetchData();
+       })
+    },
+    // 新增
+    async saveData() {
+      sysMenu.SaveMenu(this.sysMenu).then((resp)=>{
+         if (resp.code === 200) {
+          this.dialogVisible = false;
+          this.$notify({
+            title: 'Tips',
+            message: resp.message,
+            type: 'success',
+            duration: 2000,
+          });
+          this.fetchData();
+         }else {
+            this.$notify({
+              title: 'Tips',
+              message: resp.message,
+              type: 'error',
+              duration: 2000,
+            });
+          }
+      })
+      
+    },
+    //=======================删除功能====================
+    async remove(row) {
+      this.$confirm(`此操作将永久删除"${row.topMenuName}"该记录, 是否继续?`, '注意', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      }).then(async () => {
+        sysMenu.RemoveSysMenuById(row.id).then((resp)=>{
+          if (resp.code === 200) {
+            this.$notify({
+              title: 'Tips',
+              message: resp.message,
+              type: 'success',
+              duration: 2000,
+            });
+            this.fetchData();
+          } else {
+            this.$notify({
+              title: 'Tips',
+              message: resp.message,
+              type: 'error',
+              duration: 2000,
+            });
+          }
+        })
+
+      });
+    },
+  },
+
+
+
+};
 </script>
 
 <style scoped>

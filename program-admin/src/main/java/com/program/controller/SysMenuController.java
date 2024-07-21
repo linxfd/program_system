@@ -1,5 +1,7 @@
 package com.program.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.program.model.entity.SysMenu;
 import com.program.model.vo.CommonResult;
 import com.program.model.vo.CommonResultEnum;
@@ -27,26 +29,31 @@ public class SysMenuController {
     @GetMapping("/findNodes")
     public CommonResult<List<SysMenu>> findNodes() {
         List<SysMenu> list = sysMenuService.findNodes();
-        return CommonResult.build(list , CommonResultEnum.SUCCESS) ;
+        CommonResult build = CommonResult.build(list, CommonResultEnum.SUCCESS_QUERY);
+        return build ;
     }
 
     //添加菜单
     @PostMapping("/save")
     public CommonResult save(@RequestBody SysMenu sysMenu) {
         sysMenuService.saveSysMenu(sysMenu);
-        return CommonResult.build(null , CommonResultEnum.SUCCESS);
+        return CommonResult.build(null , CommonResultEnum.SUCCESS_ADD);
     }
 
     //@Operation(summary = "修改菜单")
     @PutMapping("/updateById")
     public CommonResult updateById(@RequestBody SysMenu sysMenu) {
         sysMenuService.updateById(sysMenu);
-        return CommonResult.build(null , CommonResultEnum.SUCCESS) ;
+        return CommonResult.build(null , CommonResultEnum.SUCCESS_UPDATE) ;
     }
     //@Operation(summary = "删除菜单")
     @DeleteMapping("/removeById/{id}")
-    public CommonResult removeById(@PathVariable Long id) {
-        sysMenuService.removeById(id);
-        return CommonResult.build(null , CommonResultEnum.SUCCESS) ;
+    public CommonResult removeById(@PathVariable Integer id) {
+        QueryWrapper<SysMenu> qw = new QueryWrapper<SysMenu>()
+                .eq("id", id);
+        SysMenu sysMenu = new SysMenu();
+        sysMenu.setIsDeleted(1);
+        sysMenuService.update(sysMenu, qw);
+        return CommonResult.build(null , CommonResultEnum.SUCCESS_QUERY) ;
     }
 }

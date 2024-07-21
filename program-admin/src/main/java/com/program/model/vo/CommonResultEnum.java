@@ -8,7 +8,14 @@ import lombok.Getter;
 @Getter
 public enum CommonResultEnum {
 
-    SUCCESS(200 , "操作成功") ,
+    SUCCESS(200 , "操作成功"),
+    SUCCESS_LOGIN(200 , "登录成功"),
+    SUCCESS_LOGOUT(200 , "退出成功"),
+    SUCCESS_REGISTER(200 , "注册成功"),
+    SUCCESS_UPDATE(200 , "更新成功"),
+    SUCCESS_DELETE(200 , "删除成功"),
+    SUCCESS_ADD(200 , "添加成功"),
+    SUCCESS_QUERY(200 , "查询成功"),
     LOGIN_ERROR(201 , "用户名或者密码错误"),
     VALIDATECODE_ERROR(202 , "验证码错误") ,
     LOGIN_AUTH(208 , "用户未登录"),
