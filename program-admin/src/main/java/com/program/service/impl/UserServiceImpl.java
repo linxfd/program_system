@@ -5,19 +5,19 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.program.annotation.Cache;
-import com.program.dto.AddUserDto;
-import com.program.dto.LoginDto;
-import com.program.dto.RegisterDto;
-import com.program.dto.UpdateUserInfoDto;
-import com.program.entity.User;
+import com.program.model.dto.AddUserDto;
+import com.program.model.dto.LoginDto;
+import com.program.model.dto.RegisterDto;
+import com.program.model.dto.UpdateUserInfoDto;
+import com.program.model.entity.User;
 import com.program.exception.BusinessException;
 import com.program.exception.CommonErrorCode;
 import com.program.mapper.UserMapper;
 import com.program.service.UserService;
 import com.program.utils.JwtUtils;
 import com.program.utils.SaltEncryption;
-import com.program.vo.PageResponse;
-import com.program.vo.UserInfoVo;
+import com.program.model.vo.PageResponse;
+import com.program.model.vo.UserInfoVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static com.program.utils.CommonUtils.setLikeWrapper;
-import static com.program.vo.UserInfoVo.fromUser;
+import static com.program.model.vo.UserInfoVo.fromUser;
 
 
 @Service

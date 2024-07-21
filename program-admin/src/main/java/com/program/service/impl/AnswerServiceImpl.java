@@ -1,7 +1,7 @@
 package com.program.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.program.entity.Answer;
+import com.program.model.entity.Answer;
 import com.program.mapper.AnswerMapper;
 import com.program.service.AnswerService;
 import org.springframework.stereotype.Service;

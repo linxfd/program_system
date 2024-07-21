@@ -1,7 +1,7 @@
 package com.program.security;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.program.entity.User;
+import com.program.model.entity.User;
 import com.program.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

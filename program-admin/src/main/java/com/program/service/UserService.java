@@ -1,13 +1,13 @@
 package com.program.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.program.dto.AddUserDto;
-import com.program.dto.LoginDto;
-import com.program.dto.RegisterDto;
-import com.program.dto.UpdateUserInfoDto;
-import com.program.entity.User;
-import com.program.vo.PageResponse;
-import com.program.vo.UserInfoVo;
+import com.program.model.dto.AddUserDto;
+import com.program.model.dto.LoginDto;
+import com.program.model.dto.RegisterDto;
+import com.program.model.dto.UpdateUserInfoDto;
+import com.program.model.entity.User;
+import com.program.model.vo.PageResponse;
+import com.program.model.vo.UserInfoVo;
 
 import java.util.List;
 

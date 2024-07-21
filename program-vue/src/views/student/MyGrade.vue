@@ -14,7 +14,7 @@
       </el-select>
 
       <el-alert center show-icon
-                title="新增查看证书功能，通过测评即可获得编程学习系统颁发的专属证书！"
+                title="新增查看证书功能，通过测评即可获得追风考试系统颁发的专属证书！"
                 type="warning">
       </el-alert>
 

@@ -1,9 +1,9 @@
 package com.program.utils;
 
-import com.program.entity.User;
+import com.program.model.entity.User;
 import com.program.exception.BusinessException;
 import com.program.exception.CommonErrorCode;
-import com.program.vo.TokenVo;
+import com.program.model.vo.TokenVo;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;

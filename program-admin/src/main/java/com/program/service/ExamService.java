@@ -1,12 +1,12 @@
 package com.program.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.program.dto.StudentExamRecordExcelDto;
-import com.program.entity.Exam;
-import com.program.vo.AddExamByBankVo;
-import com.program.vo.AddExamByQuestionVo;
-import com.program.vo.ExamQueryVo;
-import com.program.vo.PageResponse;
+import com.program.model.dto.StudentExamRecordExcelDto;
+import com.program.model.entity.Exam;
+import com.program.model.vo.AddExamByBankVo;
+import com.program.model.vo.AddExamByQuestionVo;
+import com.program.model.vo.ExamQueryVo;
+import com.program.model.vo.PageResponse;
 
 import java.util.List;
 

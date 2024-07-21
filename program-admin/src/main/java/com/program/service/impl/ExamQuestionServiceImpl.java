@@ -2,7 +2,7 @@ package com.program.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.program.entity.ExamQuestion;
+import com.program.model.entity.ExamQuestion;
 import com.program.mapper.ExamQuestionMapper;
 import com.program.service.ExamQuestionService;
 import lombok.RequiredArgsConstructor;

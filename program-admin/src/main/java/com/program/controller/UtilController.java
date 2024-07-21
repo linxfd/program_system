@@ -1,8 +1,9 @@
 package com.program.controller;
 
+import com.program.model.dict.DictTedisTime;
 import com.program.utils.CreateVerificationCode;
 import com.program.utils.RedisUtil;
-import com.program.vo.CommonResult;
+import com.program.model.vo.CommonResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -17,6 +18,7 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @Api(tags = "工具类接口")
@@ -43,7 +45,7 @@ public class UtilController {
         code.getG().dispose();
         //将图形验证码IO流传输至前端
         ImageIO.write(image, "JPEG", response.getOutputStream());
-        redisUtil.set(id, code.getCode());
+        redisUtil.set(id, code.getCode(), DictTedisTime.FIVE_TIME, TimeUnit.MINUTES);
     }
 
     @GetMapping("/getCode")

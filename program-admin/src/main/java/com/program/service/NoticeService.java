@@ -1,8 +1,8 @@
 package com.program.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.program.entity.Notice;
-import com.program.vo.PageResponse;
+import com.program.model.entity.Notice;
+import com.program.model.vo.PageResponse;
 
 
 public interface NoticeService extends IService<Notice> {

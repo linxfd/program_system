@@ -1,14 +1,14 @@
 package com.program.controller;
 
-import com.program.entity.ExamQuestion;
-import com.program.entity.ExamRecord;
+import com.program.model.entity.ExamQuestion;
+import com.program.model.entity.ExamRecord;
 import com.program.service.ExamQuestionService;
 import com.program.service.QuestionService;
 import com.program.service.impl.ExamRecordServiceImpl;
 import com.program.utils.OSSUtil;
-import com.program.vo.CommonResult;
-import com.program.vo.PageResponse;
-import com.program.vo.QuestionVo;
+import com.program.model.vo.CommonResult;
+import com.program.model.vo.PageResponse;
+import com.program.model.vo.QuestionVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;

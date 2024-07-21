@@ -1,6 +1,6 @@
-package com.program.vo;
+package com.program.model.vo;
 
-import com.program.entity.QuestionBank;
+import com.program.model.entity.QuestionBank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

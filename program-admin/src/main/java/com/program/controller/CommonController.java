@@ -1,14 +1,14 @@
 package com.program.controller;
 
-import com.program.dto.LoginDto;
-import com.program.dto.RegisterDto;
-import com.program.dto.UpdateUserInfoDto;
+import com.program.model.dto.LoginDto;
+import com.program.model.dto.RegisterDto;
+import com.program.model.dto.UpdateUserInfoDto;
 import com.program.service.impl.UserRoleServiceImpl;
 import com.program.service.impl.UserServiceImpl;
 import com.program.utils.JwtUtils;
-import com.program.vo.CommonResult;
-import com.program.vo.TokenVo;
-import com.program.vo.UserVo;
+import com.program.model.vo.CommonResult;
+import com.program.model.vo.TokenVo;
+import com.program.model.vo.UserVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import static com.program.vo.UserVo.fromUser;
+import static com.program.model.vo.UserVo.fromUser;
 
 
 @Validated
@@ -80,9 +80,6 @@ public class CommonController {
     @ApiOperation(value = "获取不同用户的权限菜单")
     public CommonResult<String> getMenu(HttpServletRequest request) {
 
-//        return CommonResult.<String>builder()
-//                .data()
-//                .build();
         String menuInfo = userRoleService.getMenuInfo(JwtUtils.getUserInfoByToken(request).getRoleId());
         CommonResult<String> stringCommonResult = new CommonResult<>();
         stringCommonResult.setData(menuInfo);

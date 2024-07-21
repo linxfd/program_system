@@ -1,10 +1,10 @@
 package com.program.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.program.entity.QuestionBank;
-import com.program.vo.BankHaveQuestionSum;
-import com.program.vo.PageResponse;
-import com.program.vo.QuestionVo;
+import com.program.model.entity.QuestionBank;
+import com.program.model.vo.BankHaveQuestionSum;
+import com.program.model.vo.PageResponse;
+import com.program.model.vo.QuestionVo;
 
 import java.util.List;
 

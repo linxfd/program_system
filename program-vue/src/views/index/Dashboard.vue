@@ -2,16 +2,21 @@
   <el-scrollbar :native="false" style="height: 100%">
     <div>
       <h1 class="title">
-        <a href="https://gitee.com/wzhouzhou/exam_system" target="_blank">编程学习系统</a>
+        <a href="https://gitee.com/wzhouzhou/exam_system" target="_blank">追风考试系统</a>
       </h1>
 
       <el-row>
         <el-col :span="15" :offset="5">
-          <h3>1、系统描述:</h3>
-          <p>编程学习系统是一个多角色在线培训考试系统，系统集成了用户管理、角色管理、题库管理、试
+          <h3>1、推荐项目:</h3>
+          <ul>
+            <li><a href="https://gitee.com/wzhouzhou/vue_wzz_cloudMusic" target="_blank">高仿网易云音乐</a></li>
+            <li><a href="https://gitee.com/wzhouzhou/privateBlog" target="_blank">博客系统</a></li>
+          </ul>
+          <h3>2、系统描述:</h3>
+          <p>追风考试系统是一个多角色在线培训考试系统，系统集成了用户管理、角色管理、题库管理、试
             题管理、考试管理、在线考试等功能，考试流程完善。实现一整套完整体系的考试系统，方便用
             户在此系统中进行练习并不断提升自己，在考试中不断进步。</p>
-          <h3>2、主要功能</h3>
+          <h3>3、主要功能</h3>
           <div style="margin-left: 2em">
             <h4>1.权限控制</h4>
             <p>本系统存在三个不同的角色，教师，管理员，学生三种用户，此系统是基于vue+springboot实现的前后端分离，用户权限校验通过JWT生成token令牌发放到用户，并根据令牌对用户的身份合法性进行校验。</p>

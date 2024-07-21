@@ -1,7 +1,7 @@
 package com.program.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.program.entity.Question;
+import com.program.model.entity.Question;
 import org.springframework.stereotype.Repository;
 
 

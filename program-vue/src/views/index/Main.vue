@@ -6,7 +6,7 @@
         <el-menu-item index="/index" disabled style="text-align: center">
           <i class="el-icon-sunny"></i>
           <span slot="title">
-            编程学习系统
+            追风考试系统
           </span>
         </el-menu-item>
 

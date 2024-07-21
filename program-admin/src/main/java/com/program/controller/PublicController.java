@@ -1,10 +1,10 @@
 package com.program.controller;
 
-import com.program.entity.Exam;
+import com.program.model.entity.Exam;
 import com.program.service.ExamService;
 import com.program.service.NoticeService;
 import com.program.service.QuestionBankService;
-import com.program.vo.*;
+import com.program.model.vo.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;

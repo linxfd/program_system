@@ -1,7 +1,7 @@
 package com.program.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.program.entity.UserRole;
+import com.program.model.entity.UserRole;
 import org.springframework.stereotype.Repository;
 
 

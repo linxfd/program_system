@@ -1,6 +1,6 @@
-package com.program.dto;
+package com.program.model.dto;
 
-import com.program.entity.User;
+import com.program.model.entity.User;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;

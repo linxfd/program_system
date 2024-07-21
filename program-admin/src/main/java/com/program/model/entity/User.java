@@ -1,9 +1,9 @@
-package com.program.entity;
+package com.program.model.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.program.dto.UpdateUserInfoDto;
+import com.program.model.dto.UpdateUserInfoDto;
 import com.program.utils.SaltEncryption;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

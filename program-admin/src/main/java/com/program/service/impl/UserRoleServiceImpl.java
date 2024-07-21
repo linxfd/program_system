@@ -3,7 +3,7 @@ package com.program.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.program.annotation.Cache;
-import com.program.entity.UserRole;
+import com.program.model.entity.UserRole;
 import com.program.mapper.UserRoleMapper;
 import com.program.service.UserRoleService;
 import lombok.RequiredArgsConstructor;
@@ -21,12 +21,14 @@ public class UserRoleServiceImpl extends ServiceImpl<UserRoleMapper, UserRole> i
     @Override
     @Cache(prefix = "menu", suffix = "#roleId", ttl = 60 * 60 * 24, randomTime = 60 * 60 * 10)
     public String getMenuInfo(Integer roleId) {
-        return userRoleMapper.selectOne(new QueryWrapper<UserRole>().eq("role_id", roleId)).getMenuInfo();
+        UserRole role = userRoleMapper.selectOne(new QueryWrapper<UserRole>().eq("role_id", roleId));
+        return role.getMenuInfo();
     }
 
     @Override
     @Cache(prefix = "userRoles", ttl = 30, randomTime = 10, timeUnit = TimeUnit.DAYS)
     public List<UserRole> getUserRole() {
-        return userRoleMapper.selectList(null);
+        List<UserRole> userRoles = userRoleMapper.selectList(null);
+        return userRoles;
     }
 }

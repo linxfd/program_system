@@ -1,8 +1,8 @@
 package com.program.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.program.entity.ExamRecord;
-import com.program.vo.PageResponse;
+import com.program.model.entity.ExamRecord;
+import com.program.model.vo.PageResponse;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

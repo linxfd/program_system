@@ -1,7 +1,7 @@
 package com.program.Interceptor;
 
 import com.program.utils.JwtUtils;
-import com.program.vo.TokenVo;
+import com.program.model.vo.TokenVo;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 

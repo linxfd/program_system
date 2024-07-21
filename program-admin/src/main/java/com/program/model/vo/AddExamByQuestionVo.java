@@ -1,4 +1,4 @@
-package com.program.vo;
+package com.program.model.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;

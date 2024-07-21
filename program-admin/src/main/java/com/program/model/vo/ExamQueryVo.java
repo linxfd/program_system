@@ -1,4 +1,4 @@
-package com.program.vo;
+package com.program.model.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

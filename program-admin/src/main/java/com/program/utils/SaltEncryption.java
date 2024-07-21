@@ -1,6 +1,6 @@
 package com.program.utils;
 
-import com.program.entity.Answer;
+import com.program.model.entity.Answer;
 import org.springframework.util.DigestUtils;
 
 import java.util.List;

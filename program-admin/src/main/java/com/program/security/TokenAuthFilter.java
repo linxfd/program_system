@@ -3,7 +3,7 @@ package com.program.security;
 import com.program.exception.BusinessException;
 import com.program.exception.CommonErrorCode;
 import com.program.utils.JwtUtils;
-import com.program.vo.TokenVo;
+import com.program.model.vo.TokenVo;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

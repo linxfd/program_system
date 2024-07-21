@@ -3,7 +3,7 @@
     <el-main>
       <el-card class="box-card" shadow="always">
         <div slot="header" class="card-header">
-          <p>编程学习系统</p>
+          <p>追风考试系统</p>
         </div>
 
         <div>

@@ -1,6 +1,6 @@
-package com.program.vo;
+package com.program.model.vo;
 
-import com.program.entity.User;
+import com.program.model.entity.User;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
 

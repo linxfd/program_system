@@ -1,14 +1,14 @@
 package com.program.controller;
 
-import com.program.dto.AddUserDto;
-import com.program.entity.Notice;
-import com.program.entity.UserRole;
+import com.program.model.dto.AddUserDto;
+import com.program.model.entity.Notice;
+import com.program.model.entity.UserRole;
 import com.program.service.NoticeService;
 import com.program.service.UserRoleService;
 import com.program.service.UserService;
-import com.program.vo.CommonResult;
-import com.program.vo.PageResponse;
-import com.program.vo.UserInfoVo;
+import com.program.model.vo.CommonResult;
+import com.program.model.vo.PageResponse;
+import com.program.model.vo.UserInfoVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;

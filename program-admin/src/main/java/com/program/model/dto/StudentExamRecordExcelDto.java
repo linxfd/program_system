@@ -1,10 +1,10 @@
-package com.program.dto;
+package com.program.model.dto;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.write.style.ColumnWidth;
 import com.alibaba.excel.annotation.write.style.ContentRowHeight;
 import com.alibaba.excel.annotation.write.style.HeadRowHeight;
-import com.program.entity.ExamRecord;
+import com.program.model.entity.ExamRecord;
 import lombok.Builder;
 import lombok.Data;
 

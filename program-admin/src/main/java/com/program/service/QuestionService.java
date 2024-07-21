@@ -1,9 +1,9 @@
 package com.program.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.program.entity.Question;
-import com.program.vo.PageResponse;
-import com.program.vo.QuestionVo;
+import com.program.model.entity.Question;
+import com.program.model.vo.PageResponse;
+import com.program.model.vo.QuestionVo;
 
 import java.util.List;
 

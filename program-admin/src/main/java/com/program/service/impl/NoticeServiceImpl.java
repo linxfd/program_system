@@ -5,14 +5,14 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.program.annotation.Cache;
-import com.program.entity.Notice;
+import com.program.model.entity.Notice;
 import com.program.exception.BusinessException;
 import com.program.exception.CommonErrorCode;
 import com.program.mapper.NoticeMapper;
 import com.program.service.NoticeService;
 import com.program.utils.CommonUtils;
 import com.program.utils.RedisUtil;
-import com.program.vo.PageResponse;
+import com.program.model.vo.PageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
