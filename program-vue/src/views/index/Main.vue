@@ -278,8 +278,6 @@ export default {
       menu.getMenuInfo().then((resp) => {
         if (resp.code === 200) {
           this.menuInfo = JSON.parse(resp.data)
-          console.log("menuInfo")
-          console.log(this.menuInfo)
           //根据链接创建不存在的tag标签并高亮
           this.createHighlightTag()
         } else {//后台认证失败,跳转登录页面

@@ -8,6 +8,13 @@ export default {
       method: 'get',
     })
   },
+  // 分页列表
+  GetSysRoleMenuIds (roleId) {
+    return request({
+      url: `/sysMenu/findNodes/${roleId}`,
+      method: 'get',
+    })
+  },
   // 保存信息
   SaveMenu (sysMenu){
     return request({

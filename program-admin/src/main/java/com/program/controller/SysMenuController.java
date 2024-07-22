@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @version 1.0
@@ -55,5 +56,10 @@ public class SysMenuController {
         sysMenu.setIsDeleted(1);
         sysMenuService.update(sysMenu, qw);
         return CommonResult.build(null , CommonResultEnum.SUCCESS_QUERY) ;
+    }
+    @GetMapping("/findNodes/{roleId}")
+    public CommonResult GetSysRoleMenuIds(@PathVariable(value = "roleId") Integer roleId) {
+        Map<String , Object> sysRoleMenuList = sysMenuService.findSysRoleMenuByRoleId(roleId) ;
+        return CommonResult.build(sysRoleMenuList , CommonResultEnum.SUCCESS_QUERY) ;
     }
 }

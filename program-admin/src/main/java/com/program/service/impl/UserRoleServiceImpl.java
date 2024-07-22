@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.program.annotation.Cache;
 import com.program.mapper.SysMenuMapper;
+import com.program.model.dto.AssginMenuDto;
 import com.program.model.entity.SysMenu;
 import com.program.model.entity.UserRole;
 import com.program.mapper.UserRoleMapper;
@@ -15,12 +16,14 @@ import com.program.utils.MenuHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -50,6 +53,20 @@ public class UserRoleServiceImpl extends ServiceImpl<UserRoleMapper, UserRole> i
     public List<UserRole> getUserRole() {
         List<UserRole> userRoles = userRoleMapper.selectList(null);
         return userRoles;
+    }
+
+    @Override
+    @Transactional
+    public void doAssign(AssginMenuDto assginMenuDto) {
+        // 根据角色的id删除其所对应的菜单数据
+        userRoleMapper.deleteByRoleId(assginMenuDto.getRoleId());
+
+        // 获取菜单的id
+        List<Map<String, Number>> menuInfo = assginMenuDto.getMenuIdList();
+        if(menuInfo != null && menuInfo.size() > 0) {
+            // 保存菜单
+            userRoleMapper.doAssign(assginMenuDto) ;
+        }
     }
 
     // 将List<SysMenu>对象转换成List<SysMenuVo>对象

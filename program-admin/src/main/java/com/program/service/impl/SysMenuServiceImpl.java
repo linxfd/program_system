@@ -16,7 +16,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @version 1.0
@@ -51,6 +53,24 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         List<SysMenu> treeList = MenuHelper.buildTree(sysMenuList);
         return treeList;
     }
+
+    @Override
+    public Map<String, Object> findSysRoleMenuByRoleId(Integer roleId) {
+        // 查询所有的菜单数据
+        List<SysMenu> sysMenuList = this.findNodes() ;
+
+        // 查询当前角色的菜单数据
+        List<Long> roleMenuIds = sysRoleMenuMapper.findSysRoleMenuByRoleId(roleId) ;
+
+        // 将数据存储到Map中进行返回
+        Map<String , Object> result = new HashMap<>() ;
+        result.put("sysMenuList" , sysMenuList) ;
+        result.put("roleMenuIds" , roleMenuIds) ;
+
+        // 返回
+        return result;
+    }
+
 
     // 递归调用,将菜单所对应的父级菜单设置为半开
     private void updateSysRoleMenuIsHalf(SysMenu sysMenu) {

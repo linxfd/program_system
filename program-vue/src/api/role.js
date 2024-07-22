@@ -6,5 +6,12 @@ export default {
       url: '/role/getRole',
       method: 'get'
     })
+  },
+  DoAssignMenuIdToSysRole(assignMenuDto) {
+    return request({
+      url: '/role/doAssign',
+      method: 'post',
+      data: assignMenuDto,
+    })
   }
 }

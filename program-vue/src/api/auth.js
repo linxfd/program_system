@@ -32,5 +32,25 @@ export default {
       url: `/common/check/${username}`,
       method: 'get'
     })
-  }
+  },
+  checkUserPhone (phone) {
+    return request({
+      url: `/common/checkPhone/${phone}`,
+      method: 'get'
+    })
+  },
+  checkeditUserPhone (data) {
+    return request({
+      url: '/common/checkeditUserPhone',
+      method: 'post',
+      data: data
+    })
+  },
+  editUsername(data){
+    return request({
+      url: '/common/editUsername',
+      method: 'post',
+      data: data
+    })
+  },
 }
