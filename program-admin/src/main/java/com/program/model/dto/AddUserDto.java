@@ -23,6 +23,8 @@ public class AddUserDto {
 
     private String trueName;
 
+    private String phone;
+
     public User toUser() {
         User user = new User();
         BeanUtils.copyProperties(this, user);

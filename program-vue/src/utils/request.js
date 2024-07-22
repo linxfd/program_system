@@ -7,7 +7,7 @@ import { generateSign } from '@/utils/sign'
 // 创建axios实例
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_URL, // api 的 base_url
-  timeout: process.env.VUE_APP_REQUEST_TIME_OUT // 请求超时时间
+  //timeout: process.env.VUE_APP_REQUEST_TIME_OUT // 请求超时时间，测试先关闭
 })
 
 service.interceptors.request.use(config => {

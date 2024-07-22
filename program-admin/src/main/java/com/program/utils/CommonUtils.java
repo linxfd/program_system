@@ -20,6 +20,7 @@ public class CommonUtils {
         }
     }
 
+    // 模糊查询
     public static <T> void setLikeWrapper(QueryWrapper<T> queryWrapper, Map<String, Object> fieldsMap) {
         for (Map.Entry<String, Object> entry : fieldsMap.entrySet()) {
             Object value = entry.getValue();

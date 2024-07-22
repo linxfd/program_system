@@ -87,7 +87,7 @@
             <!--卡片面板的主内容-->
             <div>
               <el-tag @close="handleClose(index)" v-for="(item,index) in tags"
-                      type="info" size="small" :key="index" :class="item.highlight ? 'active' : ''"
+                      type="info" size="centre" :key="index" :class="item.highlight ? 'active' : ''"
                       :closable="item.name !== '产品介绍'" @click="changeHighlightTag(item.name)"
                       effect="plain">
                 <i class="el-icon-s-opportunity" style="margin-right: 2px"

@@ -1,18 +1,18 @@
 package com.program.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.program.annotation.Cache;
-import com.program.model.dto.AddUserDto;
-import com.program.model.dto.LoginDto;
-import com.program.model.dto.RegisterDto;
-import com.program.model.dto.UpdateUserInfoDto;
+import com.program.model.dto.*;
 import com.program.model.entity.User;
 import com.program.exception.BusinessException;
 import com.program.exception.CommonErrorCode;
 import com.program.mapper.UserMapper;
+import com.program.utils.NotUtils;
+import com.program.model.vo.UserVo;
 import com.program.service.UserService;
 import com.program.utils.JwtUtils;
 import com.program.utils.SaltEncryption;
@@ -50,7 +50,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         user.setPassword(newPwd);
         user.setSalt(salt);
         user.setRoleId(1);
-        user.setCreateDate(new Date());
+        user.setCreateTime(new Date());
 
         userMapper.insert(user);
         // 发放token令牌
@@ -95,20 +95,25 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public PageResponse<UserInfoVo> getUser(String loginName, String trueName, Integer pageNo, Integer pageSize) {
-        IPage<User> userPage = new Page<>(pageNo, pageSize);
-
+    public PageResponse<UserInfoVo> getUser(UserDto userDto) {
+        IPage<User> userPage = new Page<>(userDto.getPageNo(), userDto.getPageSize());
+        // 查询条件
         Map<String, Object> queryParams = new HashMap<>();
-        queryParams.put("username", loginName);
-        queryParams.put("true_name", trueName);
+        queryParams.put("username", userDto.getUsername());
+        queryParams.put("true_name", userDto.getTrueName());
 
         QueryWrapper<User> wrapper = new QueryWrapper<>();
         setLikeWrapper(wrapper, queryParams);
-        wrapper.orderByDesc("role_id", "create_date");
+        // 当角色id不为null时查询
+        if (!NotUtils.isNotUtils(userDto.getRoleId()) ){
+            wrapper.eq("role_id",userDto.getRoleId());
+        }
+        wrapper.eq("is_deleted", 0);
+        wrapper.orderByDesc("role_id", "create_time");
         wrapper.orderByAsc("status");
 
         userPage = userMapper.selectPage(userPage, wrapper);
-        List<UserInfoVo> records = userPage.getRecords().stream().map(UserInfoVo::fromUser).collect(Collectors.toList());
+        List<UserInfoVo> records = userPage.getRecords().stream().map(user -> UserInfoVo.fromUser(user)).collect(Collectors.toList());
 
         return PageResponse.<UserInfoVo>builder().data(records).total(userPage.getTotal()).build();
     }
@@ -142,7 +147,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         User user = addUserDto.toUser();
         user.setPassword(newPwd);
         user.setSalt(salt);
-        user.setCreateDate(new Date());
+        user.setPhone(addUserDto.getPhone());
+        user.setCreateTime(new Date());
         userMapper.insert(user);
     }
 
@@ -158,12 +164,62 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public void deleteUserById(Integer id) {
+        QueryWrapper<User> qw = new QueryWrapper<User>().eq("id", id);
+        User user = new User();
+        user.setIsDeleted(1);
+        userMapper.update(user, qw);
+    }
+
+    @Override
+    public Boolean editUsername(User user) {
+        // 查询当前用户,如果当前用户名没有变化，则直接返回true
+        // 如果当前用户名有变化，则判断当前用户名是否被占用
+        User user1 = userMapper.selectOne(new QueryWrapper<User>().eq("id", user.getId()));
+        if (NotUtils.isNotUtils(user1.getUsername())) {
+            return this.checkUsername(user.getUsername());
+        }
+        if (user1.getUsername().equals(user.getUsername())) {
+            return true;
+        }else {
+            return this.checkUsername(user.getUsername());
+        }
+    }
+
     private void updateUserStatus(String[] ids, Integer status) {
         for (String id : ids) {
             // 当前需要修改的用户
             User user = userMapper.selectById(Integer.parseInt(id));
             user.setStatus(status);// 设置为启用的用户
             userMapper.updateById(user);
+        }
+    }
+
+    public Boolean checkUserPhone(String phone) {
+        return userMapper.selectCount(new QueryWrapper<User>().eq("phone", phone)) < 1;
+    }
+
+    public void updateUser(User user) {
+        QueryWrapper<User> qw = new QueryWrapper<User>().eq("id", user.getId());
+        if (!NotUtils.isNotUtils(user.getPassword())) {
+            user.setPassword(SaltEncryption.saltEncryption(user.getPassword(), user.getSalt()));
+        }
+        user.setUpdateTime(new Date());
+        userMapper.update(user, qw);
+    }
+
+    public Boolean checkeditUserPhone(User user) {
+        // 查询当前用户,如果当前用户名没有变化，则直接返回true
+        User user1 = userMapper.selectOne(new QueryWrapper<User>().eq("id", user.getId()));
+        // 如果当前用户手机号为空，则直接验证
+        if (NotUtils.isNotUtils(user1.getPhone())) {
+            return this.checkUserPhone(user.getPhone());
+        }
+        if (user1.getPhone().equals(user.getPhone())) {
+            return true;
+        }else {
+            return this.checkUserPhone(user.getPhone());
         }
     }
 }

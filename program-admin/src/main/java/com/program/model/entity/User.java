@@ -22,7 +22,7 @@ import java.util.Date;
 @NoArgsConstructor
 @ApiModel("用户实体")
 @TableName(value = "user")
-public class User implements Serializable {
+public class User extends CommonEntity {
 
     //  对应数据库的主键(uuid,自增id,雪花算法, redis,zookeeper)
     @TableId(type = IdType.AUTO)
@@ -41,14 +41,16 @@ public class User implements Serializable {
     @ApiModelProperty(value = "密码", example = "12345")
     private String password;
 
+    @ApiModelProperty(value = "手机号，必须11位", example = "18366559684")
+    private String phone;
+
     @ApiModelProperty(value = "加密盐值", example = "salt")
     private String salt;
 
     @ApiModelProperty(value = "用户状态", example = "1正常 2禁用")
     private Integer status;
 
-    @ApiModelProperty(value = "用户创建时间", example = "2020-10-22 10:35:44")
-    private Date createDate;
+
 
     public void updateFrom(UpdateUserInfoDto updateUserInfoDto) {
         if (StringUtils.hasLength(updateUserInfoDto.getPassword())) {

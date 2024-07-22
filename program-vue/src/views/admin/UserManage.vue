@@ -2,10 +2,18 @@
   <el-container>
 
     <el-header>
-      <el-input v-model="queryInfo.loginName" @blur="getUserInfo" placeholder="搜索登录名"
+      <el-input v-model="queryInfo.username" @blur="getUserInfo" placeholder="搜索登录名"
                 prefix-icon="el-icon-search"></el-input>
       <el-input v-model="queryInfo.trueName" @blur="getUserInfo" placeholder="搜索姓名" prefix-icon="el-icon-search"
                 style="margin-left: 5px"></el-input>
+      <el-select @change="typeChange" clearable v-model="queryInfo.roleId" placeholder="请选择角色类型" style="margin-left: 5px" >
+        <el-option
+          v-for="item in roleName"
+          :key="item.roleId"
+          :label="item.roleName"
+          :value="item.roleId">
+        </el-option>
+      </el-select>
       <el-button type="primary" style="margin-left: 5px" icon="el-icon-plus" @click="showAddDialog">添加</el-button>
     </el-header>
 
@@ -49,16 +57,19 @@
         <el-table-column align="center"
                          label="角色">
           <template slot-scope="scope">
-            <span class="role" v-show="scope.row.roleId === 3">超级管理员</span>
-            <span class="role" v-show="scope.row.roleId === 2">教师</span>
-            <span class="role" v-show="scope.row.roleId === 1">学生</span>
+            <span class="role">{{ getRoleName(scope.row.roleId) }}</span> 
           </template>
+        </el-table-column>
+
+        <el-table-column align="center"
+                         prop="phone"
+                         label="手机号">
         </el-table-column>
 
         <el-table-column align="center"
                          label="创建时间">
           <template slot-scope="scope">
-            {{ scope.row.createDate }}
+            {{ scope.row.createTime }}
           </template>
         </el-table-column>
 
@@ -68,6 +79,13 @@
             {{ scope.row.status === 1 ? '正常' : '禁用' }}
           </template>
         </el-table-column>
+              <el-table-column label="操作" align="center" width="280" #default="scope">
+        <el-button type="primary" size="small" @click="editShow(scope.row)">
+          修改
+        </el-button>
+        <el-button type="danger" icon="el-icon-delete" size="small" @click="remove(scope.row)">
+        </el-button>
+      </el-table-column>
 
       </el-table>
 
@@ -87,27 +105,47 @@
     <el-dialog title="添加用户" :visible.sync="addTableVisible" width="30%" @close="resetAddForm"
                center>
 
-      <el-form :model="addForm" :rules="addFormRules" ref="addForm">
+      <el-form :model="addForm" :rules="currentRules" ref="addForm">
 
         <el-form-item label="用户名" label-width="120px" prop="username">
           <el-input v-model="addForm.username"></el-input>
         </el-form-item>
 
         <el-form-item label="密码" label-width="120px" prop="password">
-          <el-input v-model="addForm.password" type="password" show-password></el-input>
+          <el-input v-if="!addForm.id" v-model="addForm.password" type="password" show-password></el-input>
+          <el-input v-else v-model="addForm.password" type="password" show-password placeholder="不更改请留空"></el-input>
         </el-form-item>
 
         <el-form-item label="角色" label-width="120px" prop="roleId">
           <el-select v-model="addForm.roleId" placeholder="请选择用户权限">
-            <el-option label="学生" value="1"></el-option>
-            <el-option label="教师" value="2"></el-option>
-            <el-option label="超级管理员" value="3"></el-option>
+              <el-option
+                v-for="item in roleName"
+                :key="item.roleId"
+                :label="item.roleName"
+                :value="item.roleId">
+              </el-option>
           </el-select>
         </el-form-item>
 
         <el-form-item label="真实姓名" label-width="120px" prop="trueName">
           <el-input v-model="addForm.trueName"></el-input>
         </el-form-item>
+
+        <el-form-item label="手机号" label-width="120px" prop="phone" >
+          <el-input v-model="addForm.phone" placeholder="请输入绑定手机号"></el-input>
+        </el-form-item>
+
+        <el-form-item label="状态" label-width="120px" prop="roleId" v-if="addForm.id">
+          <el-select v-model="addForm.status">
+              <el-option
+                v-for="item in statusInfo"
+                :key="item.status"
+                :label="item.name"
+                :value="item.status">
+              </el-option>
+          </el-select>
+        </el-form-item>
+
       </el-form>
 
       <div slot="footer" class="dialog-footer">
@@ -124,19 +162,65 @@
 import user from '@/api/user'
 import utils from '@/utils/utils'
 import auth from '@/api/auth'
+import role from '@/api/role'
 
 export default {
   name: 'UserManage',
   data () {
     //自定义用户名校验规则
     const validateUsername = (rule, value, callback) => {
-      auth.checkUsername(this.addForm.username).then((resp) => {
-        if (resp.data) {
-          callback()
-        } else {
-          callback(new Error('用户名已存在'))
+      if(this.addForm.id){
+        // 修改时
+        auth.editUsername(this.addForm).then((resp) => {
+          if (resp.data) {
+            callback()
+          } else {
+            callback(new Error('用户名已存在'))
+          }
+        })
+      }else{
+        // 新增时
+        auth.checkUsername(this.addForm.username).then((resp) => {
+          if (resp.data) {
+            callback()
+          } else {
+            callback(new Error('用户名已存在'))
+          }
+        })
         }
-      })
+    }
+   const isPhoneNumberValid = (rule, value,callback) => {
+      const phoneRegex = /^1[3-9]\d{9}$/;
+      if(value === ''||value == ''|| value == null){
+        callback()
+      }else if (!phoneRegex.test(value)) {
+        callback(new Error('请输入正确的手机号!'))
+      } else{
+        auth.checkUserPhone(value).then((resp) => {
+          if (resp.data) {
+            callback('ssa')
+          } else {
+            callback(new Error('手机号已存在'))
+          }
+        })
+      }
+    }
+    const iseditPhoneNumber = (rule, value,callback) => {
+      const phoneRegex = /^1[3-9]\d{9}$/;
+      console.log(value)
+      if(value === ''|| value == '' || value == null){
+        callback()
+      }else if (!phoneRegex.test(value)) {
+        callback(new Error('请输入正确的手机号!'))
+      } else{
+        auth.checkeditUserPhone(this.addForm).then((resp) => {
+          if (resp.data) {
+            callback()
+          } else {
+            callback(new Error('手机号已存在'))
+          }
+        })
+      }
     }
     return {
       //查询用户的参数
@@ -146,6 +230,7 @@ export default {
         'pageNo': 1,
         'pageSize': 10
       },
+      sysUser:[],
       //用户信息
       userInfo: [],
       //下拉选择框的数据
@@ -163,6 +248,17 @@ export default {
           'desc': 'delete'
         }
       ],
+      //
+      statusInfo: [
+        {
+          'name': '正常',
+          'status': '1'
+        },
+        {
+          'name': '禁用',
+          'status': '2'
+        },
+      ],
       //下拉框所选择的数据
       selected: '',
       //被选择的表格中的行数据
@@ -173,10 +269,13 @@ export default {
       addTableVisible: false,
       //添加用户的表单信息
       addForm: {
+        'id':'',
         'username': '',
         'password': '',
         'roleId': '',
-        'trueName': ''
+        'trueName': '',
+        'phone':'',
+        'status':'',
       },
       //添加用户表单的验证规则
       addFormRules: {
@@ -217,13 +316,73 @@ export default {
             trigger: 'blur'
           },
         ],
+        phone: [
+          { 
+          validator: isPhoneNumberValid, 
+          trigger: 'blur' ,
+          }
+        ]
+      },
+      //修改用户表单的验证规则
+      editFormRules: {
+        username: [
+          {
+            required: true,
+            message: '请输入登录用户名',
+            trigger: 'blur'
+          },
+          {
+            validator: validateUsername,
+            trigger: 'blur'
+          }
+        ],
+        password: [
+          {
+            min: 5,
+            message: '密码必须5位以上',
+            trigger: 'blur'
+          }
+        ],
+        trueName: [
+          {
+            required: true,
+            message: '请输入用户真实姓名',
+            trigger: 'blur'
+          },
+        ],
+        roleId: [
+          {
+            required: true,
+            message: '请选择用户权限',
+            trigger: 'blur'
+          },
+        ],
+        phone: [
+          { 
+          validator: iseditPhoneNumber, 
+          trigger: 'blur' ,
+          }
+        ]
       },
       //表格信息加载
-      loading: true
+      loading: true,
+      //角色类型
+      roleName:[],
     }
   },
   created () {
+    //查询第一次
     this.getUserInfo()
+    //获得角色名称列表
+    this.getroleNames()
+  },
+  computed:{
+    currentRules() {
+      // debugger
+      // console.log(this.addForm.id)
+      // 如果 addForm.id 存在，则使用 editFormRules，否则使用 addFormRules
+      return this.addForm.id ? this.editFormRules : this.addFormRules;
+    },
   },
   methods: {
     //获取用户信息
@@ -242,6 +401,28 @@ export default {
           })
         }
       })
+    },
+    //获得角色名称列表
+    getroleNames(){
+      role.getRoleInfo().then((resp)=>{
+        if (resp.code === 200) {
+          this.roleName = resp.data
+          this.$notify({
+            title: 'Tips',
+            message: resp.message,
+            type: 'success',
+            duration: 2000
+          })
+        } 
+      })
+    },
+    getRoleName(roleId) {  
+      const roleNameObj = this.roleName.find(role => role.roleId === roleId);  
+      return roleNameObj ? roleNameObj.roleName : '未知角色';  
+    },
+    typeChange (val) {
+      this.queryInfo.roleId = val
+      this.getUserInfo()
     },
     //表格某一行被选中
     handleSelectionChange (val) {
@@ -330,36 +511,92 @@ export default {
     },
     //点击添加按钮
     showAddDialog () {
+
       this.addTableVisible = true
     },
     //添加用户
     addUser () {
-      utils.validFormAndInvoke(this.$refs['addForm'], () => {
-        user.addUser(this.addForm).then((resp) => {
+      if(this.addForm.id){
+        user.updateUser(this.addForm).then((resp)=>{
           if (resp.code === 200) {
-            this.getUserInfo()
-            this.$notify({
-              title: 'Tips',
-              message: resp.message,
-              type: 'success',
-              duration: 2000
-            })
-          } else {
-            this.$notify({
-              title: 'Tips',
-              message: resp.message,
-              type: 'error',
-              duration: 2000
-            })
-          }
-          this.addTableVisible = false
+              this.getUserInfo()
+              this.$notify({
+                title: 'Tips',
+                message: resp.message,
+                type: 'success',
+                duration: 2000
+              })
+            } else {
+              this.$notify({
+                title: 'Tips',
+                message: resp.message,
+                type: 'error',
+                duration: 2000
+              })
+            }
+            this.addTableVisible = false
         })
-      }, '请检查您所填写的信息是否有误')
+      }else{
+        utils.validFormAndInvoke(this.$refs['addForm'], () => {
+          user.addUser(this.addForm).then((resp) => {
+            if (resp.code === 200) {
+              this.getUserInfo()
+              this.$notify({
+                title: 'Tips',
+                message: resp.message,
+                type: 'success',
+                duration: 2000
+              })
+            } else {
+              this.$notify({
+                title: 'Tips',
+                message: resp.message,
+                type: 'error',
+                duration: 2000
+              })
+            }
+            this.addTableVisible = false
+          })
+        }, '请检查您所填写的信息是否有误')
+      }
+      
+    },
+    //修改
+    editShow(row){
+      this.addForm = { ...row };
+      this.addTableVisible = true
     },
     //表单信息重置
     resetAddForm () {
       //清空表格数据
       this.$refs['addForm'].resetFields()
+    },
+    //============删除====
+    remove(val){
+       this.$confirm(`此操作将永久删除"${val.username}"用户, 是否继续?`, '注意', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+        }).then(async () => {
+          user.deleteUser(val.id).then((resp)=>{
+            if(resp.code === 200){
+              this.$notify({
+                  title: 'Tips',
+                  message: resp.message,
+                  type: 'success',
+                  duration: 2000
+                })
+              this.getUserInfo()
+            }else {
+              this.$notify({
+                title: 'Tips',
+                message: resp.message,
+                type: 'error',
+                duration: 2000,
+              });
+            }
+          })
+        });
     }
   }
 }

@@ -1,5 +1,6 @@
 package com.program.model.vo;
 
+import com.program.model.entity.CommonEntity;
 import com.program.model.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +14,7 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserInfoVo {
+public class UserInfoVo extends CommonEntity {
 
     private Integer id;
 
@@ -25,7 +26,8 @@ public class UserInfoVo {
 
     private Integer status;
 
-    private Date createDate;
+    private String phone;
+
 
     public static UserInfoVo fromUser(User user) {
         UserInfoVo userInfoVo = new UserInfoVo();

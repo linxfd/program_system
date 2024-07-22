@@ -3,6 +3,7 @@ package com.program.controller;
 import com.program.model.dto.LoginDto;
 import com.program.model.dto.RegisterDto;
 import com.program.model.dto.UpdateUserInfoDto;
+import com.program.model.entity.User;
 import com.program.service.impl.UserRoleServiceImpl;
 import com.program.service.impl.UserServiceImpl;
 import com.program.utils.JwtUtils;
@@ -64,6 +65,35 @@ public class CommonController {
                 .build();
     }
 
+    @PostMapping ("/editUsername")
+    @ApiOperation("修改用户时查询用户是否唯一")
+    public CommonResult<Boolean> editUsername(@RequestBody User user){
+        return CommonResult.<Boolean>builder()
+                .data(userService.editUsername(user))
+                .build();
+    }
+
+    @ApiOperation("手机号唯一绑定")
+    @GetMapping("/checkPhone/{phone}")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "phone", value = "系统用户唯一手机", required = true, dataType = "string", paramType = "path")
+    })
+    public CommonResult<Boolean> checkUserPhone(@PathVariable(value = "phone") String phone) {
+        return CommonResult.<Boolean>builder()
+                .data(userService.checkUserPhone(phone))
+                .build();
+    }
+    @ApiOperation("修改时手机号唯一绑定")
+    @PostMapping("/checkeditUserPhone")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "phone", value = "系统用户唯一手机", required = true, dataType = "string", paramType = "path")
+    })
+    public CommonResult<Boolean> checkeditUserPhone(@RequestBody User user) {
+        return CommonResult.<Boolean>builder()
+                .data(userService.checkeditUserPhone(user))
+                .build();
+    }
+
     @PostMapping("/login")
     @ApiOperation("用户登录接口")
     @ApiImplicitParams({
@@ -109,6 +139,13 @@ public class CommonController {
     })
     public CommonResult<Object> updateCurrentUser(@RequestBody @Valid UpdateUserInfoDto updateUserInfoDto) {
         userService.updateUserInfo(updateUserInfoDto);
+        return CommonResult.builder()
+                .build();
+    }
+    @PostMapping("/updateUser")
+    @ApiOperation("管理员更改用户信息")
+    public CommonResult<Object> updateUser(@RequestBody  User user) {
+        userService.updateUser(user);
         return CommonResult.builder()
                 .build();
     }

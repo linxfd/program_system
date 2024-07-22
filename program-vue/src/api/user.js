@@ -14,6 +14,13 @@ export default {
       data: updateUser
     })
   },
+  updateUser (user) {
+    return request({
+      url: '/common/updateUser',
+      method: 'post',
+      data: user
+    })
+  },
   getUserById (userId) {
     return request({
       url: `/teacher/getUserById/${userId}`,
@@ -27,11 +34,11 @@ export default {
       method: 'get'
     })
   },
-  getUserInfo (params) {
+  getUserInfo (data) {
     return request({
       url: '/admin/getUser',
-      method: 'get',
-      params: params
+      method: 'post',
+      data: data
     })
   },
   handlerUser (operateId, params) {
@@ -47,5 +54,13 @@ export default {
       method: 'post',
       data: data
     })
-  }
+  },
+
+  deleteUser (id) {
+    return request({
+      url: `/admin/removeUserById/${id}`,
+      method: 'get',
+    })
+  },
+  
 }

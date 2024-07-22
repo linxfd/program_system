@@ -3,7 +3,7 @@ import request from '@/utils/request'
 export default {
   getRoleInfo () {
     return request({
-      url: '/admin/getRole',
+      url: '/role/getRole',
       method: 'get'
     })
   }

@@ -1,14 +1,14 @@
 package com.program.controller;
 
 import com.program.model.dto.AddUserDto;
+import com.program.model.dto.UserDto;
 import com.program.model.entity.Notice;
+import com.program.model.entity.User;
 import com.program.model.entity.UserRole;
+import com.program.model.vo.*;
 import com.program.service.NoticeService;
 import com.program.service.UserRoleService;
 import com.program.service.UserService;
-import com.program.model.vo.CommonResult;
-import com.program.model.vo.PageResponse;
-import com.program.model.vo.UserInfoVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -30,17 +30,15 @@ public class AdminController {
 
     private final UserService userService;
 
-    private final UserRoleService userRoleService;
+
 
     private final NoticeService noticeService;
 
-    @GetMapping("/getUser")
+    @PostMapping("/getUser")
     @ApiOperation("获取用户信息,可分页 ----> 查询条件(可无)(username,trueName),必须有的(pageNo,pageSize)")
-    public CommonResult<PageResponse<UserInfoVo>> getUser(@RequestParam(required = false) String loginName,
-                                                          @RequestParam(required = false) String trueName,
-                                                          Integer pageNo, Integer pageSize) {
+    public CommonResult<PageResponse<UserInfoVo>> getUser(@RequestBody UserDto userDto) {
         return CommonResult.<PageResponse<UserInfoVo>>builder()
-                .data(userService.getUser(loginName, trueName, pageNo, pageSize))
+                .data(userService.getUser(userDto))
                 .build();
     }
 
@@ -61,12 +59,12 @@ public class AdminController {
         return CommonResult.<Void>builder().build();
     }
 
-    @GetMapping("/getRole")
-    @ApiOperation("查询系统存在的所有角色信息")
-    public CommonResult<List<UserRole>> getRole() {
-        return CommonResult.<List<UserRole>>builder()
-                .data(userRoleService.getUserRole())
-                .build();
+
+    @GetMapping ("/removeUserById/{id}")
+    @ApiOperation("删除用户")
+    public CommonResult<Void> deleteUser(@PathVariable(value = "id") Integer id) {
+        userService.deleteUserById(id);
+        return CommonResult.build(null, CommonResultEnum.SUCCESS_DELETE);
     }
 
     @GetMapping("/getAllNotice")
