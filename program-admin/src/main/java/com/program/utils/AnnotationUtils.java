@@ -1,6 +1,7 @@
 package com.program.utils;
 
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
 import org.springframework.expression.ExpressionParser;
@@ -16,6 +17,10 @@ public class AnnotationUtils {
     public static Object LogAndInvokeTargetMethod(ProceedingJoinPoint joinPoint, Logger logger, String startLogMsg, String endLogMsg) throws Throwable {
         long startTime = System.currentTimeMillis();
         logger.info(startLogMsg);
+
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        Method method = signature.getMethod();
+
         // 执行目标方法
         Object result = joinPoint.proceed(joinPoint.getArgs());
         long endTime = System.currentTimeMillis();

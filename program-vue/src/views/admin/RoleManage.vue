@@ -12,13 +12,21 @@
         tooltip-effect="dark"
         style="width: 100%">
 
-        <el-table-column prop="roleId" label="角色ID">
+        <el-table-column prop="id" label="角色ID">
         </el-table-column>
 
         <el-table-column prop="roleName" label="角色名称">
         </el-table-column>
         <el-table-column prop="roleInfo" label="角色信息">
         </el-table-column>
+
+        <el-table-column align="center"
+                         label="更新时间">
+          <template slot-scope="scope">
+            {{ scope.row.updateTime }}
+          </template>
+        </el-table-column>
+
         <el-table-column label="操作" align="center" width="280" #default="scope">
           <el-button type="success" size="small" @click="editMenu(scope.row)">
             分配权限
@@ -52,6 +60,25 @@
         </el-form>
       </el-dialog>
 
+     <!--添加/修改弹窗 -->
+      <el-dialog :title="roleVisible" :visible.sync="addTableVisible" width="30%" @close="resetAddForm"
+               center>
+
+      <el-form :model="addForm"  ref="addForm">
+          <el-form-item label="角色名称" label-width="120px" prop="username">
+            <el-input v-model="addForm.roleName"></el-input>
+          </el-form-item>
+          <el-form-item label="角色信息" label-width="120px" prop="username">
+            <el-input v-model="addForm.roleInfo"></el-input>
+          </el-form-item>
+      </el-form>
+
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="addTableVisible = false">取 消</el-button>
+        <el-button type="primary" @click="addUser">确 定</el-button>
+      </div>
+    </el-dialog>
+
     </el-main>
   </el-container>
 
@@ -82,9 +109,19 @@ export default {
       tree:[],
       //角色id
       roleId:'',
+      //添加表单
+      addForm: {
+        'id':'',
+        'roleName': '',
+        'roleInfo': '',
+      },
+      //添加表单验证规则
+      addTableVisible:false,
+      roleVisible:'添加角色',
     }
   },
   created () {
+
     this.getRoleInfo()
   },
   methods: {
@@ -108,8 +145,8 @@ export default {
     editMenu(value){
       this.dialogMenuVisible = true;
       //角色id
-      this.roleId = value.roleId
-      sysMenu.GetSysRoleMenuIds(value.roleId).then((resp)=>{
+      this.roleId = value.id
+      sysMenu.GetSysRoleMenuIds(value.id).then((resp)=>{
         if (resp.code === 200) {
             //所有数据
             this.sysMenuTreeList = resp.data.sysMenuList
@@ -126,7 +163,9 @@ export default {
     },
     //添加
     showAddDialog(){
-
+      this.addForm={};
+      this.roleVisible='添加角色'
+      this.addTableVisible=true;
     },
     //提交
     doAssign(){
@@ -155,7 +194,7 @@ export default {
 
       // 构建请求数据
       const assignMenuDto = {
-        roleId: this.roleId,
+        id: this.roleId,
         menuIdList: menuIds,
       }
 
@@ -173,13 +212,89 @@ export default {
       this.dialogMenuVisible = false
     },
     //修改
-    editShow(){
-
+    editShow(row){
+      this.addForm={...row}
+      this.roleVisible='修改角色'
+      this.addTableVisible=true;
+    },
+    //提交
+    addUser () {
+      if(this.addForm.id){
+        role.updateRole(this.addForm).then((resp)=>{
+          if (resp.code === 200) {
+              this.getRoleInfo()
+              this.$notify({
+                title: 'Tips',
+                message: resp.message,
+                type: 'success',
+                duration: 2000
+              })
+            } else {
+              this.$notify({
+                title: 'Tips',
+                message: resp.message,
+                type: 'error',
+                duration: 2000
+              })
+            }
+            this.addTableVisible = false
+        })
+      }else{
+          role.addRole(this.addForm).then((resp) => {
+            if (resp.code === 200) {
+              this.getRoleInfo()
+              this.$notify({
+                title: 'Tips',
+                message: resp.message,
+                type: 'success',
+                duration: 2000
+              })
+            } else {
+              this.$notify({
+                title: 'Tips',
+                message: resp.message,
+                type: 'error',
+                duration: 2000
+              })
+            }
+            this.addTableVisible = false
+          })
+      }
+      
     },
     //删除
-    remove(){
-
+    remove(val){
+      this.$confirm(`此操作将永久删除"${val.roleName}"用户, 是否继续?`, '注意', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+        }).then(async () => {
+          role.deleteRole(val.id).then((resp)=>{
+            if(resp.code === 200){
+              this.$notify({
+                  title: 'Tips',
+                  message: resp.message,
+                  type: 'success',
+                  duration: 2000
+                })
+              this.getRoleInfo()
+            }else {
+              this.$notify({
+                title: 'Tips',
+                message: resp.message,
+                type: 'error',
+                duration: 2000,
+              });
+            }
+          })
+        });
     },
+    //表单信息重置
+    resetAddForm () {
+      //清空表格数据
+      this.$refs['addForm'].resetFields()
+    },
+
   }
 }
 </script>

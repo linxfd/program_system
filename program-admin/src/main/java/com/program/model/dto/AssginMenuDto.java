@@ -9,7 +9,7 @@ import java.util.Map;
 public class AssginMenuDto {
 
     //@Schema(description = "角色id")
-    private Long roleId;			// 角色id
+    private Long id;			// 角色id
 
     // 选中的菜单id的集合; Map的
     //          键id表示菜单的id，

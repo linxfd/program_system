@@ -132,6 +132,7 @@ const router = new VueRouter({
   routes
 })
 router.beforeEach((to, from, next) => {
+
   NProgress.start()
   const token = window.localStorage.getItem('authorization')
   //2个不用token的页面请求
@@ -143,10 +144,11 @@ router.beforeEach((to, from, next) => {
   //属于超级管理员的功能
   if (to.path === '/userManage' || to.path === '/roleManage' || to.path === '/noticeManage') {
     axios.get('/common/checkToken').then((resp) => {
-      if (resp.data.code === 200 && resp.data.data.roleId === 3) {//当前用户携带的token信息正确并且是管理员
+      if (resp.data.code === 200 && resp.data.data.id === 3) {//当前用户携带的token信息正确并且是管理员
         next()
       }
     }).catch(err => {
+      console.log("aaaaaa")
       this.$notify({
         title: 'Tips',
         message: err.response.data.errMsg,
@@ -161,10 +163,11 @@ router.beforeEach((to, from, next) => {
   if (to.path === '/questionManage' || to.path === '/questionBankMange' || to.path === '/examManage'
     || to.path === '/addExam' || to.name === 'updateExam' || to.path === '/markManage' || to.name === 'markExam') {
     axios.get('/common/checkToken').then((resp) => {
-      if (resp.data.code === 200 && resp.data.data.roleId === 3 || resp.data.data.roleId === 2) {
+      if (resp.data.code === 200 && resp.data.data.id === 3 || resp.data.data.id === 2) {
         next()
       }
     }).catch(err => {
+      console.log("aaaaaa")
       this.$notify({
         title: 'Tips',
         message: err.response.data.errMsg,
@@ -180,10 +183,11 @@ router.beforeEach((to, from, next) => {
   if (to.path === '/myQuestionBank' || to.name === 'trainPage' || to.path === '/examOnline'
     || to.name === 'exam' || to.name === 'examResult' || to.path === '/myGrade') {
     axios.get('/common/checkToken').then((resp) => {
-      if (resp.data.code === 200 && resp.data.data.roleId !== 2) {
+      if (resp.data.code === 200 && resp.data.data.id !== 2) {
         next()
       }
     }).catch(err => {
+      console.log("aaaaaa")
       this.$notify({
         title: 'Tips',
         message: err.response.data.errMsg,

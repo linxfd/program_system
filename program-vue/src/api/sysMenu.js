@@ -9,9 +9,9 @@ export default {
     })
   },
   // 分页列表
-  GetSysRoleMenuIds (roleId) {
+  GetSysRoleMenuIds (id) {
     return request({
-      url: `/sysMenu/findNodes/${roleId}`,
+      url: `/sysMenu/findNodes/${id}`,
       method: 'get',
     })
   },

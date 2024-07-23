@@ -22,6 +22,7 @@ public enum CommonResultEnum {
     LOGIN_AUTH(208 , "用户未登录"),
     USER_NAME_IS_EXISTS(209 , "用户名已经存在"),
     ROLE_NAME_IS_EXISTS(209 , "角色名已经存在"),
+    FAIL_DELETE(210 , "删除失败,还有用户赋值该角色"),
     PHONE_ERROR(210 , "手机号格式错误"),
     SYSTEM_ERROR(9999 , "您的网络有问题请稍后重试"),
     NODE_ERROR( 217, "该节点下有子节点，不可以删除"),

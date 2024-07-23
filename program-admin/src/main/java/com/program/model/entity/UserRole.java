@@ -19,11 +19,6 @@ import java.io.Serializable;
 @TableName(value = "user_role")
 public class UserRole extends CommonEntity  {
 
-    //  对应数据库的主键(uuid,自增id,雪花算法, redis,zookeeper)
-    @TableId(type = IdType.AUTO)
-    @ApiModelProperty(value = "角色id", example = "1(学生) 2(教师) 3(管理员)")
-    private Integer roleId;
-
     @ApiModelProperty(value = "用户角色名称", example = "1(学生) 2(教师) 3(管理员)")
     private String roleName;
 

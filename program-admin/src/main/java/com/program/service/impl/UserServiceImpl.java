@@ -109,8 +109,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             wrapper.eq("role_id",userDto.getRoleId());
         }
         wrapper.eq("is_deleted", 0);
-        wrapper.orderByDesc("role_id", "create_time");
-        wrapper.orderByAsc("status");
+
+        wrapper.orderByAsc("role_id","status","create_time");
 
         userPage = userMapper.selectPage(userPage, wrapper);
         List<UserInfoVo> records = userPage.getRecords().stream().map(user -> UserInfoVo.fromUser(user)).collect(Collectors.toList());

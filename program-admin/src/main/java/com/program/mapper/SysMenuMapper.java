@@ -15,5 +15,6 @@ public interface SysMenuMapper  extends BaseMapper<SysMenu> {
     List<SysMenu> selectList();
 
 
-
+    // 根据角色id删除角色菜单关系表数据
+    void deleteByRoleId(Integer roleId);
 }

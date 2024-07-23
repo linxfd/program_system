@@ -312,9 +312,11 @@ export default {
       }
       // 设置编辑区域高度为 300px
       this.publishEditor.config.height = 300
+      //这样可以将编辑器的内容与 Vue 组件的数据模型同步。
       this.publishEditor.config.onchange = (html) => {
         this.publishForm.content = html
       }
+      //将 this.publishForm.content 的值设置为编辑器的初始内容。这意味着编辑器打开时将显示之前保存的内容。
       this.publishEditor.txt.html(this.publishForm.content)
     },
     // 创建更新新闻的富文本编辑器

@@ -37,4 +37,24 @@ public class RoleController {
         userRoleService.doAssign(assginMenuDto);
         return CommonResult.build(null , CommonResultEnum.SUCCESS_UPDATE) ;
     }
+
+    @ApiOperation("添加角色")
+    @PostMapping("/addRole")
+    public CommonResult addRole(@RequestBody UserRole userRole) {
+        userRoleService.addRole(userRole);
+        return CommonResult.build(null , CommonResultEnum.SUCCESS_UPDATE) ;
+    }
+    @ApiOperation("修改角色")
+    @PostMapping("/updateRole")
+    public CommonResult updateRole(@RequestBody UserRole userRole) {
+        userRoleService.updateRole(userRole);
+        return CommonResult.build(null , CommonResultEnum.SUCCESS_UPDATE) ;
+    }
+
+    @ApiOperation("删除角色")
+    @GetMapping("/deleteRole/{id}")
+    public CommonResult deleteRole(@PathVariable Integer id) {
+
+        return userRoleService.deleteRole(id);
+    }
 }

@@ -9,9 +9,9 @@
       <el-select @change="typeChange" clearable v-model="queryInfo.roleId" placeholder="请选择角色类型" style="margin-left: 5px" >
         <el-option
           v-for="item in roleName"
-          :key="item.roleId"
+          :key="item.id"
           :label="item.roleName"
-          :value="item.roleId">
+          :value="item.id">
         </el-option>
       </el-select>
       <el-button type="primary" style="margin-left: 5px" icon="el-icon-plus" @click="showAddDialog">添加</el-button>
@@ -120,9 +120,9 @@
           <el-select v-model="addForm.roleId" placeholder="请选择用户权限">
               <el-option
                 v-for="item in roleName"
-                :key="item.roleId"
+                :key="item.id"
                 :label="item.roleName"
-                :value="item.roleId">
+                :value="item.id">
               </el-option>
           </el-select>
         </el-form-item>
@@ -419,7 +419,7 @@ export default {
       })
     },
     getRoleName(roleId) {  
-      const roleNameObj = this.roleName.find(role => role.roleId === roleId);  
+      const roleNameObj = this.roleName.find(role => role.id === roleId);  
       return roleNameObj ? roleNameObj.roleName : '未知角色';  
     },
     typeChange (val) {

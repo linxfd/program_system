@@ -45,7 +45,7 @@ public class NoticeServiceImpl extends ServiceImpl<NoticeMapper, Notice> impleme
         IPage<Notice> noticeIPage = new Page<>(pageNo, pageSize);
         QueryWrapper<Notice> wrapper = new QueryWrapper<>();
         CommonUtils.setLikeWrapper(wrapper, Collections.singletonMap("content", content));
-        wrapper.orderByDesc("status", "update_time", "create_time");
+        wrapper.orderByDesc("status","update_time");
 
         noticeIPage = noticeMapper.selectPage(noticeIPage, wrapper);
 
