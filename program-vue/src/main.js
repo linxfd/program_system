@@ -12,7 +12,7 @@ import axiosService from '@/utils/request'
 Vue.prototype.$request = axiosService
 Vue.prototype.$echarts = echarts
 
-//配置请求根路径
+//配置请求根路径 ,如http://localhost:8888
 axios.defaults.baseURL = process.env.VUE_APP_BASE_URL
 //axios拦截器拦截每一个请求,有token就配置头信息的token
 axios.interceptors.request.use(config => {

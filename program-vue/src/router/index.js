@@ -144,7 +144,7 @@ router.beforeEach((to, from, next) => {
   //属于超级管理员的功能
   if (to.path === '/userManage' || to.path === '/roleManage' || to.path === '/noticeManage') {
     axios.get('/common/checkToken').then((resp) => {
-      if (resp.data.code === 200 && resp.data.data.id === 3) {//当前用户携带的token信息正确并且是管理员
+      if (resp.data.code === 200 && resp.data.data.id === 1) {//当前用户携带的token信息正确并且是管理员
         next()
       }
     }).catch(err => {
@@ -163,7 +163,7 @@ router.beforeEach((to, from, next) => {
   if (to.path === '/questionManage' || to.path === '/questionBankMange' || to.path === '/examManage'
     || to.path === '/addExam' || to.name === 'updateExam' || to.path === '/markManage' || to.name === 'markExam') {
     axios.get('/common/checkToken').then((resp) => {
-      if (resp.data.code === 200 && resp.data.data.id === 3 || resp.data.data.id === 2) {
+      if (resp.data.code === 200 && resp.data.data.id === 1 || resp.data.data.id === 2) {
         next()
       }
     }).catch(err => {
