@@ -101,7 +101,7 @@
       </el-pagination>
 
     </el-main>
-
+    <!-- 添加或修改对话框 -->
     <el-dialog :title="uerVisible" :visible.sync="addTableVisible" width="30%" @close="resetAddForm"
                center>
 
@@ -380,8 +380,7 @@ export default {
   },
   computed:{
     currentRules() {
-      // debugger
-      // console.log(this.addForm.id)
+      debugger
       // 如果 addForm.id 存在，则使用 editFormRules，否则使用 addFormRules
       return this.addForm.id ? this.editFormRules : this.addFormRules;
     },
@@ -513,10 +512,11 @@ export default {
     },
     //点击添加按钮
     showAddDialog () {
+      // this.addForm = {}
       this.uerVisible='添加用户';
       this.addTableVisible = true
     },
-    //添加用户
+    //添加或更新用户
     addUser () {
       if(this.addForm.id){
         user.updateUser(this.addForm).then((resp)=>{
@@ -561,7 +561,6 @@ export default {
           })
         }, '请检查您所填写的信息是否有误')
       }
-      
     },
     //修改
     editShow(row){
@@ -572,7 +571,8 @@ export default {
     //表单信息重置
     resetAddForm () {
       //清空表格数据
-      this.$refs['addForm'].resetFields()
+      this.addForm={
+      }
     },
     //============删除====
     remove(val){

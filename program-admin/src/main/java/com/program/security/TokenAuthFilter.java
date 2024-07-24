@@ -27,8 +27,8 @@ public class TokenAuthFilter extends BasicAuthenticationFilter {
     public TokenAuthFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager);
         roleMap.put(1, "admin");
-        roleMap.put(3, "student");
         roleMap.put(2, "teacher");
+        roleMap.put(3, "student");
     }
 
     @Override

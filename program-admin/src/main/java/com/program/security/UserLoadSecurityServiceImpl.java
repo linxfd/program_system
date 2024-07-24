@@ -16,6 +16,9 @@ import java.util.Optional;
 
 import static org.springframework.security.core.userdetails.User.withUsername;
 
+/**
+ *  加载用户特定数据的核心接口。里面定义了一个根据用户名查询用户信息的方法。
+ */
 @Service
 @RequiredArgsConstructor
 public class UserLoadSecurityServiceImpl implements UserDetailsService {

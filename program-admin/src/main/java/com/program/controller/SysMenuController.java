@@ -19,7 +19,7 @@ import java.util.Map;
  * @version 1.0
  */
 @RestController
-@RequestMapping(value="/sysMenu")
+@RequestMapping(value="/admin/sysMenu")
 public class SysMenuController {
 
     @Autowired
