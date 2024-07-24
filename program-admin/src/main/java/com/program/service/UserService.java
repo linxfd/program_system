@@ -38,4 +38,17 @@ public interface UserService extends IService<User> {
 
     //
     Boolean editUsername(User user);
+
+    // 检查手机号
+    Boolean checkUserPhone(String phone);
+
+    // 修改用户手机号
+    Boolean checkeditUserPhone(User user);
+
+    // 管理员修改用户
+    void updateUser(User user);
+
+    // 获取所有角色是老师的用户
+    List<User> getCreatePersonName();
+
 }

@@ -1,4 +1,4 @@
-package com.program.controller;
+package com.program.controller.teacher;
 
 import com.alibaba.excel.EasyExcel;
 import com.program.model.dto.StudentExamRecordExcelDto;
@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
@@ -80,9 +81,10 @@ public class TeacherController {
     public CommonResult<PageResponse<Question>> getQuestion(@RequestParam(required = false) String questionType,
                                                             @RequestParam(required = false) String questionBank,
                                                             @RequestParam(required = false) String questionContent,
+                                                            @RequestParam(required = false) String createPerson,
                                                             Integer pageNo, Integer pageSize) {
         return CommonResult.<PageResponse<Question>>builder()
-                .data(questionService.getQuestion(questionType, questionBank, questionContent, pageNo, pageSize))
+                .data(questionService.getQuestion(questionType, questionBank, questionContent, createPerson,pageNo, pageSize))
                 .build();
     }
 
@@ -171,8 +173,8 @@ public class TeacherController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "questionBank", value = "题库的实体对象", required = true, dataType = "questionBank", paramType = "body")
     })
-    public CommonResult<Void> addQuestionBank(@RequestBody QuestionBank questionBank) {
-        questionBankService.addQuestionBank(questionBank);
+    public CommonResult<Void> addQuestionBank(@RequestBody QuestionBank questionBank, HttpServletRequest request) {
+        questionBankService.addQuestionBank(questionBank,request);
         return CommonResult.<Void>builder()
                 .build();
     }
@@ -194,8 +196,8 @@ public class TeacherController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "addExamByBankVo", value = "根据题库添加考试vo对象", required = true, dataType = "addExamByBankVo", paramType = "body")
     })
-    public CommonResult<Void> addExamByBank(@RequestBody @Valid AddExamByBankVo addExamByBankVo) {
-        examService.addExamByBank(addExamByBankVo);
+    public CommonResult<Void> addExamByBank(@RequestBody @Valid AddExamByBankVo addExamByBankVo, HttpServletRequest request) {
+        examService.addExamByBank(addExamByBankVo,request);
         return CommonResult.<Void>builder()
                 .build();
     }
@@ -205,8 +207,8 @@ public class TeacherController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "addExamByQuestionVo", value = "通过题目列表添加考试的vo对象", required = true, dataType = "addExamByQuestionVo", paramType = "body")
     })
-    public CommonResult<Void> addExamByQuestionList(@RequestBody @Valid AddExamByQuestionVo addExamByQuestionVo) {
-        examService.addExamByQuestionList(addExamByQuestionVo);
+    public CommonResult<Void> addExamByQuestionList(@RequestBody @Valid AddExamByQuestionVo addExamByQuestionVo, HttpServletRequest request) {
+        examService.addExamByQuestionList(addExamByQuestionVo,request);
         return CommonResult.<Void>builder()
                 .build();
     }

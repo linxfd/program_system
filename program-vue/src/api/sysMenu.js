@@ -5,22 +5,22 @@ export default {
   FindNodes () {
     return request({
       url: '/admin/sysMenu/findNodes',
-      method: 'get',
+      method: 'get'
     })
   },
   // 分页列表
   GetSysRoleMenuIds (id) {
     return request({
       url: `/admin/sysMenu/findNodes/${id}`,
-      method: 'get',
+      method: 'get'
     })
   },
   // 保存信息
-  SaveMenu (sysMenu){
+  SaveMenu (sysMenu) {
     return request({
       url: '/admin/sysMenu/save',
       method: 'post',
-      data: sysMenu,
+      data: sysMenu
     })
   },
   // 修改信息
@@ -28,14 +28,14 @@ export default {
     return request({
       url: '/admin/sysMenu/updateById',
       method: 'put',
-      data: sysMenu,
+      data: sysMenu
     })
   },
   // 根据id删除数据
   RemoveSysMenuById (id) {
     return request({
       url: `/admin/sysMenu/removeById/${id}`,
-      method: 'delete',
+      method: 'delete'
     })
   }
 }

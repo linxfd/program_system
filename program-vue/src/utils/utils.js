@@ -3,7 +3,7 @@ import Vue from 'vue'
 import router from '../router/index'
 
 const getRandomId = () => {
-  return Math.floor(Math.random() * 10000000);
+  return Math.floor(Math.random() * 10000000)
 }
 
 // valid el form and invoke target method
@@ -13,12 +13,12 @@ const validFormAndInvoke = (formEl, success, message = '信息有误', fail = fu
     return
   }
   formEl.validate(valid => {
-    if (valid) {// form valid succeed
+    if (valid) { // form valid succeed
       // do success function
       success()
       // reset fields
       formEl.resetFields()
-    } else {// form valid fail
+    } else { // form valid fail
       Vue.prototype.$notify({
         title: 'Tips',
         message: message,

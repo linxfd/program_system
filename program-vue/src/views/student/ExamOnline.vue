@@ -1,22 +1,45 @@
 <template>
   <el-container>
     <el-header height="220">
-      <el-select @change="typeChange" clearable v-model="queryInfo.examType" placeholder="请选择考试类型">
+      <el-select
+        @change="typeChange"
+        clearable
+        v-model="queryInfo.examType"
+        placeholder="请选择考试类型"
+      >
         <el-option
           v-for="item in examType"
           :key="item.type"
           :label="item.info"
-          :value="item.type">
-        </el-option>
+          :value="item.type"
+        />
       </el-select>
 
-      <el-input v-model="queryInfo.examName" placeholder="考试名称" @blur="getExamInfo"
-                style="margin-left: 5px;width: 220px"
-                prefix-icon="el-icon-search"></el-input>
+      <el-input
+        v-model="queryInfo.examName"
+        placeholder="考试名称"
+        @blur="getExamInfo"
+        style="margin-left: 5px;width: 220px"
+        prefix-icon="el-icon-search"
+      />
+
+      <el-select
+        @change="createPersonNameChange"
+        clearable
+        v-model="queryInfo.createPerson"
+        placeholder="请选择创建人"
+        style="margin-left: 5px;width: 220px"
+      >
+        <el-option
+          v-for="item in createPersonName"
+          :key="item.id"
+          :label="item.trueName"
+          :value="item.username"
+        />
+      </el-select>
     </el-header>
 
     <el-main>
-
       <el-table
         ref="questionTable"
         highlight-current-row
@@ -24,21 +47,30 @@
         :border="true"
         :data="examInfo"
         tooltip-effect="dark"
-        style="width: 100%;">
-
-        <el-table-column align="center" label="考试名称">
+        style="width: 100%;"
+      >
+        <el-table-column
+          align="center"
+          label="考试名称"
+        >
           <template slot-scope="scope">
             {{ scope.row.examName }}
           </template>
         </el-table-column>
 
-        <el-table-column align="center" label="考试类型">
+        <el-table-column
+          align="center"
+          label="考试类型"
+        >
           <template slot-scope="scope">
             {{ scope.row.type === 1 ? '完全公开' : '需要密码' }}
           </template>
         </el-table-column>
 
-        <el-table-column align="center" label="考试时间">
+        <el-table-column
+          align="center"
+          label="考试时间"
+        >
           <template slot-scope="scope">
             {{
               scope.row.startTime !== 'null' && scope.row.endTime !== 'null' ?
@@ -47,48 +79,77 @@
           </template>
         </el-table-column>
 
-        <el-table-column align="center" label="考试时长">
+        <el-table-column
+          align="center"
+          label="考试时长"
+        >
           <template slot-scope="scope">
             {{ scope.row.duration + '分钟' }}
           </template>
         </el-table-column>
 
-        <el-table-column align="center" prop="totalScore" label="考试总分"></el-table-column>
+        <el-table-column
+          align="center"
+          prop="totalScore"
+          label="考试总分"
+        />
 
-        <el-table-column align="center" prop="passScore" label="及格分数"></el-table-column>
+        <el-table-column
+          align="center"
+          prop="passScore"
+          label="及格分数"
+        />
 
-        <el-table-column align="center" label="操作">
+        <el-table-column
+          align="center"
+          prop="createPerson"
+          label="创建人"
+        >
+        <template slot-scope="scope">
+             <span class="role">{{ getCreatePerson(scope.row.createPerson) }}</span>
+          </template>
+        </el-table-column>
+
+        <el-table-column
+          align="center"
+          label="操作"
+        >
           <template slot-scope="scope">
-            <el-button size="small" :disabled="!checkExam(scope.row)" @click="toStartExam(scope.row)"
-                       :icon="checkExam(scope.row) ? 'el-icon-caret-right' : 'el-icon-close'"
-                       :type="checkExam(scope.row) ? 'primary' : 'info'">
+            <el-button
+              size="small"
+              :disabled="!checkExam(scope.row)"
+              @click="toStartExam(scope.row)"
+              :icon="checkExam(scope.row) ? 'el-icon-caret-right' : 'el-icon-close'"
+              :type="checkExam(scope.row) ? 'primary' : 'info'"
+            >
               {{ checkExam(scope.row) ? '去考试' : '暂不开放' }}
             </el-button>
           </template>
         </el-table-column>
-
       </el-table>
 
       <!--分页-->
-      <el-pagination style="margin-top: 25px"
-                     @size-change="handleSizeChange"
-                     @current-change="handleCurrentChange"
-                     :current-page="queryInfo.pageNo"
-                     :page-sizes="[10, 20, 30, 50]"
-                     :page-size="queryInfo.pageSize"
-                     layout="total, sizes, prev, pager, next, jumper"
-                     :total="total">
-      </el-pagination>
+      <el-pagination
+        style="margin-top: 25px"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="queryInfo.pageNo"
+        :page-sizes="[10, 20, 30, 50]"
+        :page-size="queryInfo.pageSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      />
     </el-main>
     <el-dialog
       title="考试提示"
-      :visible.sync="startExamDialog" center
-      width="50%">
-
+      :visible.sync="startExamDialog"
+      center
+      width="50%"
+    >
       <el-alert
         title="点击`开始考试`后将自动进入考试，请诚信考试，考试过程中可能会对用户行为、用户视频进行截图采样，请知悉！"
-        type="error">
-      </el-alert>
+        type="error"
+      />
 
       <el-card style="margin-top: 25px">
         <span>考试名称：</span>{{ currentSelectedExam.examName }}
@@ -105,33 +166,39 @@
         <br>
       </el-card>
 
-
-      <span slot="footer" class="dialog-footer">
-    <el-button @click="startExamDialog = false">返 回</el-button>
-    <el-button type="primary" @click="$router.push('/exam/'+ currentSelectedExam.examId)">开始考试</el-button>
-  </span>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="startExamDialog = false">返 回</el-button>
+        <el-button
+          type="primary"
+          @click="$router.push('/exam/'+ currentSelectedExam.examId)"
+        >开始考试</el-button>
+      </span>
     </el-dialog>
   </el-container>
 </template>
 
 <script>
 import exam from '@/api/exam'
+import role from '@/api/role'
 
 export default {
   name: 'ExamOnline',
   data () {
     return {
       queryInfo: {
-        'examType': null,
-        'startTime': null,
-        'endTime': null,
-        'examName': null,
-        'pageNo': 0,
-        'pageSize': 10
+        examType: null,
+        startTime: null,
+        endTime: null,
+        examName: null,
+        pageNo: 0,
+        pageSize: 10
       },
-      //表格是否在加载
+      // 表格是否在加载
       loading: true,
-      //考试类型信息
+      // 考试类型信息
       examType: [
         {
           info: '公开考试',
@@ -142,26 +209,42 @@ export default {
           type: 2
         }
       ],
-      //考试信息
+      // 考试信息
       examInfo: [],
-      //查询到的考试总数
+      // 查询到的考试总数
       total: 0,
-      //开始考试的提示框
+      // 开始考试的提示框
       startExamDialog: false,
-      //当前选中的考试的信息
-      currentSelectedExam: {}
+      // 当前选中的考试的信息
+      currentSelectedExam: {},
+      // 创建人信息
+      createPersonName: []
+
     }
   },
   created () {
+    // 一创建就查询考试信息
     this.getExamInfo()
+    // 查询创建人信息
+    this.getCreatePersonName()
   },
   methods: {
-    //考试类型搜索
+    // 考试类型搜索
     typeChange (val) {
       this.queryInfo.examType = val
       this.getExamInfo()
     },
-    //查询考试信息
+    // 创建人搜索
+    createPersonNameChange (val) {
+      this.queryInfo.createPersonName = val
+      this.getExamInfo()
+    },
+    getCreatePerson(createPerson){
+      
+      const cPnName = this.createPersonName.find(user => user.username === createPerson)
+      return cPnName ? cPnName.trueName : '未知'
+    },  
+    // 查询考试信息
     getExamInfo () {
       exam.getExamInfo(this.queryInfo).then((resp) => {
         if (resp.code === 200) {
@@ -175,22 +258,29 @@ export default {
         }
       })
     },
-    //分页页面大小改变
+    getCreatePersonName(){
+      role.getCreatePersonName().then((resp) => {
+        if (resp.code === 200) {
+          this.createPersonName = resp.data
+        }
+      })
+    },
+    // 分页页面大小改变
     handleSizeChange (val) {
       this.queryInfo.pageSize = val
       this.getExamInfo()
     },
-    //分页插件的页数
+    // 分页插件的页数
     handleCurrentChange (val) {
       this.queryInfo.pageNo = val
       this.getExamInfo()
     },
-    //去考试准备页面
+    // 去考试准备页面
     toStartExam (row) {
       if (row.type === 2) {
         this.$prompt('请提供考试密码', 'Tips', {
           confirmButtonText: '确定',
-          cancelButtonText: '取消',
+          cancelButtonText: '取消'
         }).then(({ value }) => {
           if (value === row.password) {
             this.startExamDialog = true
@@ -207,10 +297,10 @@ export default {
     }
   },
   computed: {
-    //检查考试的合法性
+    // 检查考试的合法性
     checkExam (row) {
       return (row) => {
-        let date = new Date()
+        const date = new Date()
         if (row.status === 2) return false
         if (row.startTime === 'null' && row.endTime === 'null') {
           return true

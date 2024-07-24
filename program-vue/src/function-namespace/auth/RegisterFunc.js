@@ -47,7 +47,7 @@ const registerFormRules = {
       required: true,
       message: '请输入您的姓名',
       trigger: 'blur'
-    },
+    }
   ],
   password: [
     {
@@ -71,7 +71,7 @@ const registerFormRules = {
       validator: validateCode,
       trigger: 'blur'
     }
-  ],
+  ]
 }
 
 const toLoginPage = () => {
@@ -90,7 +90,7 @@ const getCode = () => {
 // 点击图片刷新验证码
 const changeCode = () => {
   const codeImg = document.querySelector('#code')
-  codeId = utils.getRandomId();
+  codeId = utils.getRandomId()
   codeImg.src = `${process.env.VUE_APP_CAPTCHA_URL}/util/getCodeImg?id=` + codeId
   codeImg.onload = () => getCode()
 }

@@ -1,16 +1,26 @@
 <template>
   <el-container>
+    <el-row>
+      <div
+        id="img1"
+        style="width: 800px;height:400px;"
+      />
+      <div
+        id="img2"
+        style="width: 800px;height:400px;"
+      />
+    </el-row>
 
-      <el-row>
-        <div id="img1" style="width: 800px;height:400px;"></div>
-        <div id="img2" style="width: 800px;height:400px;"></div>
-      </el-row>
-
-      <el-row>
-        <div id="img3" style="width: 800px;height:400px;"></div>
-        <div id="img4" style="width: 800px;height:400px;"></div>
-      </el-row>
-
+    <el-row>
+      <div
+        id="img3"
+        style="width: 800px;height:400px;"
+      />
+      <div
+        id="img4"
+        style="width: 800px;height:400px;"
+      />
+    </el-row>
   </el-container>
 </template>
 
@@ -21,21 +31,21 @@ export default {
   name: 'StatisticOverview',
   data () {
     return {
-      //考试名称
+      // 考试名称
       examNames: [],
-      //考试通过率
+      // 考试通过率
       passRate: [],
-      //饼图的数据
-      pieData: [],
+      // 饼图的数据
+      pieData: []
     }
   },
   created () {
-    //页面数据加载的等待状态栏
+    // 页面数据加载的等待状态栏
     this.loading = this.$Loading.service({
       body: true,
       lock: true,
       text: '数据拼命加载中,(*╹▽╹*)',
-      spinner: 'el-icon-loading',
+      spinner: 'el-icon-loading'
     })
     this.getExamPassRate()
     this.getExamNumbers()
@@ -53,10 +63,10 @@ export default {
         }
       })
     },
-    //考试通过率柱状图
+    // 考试通过率柱状图
     drawLine () {
       // 基于准备好的dom，初始化echarts实例
-      let myChart = this.$echarts.init(document.getElementById('img1'))
+      const myChart = this.$echarts.init(document.getElementById('img1'))
       // 绘制图表
       myChart.setOption({
         title: {
@@ -78,12 +88,12 @@ export default {
         }]
       })
     },
-    //获取考试次数数据
+    // 获取考试次数数据
     async getExamNumbers () {
       await statistic.getExamNumbers().then((resp) => {
         console.log(resp)
-        let examNames = resp.data[0].split(',')
-        let examNumbers = resp.data[1].split(',')
+        const examNames = resp.data[0].split(',')
+        const examNumbers = resp.data[1].split(',')
         examNames.forEach((item, index) => {
           this.pieData.push({
             name: item,
@@ -93,10 +103,10 @@ export default {
         this.drawPie()
       })
     },
-    //考试次数饼图
+    // 考试次数饼图
     drawPie () {
       // 基于准备好的dom，初始化echarts实例
-      let myChart = this.$echarts.init(document.getElementById('img2'))
+      const myChart = this.$echarts.init(document.getElementById('img2'))
       myChart.setOption({
         title: {
           text: '考试次数占比',
@@ -129,24 +139,24 @@ export default {
         ]
       })
     },
-    //通过率的折线图
+    // 通过率的折线图
     drawBrokenLine () {
-      //初始化ehcharts实例
-      let myChart = this.$echarts.init(document.getElementById('img3'))
-      //指定图表的配置项和数据
+      // 初始化ehcharts实例
+      const myChart = this.$echarts.init(document.getElementById('img3'))
+      // 指定图表的配置项和数据
       var option = {
-        //标题
+        // 标题
         title: {
           text: '考试通过率折线图',
           x: 'center'
         },
-        //x轴
+        // x轴
         xAxis: {
           data: this.examNames
         },
-        //y轴没有显式设置，根据值自动生成y轴
+        // y轴没有显式设置，根据值自动生成y轴
         yAxis: {},
-        //数据-data是最终要显示的数据
+        // 数据-data是最终要显示的数据
         series: [{
           name: '通过率',
           type: 'line',
@@ -154,13 +164,13 @@ export default {
             normal: {}
           },
           data: this.passRate
-        }],
+        }]
       }
-      //使用刚刚指定的配置项和数据项显示图表
+      // 使用刚刚指定的配置项和数据项显示图表
       myChart.setOption(option)
     },
     drawImg4 () {
-      let myChart = this.$echarts.init(document.getElementById('img4'))
+      const myChart = this.$echarts.init(document.getElementById('img4'))
       myChart.setOption({
         color: ['#cd5c5c'],
         textStyle: {
@@ -183,23 +193,23 @@ export default {
           axisLine: {
             lineStyle: {
               color: '#fff'
-            },
+            }
           },
-          'axisLabel': {
-            'interval': 0,
+          axisLabel: {
+            interval: 0,
             fontSize: 18,
-            formatter: '{value}',
+            formatter: '{value}'
           }
         },
         yAxis: {
           axisLine: {
             lineStyle: {
               color: '#fff'
-            },
+            }
           },
-          'axisLabel': {
-            'interval': 0,
-            fontSize: 18,
+          axisLabel: {
+            interval: 0,
+            fontSize: 18
           },
           type: 'category',
           data: this.examNames
@@ -207,7 +217,7 @@ export default {
         series: [{
           name: '通过率：',
           type: 'bar',
-          data: this.passRate,
+          data: this.passRate
         }]
       })
     }

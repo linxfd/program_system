@@ -7,31 +7,38 @@ export default {
       method: 'get'
     })
   },
-  DoAssignMenuIdToSysRole(assignMenuDto) {
+  DoAssignMenuIdToSysRole (assignMenuDto) {
     return request({
       url: '/role/doAssign',
       method: 'post',
-      data: assignMenuDto,
+      data: assignMenuDto
     })
   },
-  addRole(addForm){
+  addRole (addForm) {
     return request({
       url: '/role/addRole',
       method: 'post',
-      data: addForm,
+      data: addForm
     })
   },
-  updateRole(addForm){
+  updateRole (addForm) {
     return request({
       url: '/role/updateRole',
       method: 'post',
-      data: addForm,
+      data: addForm
     })
   },
-  deleteRole(id){
+  deleteRole (id) {
     return request({
       url: `/role/deleteRole/${id}`,
-      method: 'get',
+      method: 'get'
     })
   },
+    // 获取所有角色是老师的用户
+    getCreatePersonName(){
+      return request({
+        url: '/public/getCreatePersonName',
+        method: 'get',
+      })
+    },
 }

@@ -1,9 +1,11 @@
-package com.program.controller;
+package com.program.controller.common;
 
 import com.program.model.dto.LoginDto;
 import com.program.model.dto.RegisterDto;
 import com.program.model.dto.UpdateUserInfoDto;
 import com.program.model.entity.User;
+import com.program.service.UserRoleService;
+import com.program.service.UserService;
 import com.program.service.impl.UserRoleServiceImpl;
 import com.program.service.impl.UserServiceImpl;
 import com.program.utils.JwtUtils;
@@ -31,9 +33,9 @@ import static com.program.model.vo.UserVo.fromUser;
 @Api(tags = "(学生,教师,管理员)通用相关接口")
 public class CommonController {
 
-    private final UserServiceImpl userService;
+    private final UserService userService;
 
-    private final UserRoleServiceImpl userRoleService;
+    private final UserRoleService userRoleService;
 
     @RequestMapping("/error")
     public CommonResult<String> error() {
@@ -139,13 +141,6 @@ public class CommonController {
     })
     public CommonResult<Object> updateCurrentUser(@RequestBody @Valid UpdateUserInfoDto updateUserInfoDto) {
         userService.updateUserInfo(updateUserInfoDto);
-        return CommonResult.builder()
-                .build();
-    }
-    @PostMapping("/updateUser")
-    @ApiOperation("管理员更改用户信息")
-    public CommonResult<Object> updateUser(@RequestBody  User user) {
-        userService.updateUser(user);
         return CommonResult.builder()
                 .build();
     }

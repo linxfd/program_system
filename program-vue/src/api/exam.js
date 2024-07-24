@@ -35,6 +35,7 @@ export default {
       params: params
     })
   },
+
   addExamRecord (data) {
     return request({
       url: '/student/addExamRecord',
@@ -56,7 +57,7 @@ export default {
   },
   addExamByBank (data) {
     return request({
-      url: `/teacher/addExamByBank`,
+      url: '/teacher/addExamByBank',
       method: 'post',
       data: data
     })
@@ -68,7 +69,7 @@ export default {
       data: data
     })
   },
-  updateExamInfo(data){
+  updateExamInfo (data) {
     return request({
       url: '/teacher/updateExamInfo',
       method: 'post',
@@ -77,12 +78,12 @@ export default {
   },
   exportStudentExamRecordToExcel (examId) {
     return request({
-      url: `/teacher/exportStudentExamRecordToExcel`,
+      url: '/teacher/exportStudentExamRecordToExcel',
       method: 'get',
       params: {
         examId
       },
-      responseType: 'arraybuffer',
+      responseType: 'arraybuffer'
     })
   }
 }

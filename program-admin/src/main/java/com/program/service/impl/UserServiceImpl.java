@@ -202,11 +202,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     public void updateUser(User user) {
         QueryWrapper<User> qw = new QueryWrapper<User>().eq("id", user.getId());
+        User user1 = userMapper.selectOne(qw);
         if (!NotUtils.isNotUtils(user.getPassword())) {
-            user.setPassword(SaltEncryption.saltEncryption(user.getPassword(), user.getSalt()));
+            user1.setPassword(SaltEncryption.saltEncryption(user.getPassword(), user1.getSalt()));
         }
-        user.setUpdateTime(new Date());
-        userMapper.update(user, qw);
+        user1.setUpdateTime(new Date());
+        userMapper.update(user1, qw);
+    }
+
+    @Override
+    public List<User>  getCreatePersonName() {
+        List<User> createPersonName = userMapper.getCreatePersonName();
+        return createPersonName;
     }
 
     public Boolean checkeditUserPhone(User user) {

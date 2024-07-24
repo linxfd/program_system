@@ -16,7 +16,7 @@ export default {
   },
   updateUser (user) {
     return request({
-      url: '/common/updateUser',
+      url: '/admin/updateUser',
       method: 'post',
       data: user
     })
@@ -29,7 +29,7 @@ export default {
   },
   getUserByIds (userIds) {
     return request({
-      url: `/teacher/getUserByIds`,
+      url: '/teacher/getUserByIds',
       params: userIds,
       method: 'get'
     })
@@ -59,8 +59,8 @@ export default {
   deleteUser (id) {
     return request({
       url: `/admin/removeUserById/${id}`,
-      method: 'get',
+      method: 'get'
     })
-  },
-  
+  }
+
 }

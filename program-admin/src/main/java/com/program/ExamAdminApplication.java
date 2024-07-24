@@ -12,6 +12,11 @@ public class ExamAdminApplication {
 
     public static void main(String[] args) {
         ConfigurableApplicationContext run = SpringApplication.run(ExamAdminApplication.class, args);
-        System.out.println("===========================启动完成===========================================");
+        System.out.println("=======编程学习系统★启动完成=========================================== \n" +
+                "　　　　　　　　　▍ ★∴ \n" +
+                "　　　．．．．▍▍．..．█▍ ☆ ★∵ ..../ \n" +
+                "　　 　◥█▅▅██▅▅██▅▅▅▅▅▅▅▅▅███◤ \n" +
+                "　　 　．◥███████████████◤ \n" +
+                "　 ～～～～◥█████████████◤～～～～ ");
     }
 }

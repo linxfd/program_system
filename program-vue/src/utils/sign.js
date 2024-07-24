@@ -18,7 +18,7 @@ const PRIVATE_KEY = '-----BEGIN PRIVATE KEY-----\n' +
   '-----END PRIVATE KEY-----'
 
 export const generateSign = (signstr) => {
-  let sign = crypto.createSign('md5WithRSAEncryption')
+  const sign = crypto.createSign('md5WithRSAEncryption')
   sign.write(signstr, 'utf8')
   sign.end()
   return sign.sign(PRIVATE_KEY, 'base64')

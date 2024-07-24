@@ -61,4 +61,7 @@ public class Exam implements Serializable {
 
     @ApiModelProperty(value = "考试状态 1有效 2无效", example = "1")
     private Integer status;
+
+    @ApiModelProperty(value = "创建人的username", example = "wzz")
+    private String createPerson;
 }

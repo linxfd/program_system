@@ -6,8 +6,8 @@ import { generateSign } from '@/utils/sign'
 
 // 创建axios实例
 const service = axios.create({
-  baseURL: process.env.VUE_APP_BASE_URL, // api 的 base_url
-  //timeout: process.env.VUE_APP_REQUEST_TIME_OUT // 请求超时时间，测试先关闭
+  baseURL: process.env.VUE_APP_BASE_URL // api 的 base_url
+  // timeout: process.env.VUE_APP_REQUEST_TIME_OUT // 请求超时时间，测试先关闭
 })
 
 service.interceptors.request.use(config => {
@@ -30,7 +30,7 @@ service.interceptors.request.use(config => {
   }
   // add api sign
   config.headers.sign = generateSign(JSON.stringify(signHeaders))
-  if (token) {  // 判断是否存在token，如果存在的话，则每个http header都加上token
+  if (token) { // 判断是否存在token，如果存在的话，则每个http header都加上token
     config.headers.authorization = token
   }
   Object.assign(config.headers, signHeaders)

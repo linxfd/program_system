@@ -8,6 +8,7 @@ import com.program.model.vo.AddExamByQuestionVo;
 import com.program.model.vo.ExamQueryVo;
 import com.program.model.vo.PageResponse;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 
@@ -19,9 +20,9 @@ public interface ExamService extends IService<Exam> {
 
     void operationExam(Integer type, String ids);
 
-    void addExamByBank(AddExamByBankVo addExamByBankVo);
+    void addExamByBank(AddExamByBankVo addExamByBankVo, HttpServletRequest request);
 
-    void addExamByQuestionList(AddExamByQuestionVo addExamByQuestionVo);
+    void addExamByQuestionList(AddExamByQuestionVo addExamByQuestionVo, HttpServletRequest request);
 
     void updateExamInfo(AddExamByQuestionVo addExamByQuestionVo);
 

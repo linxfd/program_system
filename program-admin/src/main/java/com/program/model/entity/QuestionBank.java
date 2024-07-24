@@ -24,4 +24,7 @@ public class QuestionBank {
     @ApiModelProperty(value = "题库名称", example = "小学数学")
     private String bankName;
 
+    @ApiModelProperty(value = "创建人的username", example = "wzz")
+    private String createPerson;
+
 }

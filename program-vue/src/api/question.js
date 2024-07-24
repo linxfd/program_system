@@ -9,7 +9,7 @@ export default {
   },
   getQuestionByIds (questionIds) {
     return request({
-      url: `/student/getQuestionByIds`,
+      url: '/student/getQuestionByIds',
       params: questionIds,
       method: 'get'
     })
@@ -42,7 +42,7 @@ export default {
       data: question
     })
   },
-  getQuestionByBankIdAndType(params){
+  getQuestionByBankIdAndType (params) {
     return request({
       url: '/public/getQuestionByBankIdAndType',
       method: 'get',

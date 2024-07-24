@@ -12,7 +12,10 @@ import com.program.model.entity.QuestionBank;
 import com.program.mapper.AnswerMapper;
 import com.program.mapper.QuestionBankMapper;
 import com.program.mapper.QuestionMapper;
+import com.program.model.vo.TokenVo;
 import com.program.service.QuestionBankService;
+import com.program.utils.JwtUtils;
+import com.program.utils.NotUtils;
 import com.program.utils.RedisUtil;
 import com.program.model.vo.BankHaveQuestionSum;
 import com.program.model.vo.PageResponse;
@@ -21,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -40,9 +44,12 @@ public class QuestionBankServiceImpl extends ServiceImpl<QuestionBankMapper, Que
     private final RedisUtil redisUtil;
 
     @Override
-    public PageResponse<BankHaveQuestionSum> getBankHaveQuestionSumByType(String bankName, Integer pageNo, Integer pageSize) {
+    public PageResponse<BankHaveQuestionSum> getBankHaveQuestionSumByType(String bankName,String createPerson,Integer pageNo, Integer pageSize) {
         QueryWrapper<QuestionBank> wrapper = new QueryWrapper<>();
         setLikeWrapper(wrapper, Collections.singletonMap("bank_name", bankName));
+        if (!NotUtils.isNotUtils(createPerson)){
+            wrapper.eq("create_person", createPerson);
+        }
 
         IPage<QuestionBank> iPage = questionBankMapper.selectPage(new Page<>(pageNo, pageSize), wrapper);
         List<QuestionBank> questionBanks = iPage.getRecords();
@@ -279,7 +286,11 @@ public class QuestionBankServiceImpl extends ServiceImpl<QuestionBankMapper, Que
     }
 
     @Override
-    public void addQuestionBank(QuestionBank questionBank) {
+    public void addQuestionBank(QuestionBank questionBank, HttpServletRequest request) {
+        // 获取当前登录用户信息
+        TokenVo userInfoByToken = JwtUtils.getUserInfoByToken(request);
+        // 设置创建人
+        questionBank.setCreatePerson(userInfoByToken.getUsername());
         questionBankMapper.insert(questionBank);
         redisUtil.del("questionBanks");
     }

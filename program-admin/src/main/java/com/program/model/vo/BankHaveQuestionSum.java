@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class BankHaveQuestionSum {
     private QuestionBank questionBank;
+
     //单选数量
     private Integer singleChoice;
     //多选数量

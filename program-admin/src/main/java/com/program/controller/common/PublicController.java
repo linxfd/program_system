@@ -1,15 +1,18 @@
-package com.program.controller;
+package com.program.controller.common;
 
 import com.program.model.entity.Exam;
+import com.program.model.entity.User;
 import com.program.service.ExamService;
 import com.program.service.NoticeService;
 import com.program.service.QuestionBankService;
 import com.program.model.vo.*;
+import com.program.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,6 +28,9 @@ public class PublicController {
     private final ExamService examService;
 
     private final QuestionBankService questionBankService;
+
+    @Autowired
+    private UserService userService;
 
     @PostMapping("/getExamInfo")
     @ApiOperation("根据信息查询考试的信息")
@@ -64,9 +70,10 @@ public class PublicController {
             @ApiImplicitParam(name = "pageSize", value = "页面大小", required = true, dataType = "int", paramType = "query"),
     })
     public CommonResult<PageResponse<BankHaveQuestionSum>> getBankHaveQuestionSumByType(@RequestParam(required = false) String bankName,
+                                                                                        @RequestParam(required = false)String createPerson,
                                                                                         Integer pageNo, Integer pageSize) {
         return CommonResult.<PageResponse<BankHaveQuestionSum>>builder()
-                .data(questionBankService.getBankHaveQuestionSumByType(bankName, pageNo, pageSize))
+                .data(questionBankService.getBankHaveQuestionSumByType(bankName, createPerson,pageNo, pageSize))
                 .build();
     }
 
@@ -98,6 +105,13 @@ public class PublicController {
     public CommonResult<String> getCurrentNewNotice() {
         return CommonResult.<String>builder()
                 .data(noticeService.getCurrentNotice())
+                .build();
+    }
+    @GetMapping("/getCreatePersonName")
+    @ApiOperation("获取所有角色是老师的用户")
+    public CommonResult getCreatePersonName() {
+        return CommonResult.<List<User>>builder()
+                .data(userService.getCreatePersonName())
                 .build();
     }
 }

@@ -1,4 +1,4 @@
-package com.program.controller;
+package com.program.controller.common;
 
 import com.program.model.dict.DictTedisTime;
 import com.program.utils.CreateVerificationCode;

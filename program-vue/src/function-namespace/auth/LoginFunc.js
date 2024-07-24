@@ -26,7 +26,7 @@ const loginFormRules = {
       required: true,
       message: '请输入账号',
       trigger: 'blur'
-    },
+    }
   ],
   password: [
     {
@@ -50,7 +50,7 @@ const loginFormRules = {
       validator: validateCode,
       trigger: 'blur'
     }
-  ],
+  ]
 }
 // 后台验证码id
 let codeId
@@ -65,7 +65,7 @@ const getCode = () => {
 // 点击图片刷新验证码
 const changeCode = () => {
   const codeImg = document.querySelector('#code')
-  codeId = utils.getRandomId();
+  codeId = utils.getRandomId()
   codeImg.src = `${process.env.VUE_APP_CAPTCHA_URL}/util/getCodeImg?id=` + codeId
   codeImg.onload = () => getCode()
 }
@@ -88,7 +88,7 @@ const login = (formEl) => {
       }
     }).catch(err => {
       console.log(err)
-      //请求出错
+      // 请求出错
       changeCode()
       getCode()
       Vue.prototype.$notify({

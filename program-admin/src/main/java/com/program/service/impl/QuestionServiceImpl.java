@@ -12,6 +12,7 @@ import com.program.mapper.AnswerMapper;
 import com.program.mapper.QuestionBankMapper;
 import com.program.mapper.QuestionMapper;
 import com.program.service.QuestionService;
+import com.program.utils.NotUtils;
 import com.program.utils.RedisUtil;
 import com.program.model.vo.PageResponse;
 import com.program.model.vo.QuestionVo;
@@ -40,7 +41,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
     private final RedisUtil redisUtil;
 
     @Override
-    public PageResponse<Question> getQuestion(String questionType, String questionBank, String questionContent, Integer pageNo, Integer pageSize) {
+    public PageResponse<Question> getQuestion(String questionType, String questionBank, String questionContent, String createPerson,Integer pageNo, Integer pageSize) {
         IPage<Question> questionPage = new Page<>(pageNo, pageSize);
 
         QueryWrapper<Question> wrapper = new QueryWrapper<>();
@@ -50,6 +51,9 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
         setLikeWrapper(wrapper, likeQueryParams);
         setEqualsQueryWrapper(wrapper, Collections.singletonMap("qu_type", questionType));
 
+        if(!NotUtils.isNotUtils(createPerson)){
+            wrapper.eq("create_person", createPerson);
+        }
         questionPage = questionMapper.selectPage(questionPage, wrapper);
         return PageResponse.<Question>builder()
                 .data(questionPage.getRecords())

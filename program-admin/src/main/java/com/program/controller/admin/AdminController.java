@@ -1,4 +1,4 @@
-package com.program.controller;
+package com.program.controller.admin;
 
 import com.program.model.dto.AddUserDto;
 import com.program.model.dto.UserDto;
@@ -110,5 +110,13 @@ public class AdminController {
     public CommonResult<Void> updateNotice(@RequestBody Notice notice) {
         noticeService.updateNotice(notice);
         return CommonResult.<Void>builder().build();
+    }
+
+    @PostMapping("/updateUser")
+    @ApiOperation("管理员更改用户信息")
+    public CommonResult<Object> updateUser(@RequestBody  User user) {
+        userService.updateUser(user);
+        return CommonResult.builder()
+                .build();
     }
 }

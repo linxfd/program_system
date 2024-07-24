@@ -20,6 +20,8 @@ public class ExamQueryVo {
 
     private String examName;
 
+    private String createPerson;
+
     @NotNull
     private Integer pageNo;
 

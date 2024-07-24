@@ -19,17 +19,17 @@ import com.program.mapper.ExamQuestionMapper;
 import com.program.mapper.ExamRecordMapper;
 import com.program.mapper.QuestionMapper;
 import com.program.mapper.UserMapper;
+import com.program.model.vo.*;
 import com.program.service.ExamService;
+import com.program.utils.JwtUtils;
+import com.program.utils.NotUtils;
 import com.program.utils.RedisUtil;
-import com.program.model.vo.AddExamByBankVo;
-import com.program.model.vo.AddExamByQuestionVo;
-import com.program.model.vo.ExamQueryVo;
-import com.program.model.vo.PageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -69,6 +69,9 @@ public class ExamServiceImpl extends ServiceImpl<ExamMapper, Exam> implements Ex
     public PageResponse<Exam> getExamPage(ExamQueryVo examQueryVo) {
         QueryWrapper<Exam> wrapper = new QueryWrapper<>();
 
+        if (!NotUtils.isNotUtils(examQueryVo.getCreatePerson())) {
+            wrapper.eq("create_person", examQueryVo.getCreatePerson());
+        }
         setEqualsQueryWrapper(wrapper, Collections.singletonMap("type", examQueryVo.getExamType()));
         setLikeWrapper(wrapper, Collections.singletonMap("exam_name", examQueryVo.getExamName()));
         if (examQueryVo.getStartTime() != null) {
@@ -136,7 +139,7 @@ public class ExamServiceImpl extends ServiceImpl<ExamMapper, Exam> implements Ex
 
     @Transactional
     @Override
-    public void addExamByBank(AddExamByBankVo addExamByBankVo) {
+    public void addExamByBank(AddExamByBankVo addExamByBankVo, HttpServletRequest request) {
         Exam exam = new Exam();
         exam.setStatus(addExamByBankVo.getStatus());
         exam.setDuration(addExamByBankVo.getExamDuration());
@@ -190,13 +193,18 @@ public class ExamServiceImpl extends ServiceImpl<ExamMapper, Exam> implements Ex
         // 设置总成绩
         exam.setTotalScore(totalScore);
 
+        // 获取当前登录用户信息
+        TokenVo userInfoByToken = JwtUtils.getUserInfoByToken(request);
+        // 设置创建人
+        exam.setCreatePerson(userInfoByToken.getUsername());
+
         examMapper.insert(exam);
         examQuestionMapper.insert(examQuestion);
     }
 
     @Transactional
     @Override
-    public void addExamByQuestionList(AddExamByQuestionVo addExamByQuestionVo) {
+    public void addExamByQuestionList(AddExamByQuestionVo addExamByQuestionVo, HttpServletRequest request) {
         Exam exam = new Exam();
         exam.setTotalScore(addExamByQuestionVo.getTotalScore());
         exam.setType(addExamByQuestionVo.getType());
@@ -216,6 +224,10 @@ public class ExamServiceImpl extends ServiceImpl<ExamMapper, Exam> implements Ex
         examQuestion.setScores(addExamByQuestionVo.getScores());
         examQuestion.setQuestionIds(addExamByQuestionVo.getQuestionIds());
 
+        // 获取当前登录用户信息
+        TokenVo userInfoByToken = JwtUtils.getUserInfoByToken(request);
+        // 设置创建人
+        exam.setCreatePerson(userInfoByToken.getUsername());
         examMapper.insert(exam);
         examQuestionMapper.insert(examQuestion);
     }

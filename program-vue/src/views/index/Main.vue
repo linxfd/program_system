@@ -1,55 +1,83 @@
 <template>
   <el-container>
     <!--用户头部菜单-->
-    <el-aside id="aside" width="210px">
-      <el-menu :default-active="activeMenu" @select="handleSelect" :router="true" :collapse="isCollapse">
-        <el-menu-item index="/index" disabled style="text-align: center">
-          <i class="el-icon-sunny"></i>
+    <el-aside
+      id="aside"
+      width="210px"
+    >
+      <el-menu
+        :default-active="activeMenu"
+        @select="handleSelect"
+        :router="true"
+        :collapse="isCollapse"
+      >
+        <el-menu-item
+          index="/index"
+          disabled
+          style="text-align: center"
+        >
+          <i class="el-icon-sunny" />
           <span slot="title">
             编程系统
           </span>
         </el-menu-item>
 
         <!-- 单独的导航 -->
-        <el-menu-item @click="changeBreadInfo(menuInfo[0].topMenuName,menuInfo[0].topMenuName,menuInfo[0].url)"
-                      index="/dashboard"
-                      v-if="!menuInfo[0].children">
-          <i :class="menuInfo[0].topIcon"></i>
+        <el-menu-item
+          @click="changeBreadInfo(menuInfo[0].topMenuName,menuInfo[0].topMenuName,menuInfo[0].url)"
+          index="/dashboard"
+          v-if="!menuInfo[0].children"
+        >
+          <i :class="menuInfo[0].topIcon" />
           <span slot="title">{{ menuInfo[0].topMenuName }}</span>
         </el-menu-item>
 
         <!--具有子导航的-->
-        <el-submenu v-if="menu.children" v-for="(menu,index) in menuInfo" :key="index" :index="index+''">
+        <el-submenu
+          v-if="menu.children"
+          v-for="(menu,index) in menuInfo"
+          :key="index"
+          :index="index+''"
+        >
           <template slot="title">
-            <i :class="menu.topIcon"></i>
+            <i :class="menu.topIcon" />
             <span slot="title">{{ menu.topMenuName }}</span>
           </template>
 
           <!--子导航的分组-->
           <el-menu-item-group>
-            <el-menu-item @click="changeBreadInfo(menu.topMenuName,sub.topMenuName,sub.url)" :index="sub.url"
-                          v-for="(sub,index) in menu.children" :key="index">
-              <i :class="sub.icon"></i>
+            <el-menu-item
+              @click="changeBreadInfo(menu.topMenuName,sub.topMenuName,sub.url)"
+              :index="sub.url"
+              v-for="(sub,index) in menu.children"
+              :key="index"
+            >
+              <i :class="sub.icon" />
               <span slot="title">{{ sub.topMenuName }}</span>
             </el-menu-item>
           </el-menu-item-group>
-
         </el-submenu>
       </el-menu>
     </el-aside>
 
     <!--右侧的面板-->
     <el-main>
-
       <el-container>
-
         <el-header height="100px">
           <el-card class="box-card">
             <div slot="header">
               <!--缩小图标-->
-              <el-tooltip class="item" effect="dark" content="缩小侧边栏" placement="top-start">
-                <i class="el-icon-s-fold" @click="changeIsCollapse"
-                   style="cursor:pointer;font-size: 25px;font-weight: 100"></i>
+              <el-tooltip
+                class="item"
+                effect="dark"
+                content="缩小侧边栏"
+                placement="top-start"
+              >
+                <i
+                  class="el-icon-s-fold"
+                  @click="changeIsCollapse"
+                  style="cursor:pointer;font-size: 25px;font-weight: 100"
+                />
               </el-tooltip>
 
               <!--面包屑-->
@@ -59,39 +87,73 @@
               </el-breadcrumb>
 
               <!--右侧的个人信息下拉框-->
-              <el-dropdown trigger="click" style="float: right;color: black;cursor:pointer;" @command="handleCommand">
+              <el-dropdown
+                trigger="click"
+                style="float: right;color: black;cursor:pointer;"
+                @command="handleCommand"
+              >
                 <span class="el-dropdown-link">
                   {{ currentUserInfo.username }}
-                  <i class="el-icon-caret-bottom"></i>
+                  <i class="el-icon-caret-bottom" />
                 </span>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item command="personInfo">个人资料</el-dropdown-item>
-                  <el-dropdown-item command="logout">退出登录</el-dropdown-item>
+                  <el-dropdown-item command="personInfo">
+                    个人资料
+                  </el-dropdown-item>
+                  <el-dropdown-item command="logout">
+                    退出登录
+                  </el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
 
-
               <!--右侧的放大图标-->
-              <el-tooltip effect="dark" content="全屏预览" placement="top-start">
-                <i class="el-icon-full-screen" id="full" @click="fullShow" style="float: right;margin-right:10px;
-              margin-bottom:5px;cursor:pointer;font-size: 25px;font-weight: 100"></i>
+              <el-tooltip
+                effect="dark"
+                content="全屏预览"
+                placement="top-start"
+              >
+                <i
+                  class="el-icon-full-screen"
+                  id="full"
+                  @click="fullShow"
+                  style="float: right;margin-right:10px;
+              margin-bottom:5px;cursor:pointer;font-size: 25px;font-weight: 100"
+                />
               </el-tooltip>
 
               <!--右侧的查看公告图标-->
-              <el-tooltip effect="dark" content="查看公告" placement="top-start">
-                <i class="el-icon-bell" @click="showSystemNotice" style="float: right;margin-right:10px;
-              margin-bottom:5px;cursor:pointer;font-size: 25px;font-weight: 100"></i>
+              <el-tooltip
+                effect="dark"
+                content="查看公告"
+                placement="top-start"
+              >
+                <i
+                  class="el-icon-bell"
+                  @click="showSystemNotice"
+                  style="float: right;margin-right:10px;
+              margin-bottom:5px;cursor:pointer;font-size: 25px;font-weight: 100"
+                />
               </el-tooltip>
             </div>
 
             <!--卡片面板的主内容-->
             <div>
-              <el-tag @close="handleClose(index)" v-for="(item,index) in tags"
-                      type="info" size="centre" :key="index" :class="item.highlight ? 'active' : ''"
-                      :closable="item.name !== '产品介绍'" @click="changeHighlightTag(item.name)"
-                      effect="plain">
-                <i class="el-icon-s-opportunity" style="margin-right: 2px"
-                   v-if="item.highlight"></i>
+              <el-tag
+                @close="handleClose(index)"
+                v-for="(item,index) in tags"
+                type="info"
+                size="centre"
+                :key="index"
+                :class="item.highlight ? 'active' : ''"
+                :closable="item.name !== '产品介绍'"
+                @click="changeHighlightTag(item.name)"
+                effect="plain"
+              >
+                <i
+                  class="el-icon-s-opportunity"
+                  style="margin-right: 2px"
+                  v-if="item.highlight"
+                />
                 {{ item.name }}
               </el-tag>
             </div>
@@ -99,36 +161,66 @@
         </el-header>
 
         <el-main style="margin-top: 25px;">
-          <router-view @giveChildChangeBreakInfo="giveChildChangeBreakInfo" @showSystemNotice="showSystemNotice"
-                       @giveChildAddTag="giveChildAddTag" :tagInfo="tags" @updateTagInfo="updateTagInfo"></router-view>
+          <router-view
+            @giveChildChangeBreakInfo="giveChildChangeBreakInfo"
+            @showSystemNotice="showSystemNotice"
+            @giveChildAddTag="giveChildAddTag"
+            :tag-info="tags"
+            @updateTagInfo="updateTagInfo"
+          />
         </el-main>
-
       </el-container>
 
-      <el-dialog title="更新用户信息" center :visible.sync="updateCurrentUserDialog">
-
-        <el-form :model="currentUserInfo2" :rules="updateUserFormRules" ref="updateUserForm">
-
+      <el-dialog
+        title="更新用户信息"
+        center
+        :visible.sync="updateCurrentUserDialog"
+      >
+        <el-form
+          :model="currentUserInfo2"
+          :rules="updateUserFormRules"
+          ref="updateUserForm"
+        >
           <el-form-item label="用户名">
-            <el-input v-model="currentUserInfo2.username" disabled></el-input>
+            <el-input
+              v-model="currentUserInfo2.username"
+              disabled
+            />
           </el-form-item>
 
-          <el-form-item label="真实姓名" prop="trueName">
-            <el-input v-model="currentUserInfo2.trueName"></el-input>
+          <el-form-item
+            label="真实姓名"
+            prop="trueName"
+          >
+            <el-input v-model="currentUserInfo2.trueName" />
           </el-form-item>
 
-          <el-form-item label="密码" prop="password">
-            <el-input v-model="currentUserInfo2.password" placeholder="不更改请留空"></el-input>
+          <el-form-item
+            label="密码"
+            prop="password"
+          >
+            <el-input
+              v-model="currentUserInfo2.password"
+              placeholder="不更改请留空"
+            />
           </el-form-item>
-
         </el-form>
 
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="updateCurrentUserDialog = false">取 消</el-button>
-          <el-button type="primary" @click="updateCurrentUser">确 定</el-button>
+        <div
+          slot="footer"
+          class="dialog-footer"
+        >
+          <el-button @click="updateCurrentUserDialog = false">
+            取 消
+          </el-button>
+          <el-button
+            type="primary"
+            @click="updateCurrentUser"
+          >
+            确 定
+          </el-button>
         </div>
       </el-dialog>
-
     </el-main>
   </el-container>
 </template>
@@ -153,46 +245,46 @@ export default {
       }
     }
     return {
-      //菜单信息
+      // 菜单信息
       menuInfo: [
         {
-          'topIcon': '',
-          'url': '',
-          'children': [
+          topIcon: '',
+          url: '',
+          children: [
             {
-              'url': ''
+              url: ''
             }
           ]
         }
       ],
-      //面板是否收缩
+      // 面板是否收缩
       isCollapse: false,
-      //当前是否全屏显示
+      // 当前是否全屏显示
       isFullScreen: false,
-      //当前登录的用户信息
+      // 当前登录的用户信息
       currentUserInfo: {
-        'username': ''
+        username: ''
       },
-      //当前激活的菜单
+      // 当前激活的菜单
       activeMenu: '',
-      //面包屑信息
+      // 面包屑信息
       breadInfo: {
-        'top': '产品介绍',//顶级菜单信息
-        'sub': '产品介绍'//当前的菜单信息
+        top: '产品介绍', // 顶级菜单信息
+        sub: '产品介绍'// 当前的菜单信息
       },
-      //面包屑下的标签数据
+      // 面包屑下的标签数据
       tags: [
         {
-          'name': '产品介绍',
-          'url': '/dashboard',
-          'highlight': true
+          name: '产品介绍',
+          url: '/dashboard',
+          highlight: true
         }
       ],
-      //跟新当前用户的信息的对话框
+      // 跟新当前用户的信息的对话框
       updateCurrentUserDialog: false,
-      //当前用户的信息
+      // 当前用户的信息
       currentUserInfo2: {},
-      //更新信息表单信息
+      // 更新信息表单信息
       updateUserFormRules: {
         trueName: [
           {
@@ -212,11 +304,11 @@ export default {
   },
   created () {
     this.getMenu()
-    //获取登录用户信息
+    // 获取登录用户信息
     this.getUserInfoByCheckToken()
   },
   mounted () {
-    //根据当前链接的hash设置对应高亮的菜单
+    // 根据当前链接的hash设置对应高亮的菜单
     this.activeMenu = window.location.hash.substring(1)
     document.querySelector('.el-container').style.maxHeight = screen.height + 'px'
     // 根据设备大小调整侧边栏
@@ -227,25 +319,25 @@ export default {
     }
   },
   watch: {
-    //监察路径变化,改变菜单的高亮
+    // 监察路径变化,改变菜单的高亮
     '$route.path': function (o, n) {
       this.activeMenu = o
-      //如果没有该标签就创建改标签
+      // 如果没有该标签就创建改标签
       let flag = false
-      //判断是否含有改标签
+      // 判断是否含有改标签
       this.tags.map(item => {
-        if (item.url === this.activeMenu) {//如果有含有该标签
+        if (item.url === this.activeMenu) { // 如果有含有该标签
           flag = true
         }
       })
-      if (!flag) {//对应链接的标签不存在
-        //先找到该标签的名字
+      if (!flag) { // 对应链接的标签不存在
+        // 先找到该标签的名字
         this.createHighlightTag()
-      } else {//改标签存在,则高亮
+      } else { // 改标签存在,则高亮
         this.tags.map(item => {
-          //取消高亮别的标签
+          // 取消高亮别的标签
           item.highlight = false
-          //高亮当前标签
+          // 高亮当前标签
           if (item.url === this.activeMenu) {
             item.highlight = true
           }
@@ -254,7 +346,7 @@ export default {
     }
   },
   methods: {
-    //查看系统公告
+    // 查看系统公告
     showSystemNotice () {
       notice.getCurrentNewNotice().then((resp) => {
         if (resp.code === 200) {
@@ -273,20 +365,20 @@ export default {
         }
       })
     },
-    //根据token后台判断用户权限,传递相对应的菜单
+    // 根据token后台判断用户权限,传递相对应的菜单
     getMenu () {
       menu.getMenuInfo().then((resp) => {
         if (resp.code === 200) {
           this.menuInfo = JSON.parse(resp.data)
-          //根据链接创建不存在的tag标签并高亮
+          // 根据链接创建不存在的tag标签并高亮
           this.createHighlightTag()
-        } else {//后台认证失败,跳转登录页面
+        } else { // 后台认证失败,跳转登录页面
           this.$message.error('权限认证失败')
           this.$router.push('/')
         }
       })
     },
-    //放大缩小侧边栏
+    // 放大缩小侧边栏
     changeIsCollapse () {
       const aside = document.querySelector('#aside')
       if (this.isCollapse) {
@@ -296,55 +388,55 @@ export default {
       }
       this.isCollapse = !this.isCollapse
     },
-    //是否全屏显示
+    // 是否全屏显示
     fullShow () {
-      let docElm = document.documentElement
+      const docElm = document.documentElement
       const full = document.querySelector('#full')
-      if (this.isFullScreen) {//退出全屏模式
-        //切换图标样式
+      if (this.isFullScreen) { // 退出全屏模式
+        // 切换图标样式
         full.className = 'el-icon-full-screen'
-        //W3C
+        // W3C
         if (document.exitFullscreen) {
           document.exitFullscreen()
         }
-        //FireFox
+        // FireFox
         else if (document.mozCancelFullScreen) {
           document.mozCancelFullScreen()
         }
-        //Chrome等
+        // Chrome等
         else if (document.webkitCancelFullScreen) {
           document.webkitCancelFullScreen()
         }
-        //IE11
+        // IE11
         else if (document.msExitFullscreen) {
           document.msExitFullscreen()
         }
-      } else {//进入全屏模式
-        //W3C
-        //切换图标样式
+      } else { // 进入全屏模式
+        // W3C
+        // 切换图标样式
         full.className = 'el-icon-switch-button'
         if (docElm.requestFullscreen) {
           docElm.requestFullscreen()
         }
-        //FireFox
+        // FireFox
         else if (docElm.mozRequestFullScreen) {
           docElm.mozRequestFullScreen()
         }
-        //Chrome等
+        // Chrome等
         else if (docElm.webkitRequestFullScreen) {
           docElm.webkitRequestFullScreen()
         }
-        //IE11
+        // IE11
         else if (docElm.msRequestFullscreen) {
           docElm.msRequestFullscreen()
         }
       }
-      //改变标志位
+      // 改变标志位
       this.isFullScreen = !this.isFullScreen
     },
-    //处理右上角下拉菜单的处理事件
+    // 处理右上角下拉菜单的处理事件
     handleCommand (command) {
-      if (command === 'logout') {//退出
+      if (command === 'logout') { // 退出
         this.logout()
       } else if (command === 'personInfo') {
         this.updateCurrentUserDialog = true
@@ -356,10 +448,10 @@ export default {
         })
       }
     },
-    //退出登录
+    // 退出登录
     async logout () {
       window.localStorage.removeItem('authorization')
-      //右侧提示通知
+      // 右侧提示通知
       this.$notify({
         title: 'Tips',
         message: '注销成功',
@@ -368,11 +460,12 @@ export default {
       })
       await this.$router.push('/')
     },
-    //检查token获取其中的用户信息
+    // 检查token获取其中的用户信息
     getUserInfoByCheckToken () {
       auth.checkToken().then(resp => {
         this.currentUserInfo = resp.data
         localStorage.setItem('username', this.currentUserInfo.username)
+        localStorage.setItem('roleId',this.currentUserInfo.roleId)
       }).catch(err => {
         this.$notify({
           title: 'Tips',
@@ -384,57 +477,57 @@ export default {
         this.$router.push('/')
       })
     },
-    //关闭tag标签
-    handleClose (index) {//当前点击的tag的下标
+    // 关闭tag标签
+    handleClose (index) { // 当前点击的tag的下标
       if (this.tags[index].highlight) {
         this.tags[index - 1].highlight = true
-        //关闭之后,路由调跳转,高亮菜单和标签
+        // 关闭之后,路由调跳转,高亮菜单和标签
         this.$router.push(this.tags[index - 1].url)
         this.handleSelect(this.tags[index - 1].url)
       }
       this.tags.splice(index, 1)
     },
-    //菜单的高亮变化
+    // 菜单的高亮变化
     handleSelect (currentMenu) {
       this.activeMenu = currentMenu
     },
-    //处理面包屑信息和面包屑下的标签信息
+    // 处理面包屑信息和面包屑下的标签信息
     changeBreadInfo (curTopMenuName, curMenuName, url) {
       // console.log("ssssssssssss")
       // console.log(curTopMenuName)
       // console.log(curMenuName)
       // console.log(url)
-      //面包屑信息
+      // 面包屑信息
       this.breadInfo.top = curTopMenuName
       this.breadInfo.sub = curMenuName
-      //标签信息
-      let flag = false//当前是否有此菜单信息(防止无限点击,无线生成)
+      // 标签信息
+      let flag = false// 当前是否有此菜单信息(防止无限点击,无线生成)
       this.tags.map(item => {
         if (item.name === curMenuName) flag = true
       })
-      if (!flag) {//不存在当前点击的菜单
+      if (!flag) { // 不存在当前点击的菜单
         this.tags.push({
-          'name': curMenuName,
-          'url': url,
-          'highlight': true
+          name: curMenuName,
+          url: url,
+          highlight: true
         })
-      } //高亮菜单tag
+      } // 高亮菜单tag
       this.changeHighlightTag(curMenuName)
     },
-    //处理高亮的tag
-    changeHighlightTag (curMenuName) {//当前需要高亮的名字
+    // 处理高亮的tag
+    changeHighlightTag (curMenuName) { // 当前需要高亮的名字
       let curMenu
       this.tags.map((item, i) => {
         if (item.name === curMenuName) curMenu = item
         item.highlight = item.name === curMenuName
       })
-      //调用改变面包屑的方法
+      // 调用改变面包屑的方法
       this.changeTopBreakInfo(curMenu.name)
       this.$router.push(curMenu.url)
     },
-    //创建当前高亮的tags
+    // 创建当前高亮的tags
     createHighlightTag () {
-      //根据链接创建不存在的tag标签并高亮
+      // 根据链接创建不存在的tag标签并高亮
       let menuName
       this.menuInfo.map(item => {
         if (item.children !== undefined) {
@@ -445,17 +538,17 @@ export default {
       })
       if (menuName !== undefined && this.tags.indexOf(menuName) === -1) {
         this.tags.push({
-          'name': menuName,
-          'url': this.activeMenu,
-          'highlight': true
+          name: menuName,
+          url: this.activeMenu,
+          highlight: true
         })
-        //高亮对应的标签
+        // 高亮对应的标签
         this.tags.map(item => {
           if (item.url === window.location.hash.substring(1)) this.changeHighlightTag(item.name)
         })
       }
     },
-    //改变头部的面包屑信息
+    // 改变头部的面包屑信息
     changeTopBreakInfo (subMenuName) {
       let topMenuName
       this.menuInfo.map(item => {
@@ -468,23 +561,23 @@ export default {
       this.breadInfo.top = topMenuName
       this.breadInfo.sub = subMenuName
     },
-    //提供给子组件改变面包屑最后的信息
+    // 提供给子组件改变面包屑最后的信息
     giveChildChangeBreakInfo (subMenuName, topMenuName) {
       this.breadInfo.sub = subMenuName
       this.breadInfo.top = topMenuName
     },
-    //提供给子组件创建tag标签使用
+    // 提供给子组件创建tag标签使用
     giveChildAddTag (menuName, url) {
       this.tags.map(item => {
         item.highlight = false
       })
       this.tags.push({
-        'name': menuName,
-        'url': url,
-        'highlight': true
+        name: menuName,
+        url: url,
+        highlight: true
       })
     },
-    //提供给子组件修改tag标签使用
+    // 提供给子组件修改tag标签使用
     updateTagInfo (menuName, url) {
       this.tags.map((item, index) => {
         item.highlight = false
@@ -493,14 +586,14 @@ export default {
         }
       })
       this.tags.push({
-        'name': menuName,
-        'url': url,
-        'highlight': true
+        name: menuName,
+        url: url,
+        highlight: true
       })
     },
-    //更新当前用户
+    // 更新当前用户
     updateCurrentUser () {
-      utils.validFormAndInvoke(this.$refs['updateUserForm'], () => {
+      utils.validFormAndInvoke(this.$refs.updateUserForm, () => {
         user.updateCurrentUser(this.currentUserInfo2).then((resp) => {
           if (resp.code === 200) {
             this.$notify({

@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface QuestionService extends IService<Question> {
 
-    PageResponse<Question> getQuestion(String questionType, String questionBank, String questionContent, Integer pageNo, Integer pageSize);
+    PageResponse<Question> getQuestion(String questionType, String questionBank, String questionContent, String createPerson,Integer pageNo, Integer pageSize);
 
     QuestionVo getQuestionVoById(Integer id);
 

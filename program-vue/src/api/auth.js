@@ -46,11 +46,11 @@ export default {
       data: data
     })
   },
-  editUsername(data){
+  editUsername (data) {
     return request({
       url: '/common/editUsername',
       method: 'post',
       data: data
     })
-  },
+  }
 }

@@ -1,4 +1,4 @@
-package com.program.controller;
+package com.program.controller.student;
 
 import com.program.model.entity.ExamQuestion;
 import com.program.model.entity.ExamRecord;
