@@ -288,6 +288,11 @@ export default {
     },
     // 查询考试信息
     getExamInfo () {
+      const roleId = window.localStorage.getItem('roleId')
+      // 如果是老师，则只查询自己的题库，管理员可以查看全部
+      if(roleId == 2){
+        this.queryInfo.createPerson = window.localStorage.getItem('username')
+      }
       exam.getExamInfo(this.queryInfo).then((resp) => {
         if (resp.code === 200) {
           resp.data.data.forEach(item => {

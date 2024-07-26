@@ -7,6 +7,7 @@ import java.util.Map;
 
 public class CommonUtils {
 
+
     public static <T> void setEqualsQueryWrapper(QueryWrapper<T> queryWrapper, Map<String, Object> fieldsMap) {
         for (Map.Entry<String, Object> entry : fieldsMap.entrySet()) {
             Object value = entry.getValue();

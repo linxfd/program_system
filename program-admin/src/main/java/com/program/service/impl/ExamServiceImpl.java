@@ -264,9 +264,19 @@ public class ExamServiceImpl extends ServiceImpl<ExamMapper, Exam> implements Ex
     }
 
     @Override
-    public List<String> getExamPassRateEchartData() {
-        List<Exam> exams = examMapper.selectList(null);
-        List<ExamRecord> examRecords = examRecordMapper.selectList(new QueryWrapper<ExamRecord>().isNotNull("total_score"));
+    public List<String> getExamPassRateEchartData(String createPerson) {
+
+        QueryWrapper<Exam> ew = new QueryWrapper<Exam>();
+        // 加入老师创建人只能查阅创建人的数据
+        if(!NotUtils.isNotUtils(createPerson)){
+            ew.eq("create_person",createPerson);
+        }
+        List<Exam> exams = examMapper.selectList(ew);
+        QueryWrapper<ExamRecord> erWrapper = new QueryWrapper<ExamRecord>().isNotNull("total_score");
+        List<Integer> collect = exams.stream().map(item -> item.getExamId()).collect(Collectors.toList());
+        erWrapper.in("exam_id",collect);
+
+        List<ExamRecord> examRecords = examRecordMapper.selectList(erWrapper);
         // 考试的名称
         String[] examNames = new String[exams.size()];
         // 考试通过率
@@ -298,9 +308,18 @@ public class ExamServiceImpl extends ServiceImpl<ExamMapper, Exam> implements Ex
     }
 
     @Override
-    public List<String> getExamNumbersEchartData() {
-        List<Exam> exams = examMapper.selectList(null);
-        List<ExamRecord> examRecords = examRecordMapper.selectList(null);
+    public List<String> getExamNumbersEchartData(String createPerson) {
+        QueryWrapper<Exam> ew = new QueryWrapper<Exam>();
+        // 加入老师创建人只能查阅创建人的数据
+        if(!NotUtils.isNotUtils(createPerson)){
+            ew.eq("create_person",createPerson);
+        }
+        List<Exam> exams = examMapper.selectList(ew);
+        QueryWrapper<ExamRecord> erWrapper = new QueryWrapper<ExamRecord>();
+        List<Integer> collect = exams.stream().map(Exam::getExamId).collect(Collectors.toList());
+        erWrapper.in("exam_id",collect);
+
+        List<ExamRecord> examRecords = examRecordMapper.selectList(erWrapper);
         // 考试的名称
         String[] examNames = new String[exams.size()];
         // 考试的考试次数

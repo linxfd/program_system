@@ -6,27 +6,23 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.program.annotation.Cache;
-import com.program.model.entity.Answer;
-import com.program.model.entity.ExamQuestion;
-import com.program.model.entity.ExamRecord;
-import com.program.model.entity.User;
+import com.program.mapper.*;
+import com.program.model.entity.*;
 import com.program.exception.BusinessException;
 import com.program.exception.CommonErrorCode;
-import com.program.mapper.AnswerMapper;
-import com.program.mapper.ExamQuestionMapper;
-import com.program.mapper.ExamRecordMapper;
-import com.program.mapper.UserMapper;
 import com.program.service.ExamRecordService;
 import com.program.utils.CertificateUtil.ContentStyle;
 import com.program.utils.CertificateUtil.DateTimeUtil;
 import com.program.utils.CertificateUtil.PDFUtil;
 import com.program.utils.JwtUtils;
+import com.program.utils.NotUtils;
 import com.program.utils.RedisUtil;
 import com.program.utils.SaltEncryption;
 import com.program.model.vo.PageResponse;
 import com.program.model.vo.TokenVo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.ServletOutputStream;
@@ -38,6 +34,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.program.utils.CommonUtils.setEqualsQueryWrapper;
 
@@ -56,6 +54,9 @@ public class ExamRecordServiceImpl extends ServiceImpl<ExamRecordMapper, ExamRec
     private final AnswerMapper answerMapper;
 
     private final RedisUtil redisUtil;
+
+    @Autowired
+    private ExamMapper examMapper;
 
     @Override
     public PageResponse<ExamRecord> getUserGrade(String username, Integer examId, Integer pageNo, Integer pageSize) {
@@ -239,9 +240,21 @@ public class ExamRecordServiceImpl extends ServiceImpl<ExamRecordMapper, ExamRec
     }
 
     @Override
-    public PageResponse<ExamRecord> getExamRecord(Integer examId, Integer pageNo, Integer pageSize) {
+    public PageResponse<ExamRecord> getExamRecord(Integer examId, String createPerson,Integer pageNo, Integer pageSize) {
         QueryWrapper<ExamRecord> wrapper = new QueryWrapper<>();
+        if(!NotUtils.isNotUtils(createPerson)){
+            // 谁创建的考试，谁就批阅
+            List<Integer> examIds =  examMapper.selectList(new QueryWrapper<Exam>().eq("create_person", createPerson))
+                    .stream()
+                    .map(item -> item.getExamId())
+                    .collect(Collectors.toList());
+            wrapper.in("exam_id", examIds);
+        }
+        // 按照总分排序,没有批阅的就会显示在顶部
+        wrapper.orderByAsc("total_score");
+
         setEqualsQueryWrapper(wrapper, Collections.singletonMap("exam_id", examId));
+
 
         IPage<ExamRecord> page = examRecordMapper.selectPage(new Page<>(pageNo, pageSize), wrapper);
 

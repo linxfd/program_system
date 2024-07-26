@@ -115,6 +115,7 @@ export default {
   data () {
     return {
       queryInfo: {
+        createPerson: '',
         pageNo: 1,
         pageSize: 10
       },
@@ -134,6 +135,11 @@ export default {
   },
   methods: {
     async getExamRecords () {
+      const roleId = window.localStorage.getItem('roleId')
+      // 如果是老师，则只查询自己的题库，管理员可以查看全部
+      if(roleId == 2){
+        this.queryInfo.createPerson = window.localStorage.getItem('username')
+      }
       await exam.getExamRecord(this.queryInfo).then(async resp => {
         if (resp.code === 200) {
           await this.getAllExamInfo()

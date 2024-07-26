@@ -52,7 +52,13 @@ export default {
   },
   methods: {
     async getExamPassRate () {
-      await statistic.getExamPassRate().then((resp) => {
+      const roleId = window.localStorage.getItem('roleId')
+      // 如果是老师，则只查询自己的题库，管理员可以查看全部
+      let queryInfo = {}
+      if(roleId == 2){
+         queryInfo.createPerson  = window.localStorage.getItem('username')
+      }
+      await statistic.getExamPassRate(queryInfo).then((resp) => {
         if (resp.code === 200) {
           this.examNames = resp.data[0].split(',')
           this.passRate = resp.data[1].split(',')
@@ -90,7 +96,13 @@ export default {
     },
     // 获取考试次数数据
     async getExamNumbers () {
-      await statistic.getExamNumbers().then((resp) => {
+      const roleId = window.localStorage.getItem('roleId')
+      // 如果是老师，则只查询自己的题库，管理员可以查看全部
+      let queryInfo = {}
+      if(roleId == 2){
+         queryInfo.createPerson  = window.localStorage.getItem('username')
+      }
+      await statistic.getExamNumbers(queryInfo).then((resp) => {
         console.log(resp)
         const examNames = resp.data[0].split(',')
         const examNumbers = resp.data[1].split(',')

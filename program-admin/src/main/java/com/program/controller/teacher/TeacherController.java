@@ -232,9 +232,11 @@ public class TeacherController {
             @ApiImplicitParam(name = "pageNo", value = "页面数", required = true, dataType = "int", paramType = "query"),
             @ApiImplicitParam(name = "pageSize", value = "页面大小", required = true, dataType = "int", paramType = "query")
     })
-    public CommonResult<PageResponse<ExamRecord>> getExamRecord(@RequestParam(required = false) Integer examId, Integer pageNo, Integer pageSize) {
+    public CommonResult<PageResponse<ExamRecord>> getExamRecord(@RequestParam(required = false) Integer examId,
+                                                                @RequestParam(required = false) String createPerson,
+                                                                Integer pageNo, Integer pageSize) {
         return CommonResult.<PageResponse<ExamRecord>>builder()
-                .data(examRecordService.getExamRecord(examId, pageNo, pageSize))
+                .data(examRecordService.getExamRecord(examId,createPerson, pageNo, pageSize))
                 .build();
     }
 
@@ -274,17 +276,17 @@ public class TeacherController {
 
     @GetMapping("/getExamPassRate")
     @ApiOperation("提供每一门考试的通过率数据(echarts绘图)")
-    public CommonResult<List<String>> getExamPassRate() {
+    public CommonResult<List<String>> getExamPassRate(@RequestParam(required = false) String createPerson) {
         return CommonResult.<List<String>>builder()
-                .data(examService.getExamPassRateEchartData())
+                .data(examService.getExamPassRateEchartData(createPerson))
                 .build();
     }
 
     @GetMapping("/getExamNumbers")
     @ApiOperation("提供每一门考试的考试次数(echarts绘图)")
-    public CommonResult<List<String>> getExamNumbers() {
+    public CommonResult<List<String>> getExamNumbers(@RequestParam(required = false) String createPerson) {
         return CommonResult.<List<String>>builder()
-                .data(examService.getExamNumbersEchartData())
+                .data(examService.getExamNumbersEchartData(createPerson))
                 .build();
     }
 

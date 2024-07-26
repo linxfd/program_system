@@ -18,7 +18,7 @@ public interface ExamRecordService extends IService<ExamRecord> {
 
     Integer addExamRecord(ExamRecord examRecord, HttpServletRequest request);
 
-    PageResponse<ExamRecord> getExamRecord(Integer examId, Integer pageNo, Integer pageSize);
+    PageResponse<ExamRecord> getExamRecord(Integer examId, String createPerson,Integer pageNo, Integer pageSize);
 
     void setObjectQuestionScore(Integer totalScore, Integer examRecordId);
 }

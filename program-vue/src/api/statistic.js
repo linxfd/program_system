@@ -1,16 +1,18 @@
 import request from '@/utils/request'
 
 export default {
-  getExamPassRate () {
+  getExamPassRate (queryInfo) {
     return request({
       url: '/teacher/getExamPassRate',
-      method: 'get'
+      method: 'get',
+      params: queryInfo
     })
   },
-  getExamNumbers () {
+  getExamNumbers (queryInfo) {
     return request({
       url: '/teacher/getExamNumbers',
-      method: 'get'
+      method: 'get',
+      params: queryInfo
     })
   }
 }

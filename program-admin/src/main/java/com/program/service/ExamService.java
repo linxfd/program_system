@@ -26,9 +26,9 @@ public interface ExamService extends IService<Exam> {
 
     void updateExamInfo(AddExamByQuestionVo addExamByQuestionVo);
 
-    List<String> getExamPassRateEchartData();
+    List<String> getExamPassRateEchartData(String createPerson);
 
-    List<String> getExamNumbersEchartData();
+    List<String> getExamNumbersEchartData(String createPerson);
 
     List<StudentExamRecordExcelDto> getAllStudentScoreByExamId(Integer examId);
 
