@@ -254,6 +254,7 @@ export default {
   methods: {
     // 获取所有的题库信息
     getBankInfo () {
+
       questionBank.getBankHaveQuestionSumByType(this.queryInfo).then((resp) => {
         if (resp.code === 200) {
           this.questionBankInfo = resp.data.data

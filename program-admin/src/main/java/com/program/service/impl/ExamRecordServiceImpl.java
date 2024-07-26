@@ -113,7 +113,8 @@ public class ExamRecordServiceImpl extends ServiceImpl<ExamRecordMapper, ExamRec
         //  生成XXX同学信息
         String userInfo = trueName + "同学：";
         //  生成证书内容
-        String content = "您于" + DateTimeUtil.DateToString(examTime) + "在" + examName + "测评中取得优异成绩!";
+        String content = "您于" + DateTimeUtil.DateToString(examTime) + "在《" + examName + "》测评中取得优异成绩!";
+
         //  创建证书
         try {
             pdfUtil.openDocument(pdfFilePath).addImage(backgroundImage, 0, 400).addLogo(logo, 270, 480).addContent(userInfo, 85, 630, style1).addContent("特发此证,以资鼓励!", 125, 495, style2).addContent("Power By WangZhouzhou", 360, 495, style2);

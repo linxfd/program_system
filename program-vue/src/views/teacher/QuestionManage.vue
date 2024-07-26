@@ -965,7 +965,14 @@ export default {
   methods: {
     // 获取所有的题库信息
     getQuestionBankInfo () {
-      questionBank.getQuestionBank().then((resp) => {
+      const roleId = window.localStorage.getItem('roleId')
+      // 如果是老师，则只查询自己的题库，管理员可以查看全部
+      let model = {};
+      if(roleId == 2){
+        model.createPerson = window.localStorage.getItem('username')
+      }
+
+      questionBank.getQuestionBank(model).then((resp) => {
         if (resp.code === 200) {
           this.allBank = resp.data
         }

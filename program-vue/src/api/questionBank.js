@@ -22,10 +22,11 @@ export default {
       data: questionBank
     })
   },
-  getQuestionBank () {
+  getQuestionBank (model) {
     return request({
       url: '/teacher/getQuestionBank',
-      method: 'get'
+      method: 'get',
+      params: model
     })
   },
   addBankQuestion (params) {

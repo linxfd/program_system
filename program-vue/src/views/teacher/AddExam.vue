@@ -630,10 +630,16 @@ export default {
     },
     // 获取所有的题库信息
     getBankInfo () {
-      questionBankApi.getBankHaveQuestionSumByType({
+      const roleId = window.localStorage.getItem('roleId')
+      // 如果是老师，则只查询自己的题库，管理员可以查看全部
+      let model = {
         pageNo: 1,
         pageSize: 9999
-      }).then((resp) => {
+      }
+      if(roleId == 2){
+        model.createPerson = window.localStorage.getItem('username')
+      }
+      questionBankApi.getBankHaveQuestionSumByType(model).then((resp) => {
         if (resp.code === 200) {
           this.allBank = resp.data.data
         } else {
@@ -686,6 +692,11 @@ export default {
     },
     // 获取题目信息
     getQuestionInfo () {
+      const roleId = window.localStorage.getItem('roleId')
+      // 如果是老师，则只查询自己的题库，管理员可以查看全部
+      if(roleId == 2){
+        this.queryInfo.createPerson = window.localStorage.getItem('username')
+      }
       question.getQuestion(this.queryInfo).then((resp) => {
         if (resp.code === 200) {
           this.questionInfo = resp.data.data

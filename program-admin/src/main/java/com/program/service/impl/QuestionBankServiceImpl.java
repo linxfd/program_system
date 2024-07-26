@@ -23,6 +23,7 @@ import com.program.model.vo.QuestionVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -139,10 +140,14 @@ public class QuestionBankServiceImpl extends ServiceImpl<QuestionBankMapper, Que
         return questionVoList;
     }
 
-    @Cache(prefix = "questionBanks", ttl = 10, timeUnit = TimeUnit.HOURS)
+//    @Cache(prefix = "questionBanks", ttl = 10, timeUnit = TimeUnit.HOURS)
     @Override
-    public List<QuestionBank> getAllQuestionBanks() {
-        return questionBankMapper.selectList(null);
+    public List<QuestionBank> getAllQuestionBanks(String createPerson) {
+        QueryWrapper<QuestionBank> qWrapper = new QueryWrapper<>();
+        if (!NotUtils.isNotUtils(createPerson)) {
+            qWrapper.eq("create_person", createPerson);
+        }
+        return questionBankMapper.selectList(qWrapper);
     }
 
     @Override

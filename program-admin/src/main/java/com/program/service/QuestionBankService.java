@@ -18,7 +18,7 @@ public interface QuestionBankService extends IService<QuestionBank> {
 
     List<QuestionVo> getQuestionByBankIdAndType(Integer bankId, Integer type);
 
-    List<QuestionBank> getAllQuestionBanks();
+    List<QuestionBank> getAllQuestionBanks(String createPerson);
 
     void addQuestionToBank(String questionIds, String banks);
 

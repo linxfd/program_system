@@ -63,9 +63,9 @@ public class TeacherController {
 
     @GetMapping("/getQuestionBank")
     @ApiOperation("获取所有题库信息")
-    public CommonResult<List<QuestionBank>> getQuestionBank() {
+    public CommonResult<List<QuestionBank>> getQuestionBank(@RequestParam(required = false) String createPerson) {
         return CommonResult.<List<QuestionBank>>builder()
-                .data(questionBankService.getAllQuestionBanks())
+                .data(questionBankService.getAllQuestionBanks(createPerson))
                 .build();
     }
 
