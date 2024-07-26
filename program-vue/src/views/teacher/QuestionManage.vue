@@ -603,7 +603,7 @@
                     style="margin-left: 5px"
                     type="textarea"
                     :rows="2"
-                  />
+                  /> 
                 </template>
               </el-table-column>
 

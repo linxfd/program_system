@@ -185,7 +185,7 @@
                   :key="index3"
                   :src="i3"
                   alt=""
-                  @mouseover="showBigImg(i3)"
+                  @click="showBigImg(i3)"
                 >
                 </div>
                 
@@ -217,7 +217,7 @@
                     :key="index4"
                     :src="i3"
                     alt=""
-                    @mouseover="showBigImg(i3)"
+                    @click="showBigImg(i3)"
                   >
                 </div>
               </label>

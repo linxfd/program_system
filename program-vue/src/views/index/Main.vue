@@ -16,7 +16,7 @@
           disabled
           style="text-align: center"
         >
-          <i class="el-icon-sunny" />
+          <i class="el-icon-picture-outline-round" />
           <span slot="title">
             编程系统
           </span>

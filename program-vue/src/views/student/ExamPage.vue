@@ -103,7 +103,7 @@
                       :key="index2"
                       :src="i2"
                       alt=""
-                      @mouseover="showBigImg(i2)"
+                      @click="showBigImg(i2)"
                     >
                     </div>
                   </label>
