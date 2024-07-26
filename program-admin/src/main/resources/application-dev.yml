@@ -47,3 +47,12 @@ mybatis-plus:
 #  configuration:
 #    # 配置日志
 #    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+program:
+  config:
+    # 上传文件Minio-自定义配置
+    minio:
+      endpointUrl: http://127.0.0.1:9000
+      accessKey: minioadmin
+      secreKey: minioadmin
+      bucketName: program-bucket

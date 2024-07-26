@@ -14,7 +14,8 @@
 
           <!--题目中的配图-->
           <img
-            v-for="url in currentBankQuestion[curIndex].images"
+            v-for="(url,index) in currentBankQuestion[curIndex].images"
+            :key="index"
             :src="url"
             title="点击查看大图"
             alt="题目图片"
@@ -30,20 +31,23 @@
             <div class="el-radio-group">
               <label
                 v-for="(item,index) in currentBankQuestion[curIndex].answer"
+                :key="index"
                 @click="checkSingleAnswer(index)"
                 :class="index === userAnswer[curIndex] ? 'active' : ''"
               >
                 <span>{{ optionName[index] + '、' + item.answer }}</span>
-                <img
+                <div v-if="item.images !== null">
+                  <img
                   style="position: absolute;left:100%;top:50%;transform: translateY(-50%);
                   width: 40px;height: 40px;float: right;cursor: pointer;"
                   title="点击查看大图"
-                  v-if="item.images !== null"
-                  v-for="i2 in item.images"
+                  v-for="(i2,index2) in item.images"
+                  :key="index2"
                   :src="i2"
                   alt=""
-                  @mouseover="showBigImg(i2)"
+                  @click="showBigImg(i2)"
                 >
+                </div>
               </label>
             </div>
           </div>
@@ -65,20 +69,24 @@
             <div class="el-radio-group">
               <label
                 v-for="(item,index) in currentBankQuestion[curIndex].answer"
+                :key="index"
                 @click="selectedMultipleAnswer(index)"
                 :class="(userAnswer[curIndex]+'').indexOf(index+'') !== -1? 'active' : ''"
               >
                 <span>{{ optionName[index] + '、' + item.answer }}</span>
-                <img
+                <div v-if="item.images !== null">
+                  <img
                   style="position: absolute;left:100%;top:50%;transform: translateY(-50%);
                   width: 40px;height: 40px;float: right;cursor: pointer;"
                   title="点击查看大图"
-                  v-if="item.images !== null"
-                  v-for="i2 in item.images"
+                  
+                  v-for="(i2,index2) in item.images"
+                  :key="index2"
                   :src="i2"
                   alt=""
-                  @mouseover="showBigImg(i2)"
+                  @click="showBigImg(i2)"
                 >
+                </div>
               </label>
               <el-button
                 size="small"

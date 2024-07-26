@@ -365,40 +365,47 @@ export default {
     },
     // 功能下拉框被选择
     selectChange (val) {
-      // 清空上一次的操作
-      this.selected = ''
-      // 表格中所选中的公告的id
-      const ids = []
-      this.selectedInTable.map(item => {
-        if (item.status !== 1) { // **防止删除当前使用公告
-          ids.push(item.nid)
+      this.$confirm(`此操作将永久删除公共, 是否继续?`, '注意', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        // 清空上一次的操作
+        this.selected = ''
+        // 表格中所选中的公告的id
+        const ids = []
+        this.selectedInTable.map(item => {
+          if (item.status !== 1) { // **防止删除当前使用公告
+            ids.push(item.nid)
+          }
+        })
+        if (val === 'delete') { // 删除
+          if (ids.length === 0) {
+            this.$message.error('不允许删除当前使用公告')
+          } else {
+            notice.deleteNotice({ ids: ids.join(',') }).then((resp) => {
+              if (resp.code === 200) {
+                // 删除成功后,回调更新数据
+                this.getNoticeInfo()
+                this.$notify({
+                  title: 'Tips',
+                  message: resp.message,
+                  type: 'success',
+                  duration: 2000
+                })
+              } else {
+                this.$notify({
+                  title: 'Tips',
+                  message: '操作失败',
+                  type: 'error',
+                  duration: 2000
+                })
+              }
+            })
+          }
         }
       })
-      if (val === 'delete') { // 删除
-        if (ids.length === 0) {
-          this.$message.error('不允许删除当前使用公告')
-        } else {
-          notice.deleteNotice({ ids: ids.join(',') }).then((resp) => {
-            if (resp.code === 200) {
-              // 删除成功后,回调更新数据
-              this.getNoticeInfo()
-              this.$notify({
-                title: 'Tips',
-                message: resp.message,
-                type: 'success',
-                duration: 2000
-              })
-            } else {
-              this.$notify({
-                title: 'Tips',
-                message: '操作失败',
-                type: 'error',
-                duration: 2000
-              })
-            }
-          })
-        }
-      }
+      
     },
     // 显示发布新闻对话框
     showPublishNoticeDialog () {
@@ -500,21 +507,9 @@ export default {
       }, '请检查您所填写的信息是否有误')
     },
     deleteUpdateNoticeDialog (row) {
-      this.$confirm('此操作将永久删除该公告, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '删除成功!'
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        })
-      })
+      this.selectedInTable.push(row)
+      this.selectChange ("delete") 
+      
     }
   }
 }

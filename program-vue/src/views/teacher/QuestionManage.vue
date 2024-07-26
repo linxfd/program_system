@@ -1173,7 +1173,7 @@ export default {
         isTrue: false,
         answer: '',
         images: [],
-        analysis: ''
+        analysis: '',
       })
     },
     // 新增题目中的删除答案填写框

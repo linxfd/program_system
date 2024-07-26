@@ -110,14 +110,27 @@ public class ExamRecordServiceImpl extends ServiceImpl<ExamRecordMapper, ExamRec
         //  准备证书所需要的数据
         String trueName = user.getTrueName();
         Date examTime = examRecord.getExamTime();
+
+
         //  生成XXX同学信息
         String userInfo = trueName + "同学：";
         //  生成证书内容
         String content = "您于" + DateTimeUtil.DateToString(examTime) + "在《" + examName + "》测评中取得优异成绩!";
+        //  生成获得成绩
+        Integer totalScore = examRecord.getTotalScore();
 
+        Integer examTotalScore = examMapper.selectOne(new QueryWrapper<Exam>().eq("exam_name", examName)).getTotalScore();
+
+        String totalScoreInfo = "成绩：" + totalScore + "分/" + examTotalScore + "总分";
         //  创建证书
         try {
-            pdfUtil.openDocument(pdfFilePath).addImage(backgroundImage, 0, 400).addLogo(logo, 270, 480).addContent(userInfo, 85, 630, style1).addContent("特发此证,以资鼓励!", 125, 495, style2).addContent("Power By WangZhouzhou", 360, 495, style2);
+            pdfUtil.openDocument(pdfFilePath)
+                    .addImage(backgroundImage, 0, 400)
+                    .addLogo(logo, 270, 480)
+                    .addContent(userInfo, 85, 630, style1)
+                    .addContent(totalScoreInfo, 125, 520, style1)
+                    .addContent("特发此证,以资鼓励!", 125, 495, style2)
+                    .addContent("Programming Education Network", 360, 495, style2);
             //  结束截取字符串的索引
             int end;
             //  证书内容分行,防止超出证书边缘

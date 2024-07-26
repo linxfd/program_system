@@ -57,7 +57,8 @@
           </div>
           <!--题目中的配图-->
           <img
-            v-for="url in item.images"
+            v-for="(url, index1) in item.images"
+            :key="index1"
             :src="url"
             title="点击查看大图"
             alt="题目图片"
@@ -73,21 +74,25 @@
             <div class="el-radio-group">
               <label
                 v-for="(i2,index2) in item.answer"
+                :key="index2"
                 :class="String(index2) === userAnswer[index] && i2.isTrue === 'true' ?
                   'activeAndTrue' : String(index2) === userAnswer[index] ? 'active' :
                     i2.isTrue === 'true' ? 'true' : ''"
               >
                 <span>{{ optionName[index2] + '、' + i2.answer }}</span>
-                <img
+                <div v-if="i2.images !== null">
+                  <img
                   style="position: absolute;left:100%;top:50%;transform: translateY(-50%);
                   width: 40px;height: 40px;float: right;cursor: pointer;"
                   title="点击查看大图"
-                  v-if="i2.images !== null"
-                  v-for="i3 in i2.images"
+                  
+                  v-for="(i3,index3) in i2.images"
+                  :key="index3"
                   :src="i3"
                   alt=""
-                  @mouseover="showBigImg(i3)"
+                  @click="showBigImg(i3)"
                 >
+                </div>
               </label>
             </div>
           </div>
@@ -100,21 +105,25 @@
             <div class="el-radio-group">
               <label
                 v-for="(i2,index2) in item.answer"
+                :key="index2"
                 :class="(userAnswer[index]+'').indexOf(index2+'') !== -1 && i2.isTrue === 'true'
                   ? 'activeAndTrue' : (userAnswer[index]+'').indexOf(index2+'') !== -1 ? 'active' :
                     i2.isTrue === 'true' ? 'true' : ''"
               >
                 <span>{{ optionName[index] + '、' + i2.answer }}</span>
-                <img
+                <div v-if="i2.images !== null">
+                  <img
                   style="position: absolute;left:100%;top:50%;transform: translateY(-50%);
                   width: 40px;height: 40px;float: right;cursor: pointer;"
                   title="点击查看大图"
-                  v-if="i2.images !== null"
-                  v-for="i3 in i2.images"
+                  
+                  v-for="(i3,index3) in i2.images"
+                  :key="index3"
                   :src="i3"
                   alt=""
-                  @mouseover="showBigImg(i3)"
+                  @click="showBigImg(i3)"
                 >
+                </div>
               </label>
             </div>
           </div>
@@ -170,7 +179,8 @@
       <img
         style="width: 100%"
         :src="item"
-        v-for="item in examRecord.creditImgUrl.split(',')"
+        v-for="(item,index) in examRecord.creditImgUrl.split(',')"
+        :key="index"
       >
     </el-dialog>
   </el-container>

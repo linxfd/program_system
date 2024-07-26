@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Data
 @Component
-@ConfigurationProperties(prefix = "oss.config")
+@ConfigurationProperties(prefix = "program.config.oss")
 public class OSSConfig {
 
     public boolean enable = false;

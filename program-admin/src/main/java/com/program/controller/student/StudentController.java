@@ -5,6 +5,7 @@ import com.program.model.entity.ExamRecord;
 import com.program.service.ExamQuestionService;
 import com.program.service.QuestionService;
 import com.program.service.impl.ExamRecordServiceImpl;
+import com.program.utils.MinioUtil;
 import com.program.utils.OSSUtil;
 import com.program.model.vo.CommonResult;
 import com.program.model.vo.PageResponse;
@@ -15,6 +16,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,6 +41,9 @@ import java.util.List;
 public class StudentController {
 
     private final OSSUtil ossUtil;
+
+    @Autowired
+    private MinioUtil minioUtil;
 
     private final ExamRecordServiceImpl examRecordService;
 
@@ -119,7 +124,7 @@ public class StudentController {
     public CommonResult<String> uploadQuestionImage(MultipartFile file) throws Exception {
         log.info("开始上传文件: {}", file.getOriginalFilename());
         return CommonResult.<String>builder()
-                .data(ossUtil.picOSS(file))
+                .data(minioUtil.fileUpload(file))
                 .message("上传成功")
                 .build();
     }
