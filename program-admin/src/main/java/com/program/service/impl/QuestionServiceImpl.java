@@ -1,25 +1,31 @@
 package com.program.service.impl;
 
+import com.alibaba.excel.EasyExcel;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.program.annotation.Cache;
+import com.program.model.dto.QuestionDto;
 import com.program.model.entity.Answer;
 import com.program.model.entity.Question;
 import com.program.mapper.AnswerMapper;
 import com.program.mapper.QuestionBankMapper;
 import com.program.mapper.QuestionMapper;
+import com.program.model.vo.QuestionAnswerVo;
 import com.program.service.QuestionService;
 import com.program.utils.NotUtils;
 import com.program.utils.RedisUtil;
 import com.program.model.vo.PageResponse;
 import com.program.model.vo.QuestionVo;
+import com.program.utils.listener.ExcelListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -61,7 +67,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
                 .build();
     }
 
-    @Cache(prefix = "questionVo", suffix = "#id", ttl = 5, timeUnit = TimeUnit.HOURS)
+//    @Cache(prefix = "questionVo", suffix = "#id", ttl = 5, timeUnit = TimeUnit.HOURS)
     @Override
     public QuestionVo getQuestionVoById(Integer id) {
         Question question = questionMapper.selectById(id);
@@ -173,6 +179,61 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
 
             clearQuestionBankCache(questionVo, redisUtil);
         }
+    }
+
+    @Override
+    public void importQurstion(QuestionDto questionDto, MultipartFile file) {
+        List<String> questionsNames = questionBankMapper.getNamedQuery(questionDto);
+        questionDto.setQuBankName(String.join(",", questionsNames));
+        try {
+            //创建监听器对象，传递mapper对象
+            ExcelListener<QuestionAnswerVo> excelListener = new ExcelListener<>(questionMapper,answerMapper,questionDto);
+            //调用read方法读取excel数据
+            EasyExcel.read(file.getInputStream(),
+                    QuestionAnswerVo.class,
+                    excelListener).sheet().doRead();
+        } catch (Exception e) {
+            throw new RuntimeException("读取题目文件失败");
+        }
+    }
+
+    @Override
+    public PageResponse<QuestionAnswerVo> getQuestionExportHand(String questionType, String questionBank, String questionContent, String createPerson, Integer pageNo, Integer pageSize) {
+        IPage<Question> questionPage = new Page<>(pageNo, pageSize);
+
+        QueryWrapper<Question> wrapper = new QueryWrapper<>();
+        Map<String, Object> likeQueryParams = new HashMap<>(2);
+        likeQueryParams.put("qu_bank_name", questionBank);
+        likeQueryParams.put("qu_content", questionContent);
+        setLikeWrapper(wrapper, likeQueryParams);
+        setEqualsQueryWrapper(wrapper, Collections.singletonMap("qu_type", questionType));
+
+        if(!NotUtils.isNotUtils(createPerson)){
+            wrapper.eq("create_person", createPerson);
+        }
+        questionPage = questionMapper.selectPage(questionPage, wrapper);
+
+        List<QuestionAnswerVo>  questionAnswerVoList = new ArrayList<>();
+        for (Question record : questionPage.getRecords()) {
+            QuestionAnswerVo questionAnswerVo1 = new QuestionAnswerVo();
+            questionAnswerVo1.setQuContent(record.getQuContent());
+            Answer answer = answerMapper.selectOne(new QueryWrapper<Answer>().eq("question_id", record.getId()));
+            if(answer!=null){
+                questionAnswerVo1.setAllOption(answer.getAllOption());
+                int index = answer.getTrueOption().charAt(0) + 31;
+                questionAnswerVo1.setTrueOption(String.valueOf(index));
+                questionAnswerVo1.setImages(answer.getImages());
+                questionAnswerVo1.setAnswerAnalysis(answer.getAnalysis());
+            }
+            questionAnswerVo1.setImage(record.getImage());
+            questionAnswerVo1.setQuestionAnalysis(record.getAnalysis());
+            questionAnswerVoList.add(questionAnswerVo1);
+        }
+        return PageResponse.<QuestionAnswerVo>builder()
+                .data(questionAnswerVoList)
+                .total(questionPage.getTotal())
+                .build();
+
     }
 
     private void clearQuestionBankCache(QuestionVo questionVo, RedisUtil redisUtil) {

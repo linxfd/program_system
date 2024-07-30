@@ -1,4 +1,4 @@
-package com.program.utils.CertificateUtil;
+package com.program.utils.certificateUtil;
 
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.BaseFont;

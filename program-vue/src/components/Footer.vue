@@ -1,6 +1,7 @@
 <template>
   <el-footer>
-    <p>测试：D:\Desktop\Learning\program_system\program-vue\src\components\Footer.vue</p>
+    <!-- 登录的下边栏 -->
+    <p>编程云系统</p>
   </el-footer>
 </template>
 

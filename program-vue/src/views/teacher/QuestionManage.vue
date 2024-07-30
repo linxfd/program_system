@@ -48,6 +48,22 @@
         >
           添加
         </el-button>
+
+         <el-button
+          type="primary"
+          icon="el-icon-download"
+          @click="importVisible = true"
+        >
+          导入题目
+        </el-button>
+
+         <el-button
+          type="primary"
+          icon="el-icon-upload2"
+          @click="exportHand"
+        >
+          导出题目
+        </el-button>
       </el-row>
     </el-header>
 
@@ -749,6 +765,110 @@
       </div>
     </el-dialog>
 
+    <el-dialog
+      title="从文件中导入"
+      :visible.sync="importVisible"
+      width="30%"
+      @close="resetAddQuForm"
+      center
+    >
+      <el-form
+        :model="addQuForm"
+        ref="addQuForm"
+        :rules="importFormRules"
+      >
+          <el-form-item
+            label="题目类型"
+            label-width="120px"
+            prop="questionType"
+          >
+            <el-select
+              v-model="addQuForm.questionType"
+              @change="addQuForm.answer = []"
+              placeholder="请选择"
+            >
+              <el-option
+                v-for="item in questionType"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              />
+            </el-select>
+          </el-form-item>
+
+          <el-form-item
+            label="难度等级"
+            label-width="120px"
+            prop="questionLevel"
+          >
+            <el-select
+              v-model="addQuForm.questionLevel"
+              placeholder="请选择"
+            >
+              <el-option
+                :value="parseInt(1)"
+                label="简单"
+              />
+              <el-option
+                :value="parseInt(2)"
+                label="中等"
+              />
+              <el-option
+                :value="parseInt(3)"
+                label="困难"
+              />
+            </el-select>
+          </el-form-item>
+
+          <el-form-item
+            label="归属题库"
+            label-width="120px"
+            prop="bankId"
+          >
+            <el-select
+              multiple
+              v-model="addQuForm.bankId"
+              placeholder="请选择"
+            >
+              <el-option
+                v-for="item in allBank"
+                :key="item.bankId"
+                :label="item.bankName"
+                :value="item.bankId"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+              <el-upload
+                :action="uploadImageUrl + '/teacher/importQurstion'"
+                 name="file"
+                 :data="this.addQuForm"
+                :headers="headers"
+                showUploadList="false"
+                :before-upload="beforeUpload"
+                :on-success="importFile"
+              >
+              <el-button type="primary"> 上传 </el-button>
+            </el-upload>
+          </el-form-item>
+      </el-form>
+
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="importVisible = false">
+          取 消
+        </el-button>
+        <el-button
+          type="primary"
+          @click="importVisible = false"
+        >
+          确 定
+        </el-button>
+      </div>
+    </el-dialog>
+
     <!--图片回显-->
     <el-dialog
       :visible.sync="backShowImgVisible"
@@ -768,6 +888,8 @@ import questionBank from '@/api/questionBank'
 import question from '@/api/question'
 import utils from '@/utils/utils'
 import { generateSign } from '@/utils/sign'
+import { json2excel } from '@/utils/setMethods'
+import { dateToStr } from "@/utils/DateUtil"
 
 export default {
   name: 'QuestionManage',
@@ -836,6 +958,8 @@ export default {
       removeTableVisible: false,
       // 是否显示添加题目的对话框
       addQuTableVisible: false,
+      // 是否显示导入题目对话框
+      importVisible:false,
       // 添加题库的表单信息
       addForm: {
         bankId: ''
@@ -905,6 +1029,29 @@ export default {
             trigger: 'blur'
           }
         ]
+      },
+      importFormRules: {
+        questionType: [
+          {
+            required: true,
+            message: '请选择问题类型',
+            trigger: 'blur'
+          }
+        ],
+        questionLevel: [
+          {
+            required: true,
+            message: '请选择问题难度',
+            trigger: 'blur'
+          }
+        ],
+        bankId: [
+          {
+            required: true,
+            message: '请选择题库',
+            trigger: 'blur'
+          }
+        ],
       },
       // 更新题目表单的验证规则
       updateQuFormRules: {
@@ -980,16 +1127,19 @@ export default {
     },
     // 题目类型变化
     typeChange (val) {
+      this.InitialSizeandCurrentChange()
       this.queryInfo.questionType = val
       this.getQuestionInfo()
     },
     // 题库变化
     bankChange (val) {
+      this.InitialSizeandCurrentChange()
       this.queryInfo.questionBank = val
       this.getQuestionInfo()
     },
     // 题目名字筛选
     contentChange () {
+      this.InitialSizeandCurrentChange()
       // 发送查询题目总数的请求
       this.getQuestionInfo()
     },
@@ -1000,7 +1150,8 @@ export default {
       if(roleId == 2){
         this.queryInfo.createPerson = window.localStorage.getItem('username')
       }
-      question.getQuestion(this.queryInfo).then((resp) => {
+      var params = this.queryInfo;
+      question.getQuestion(params).then((resp) => {
         if (resp.code === 200) {
           this.questionInfo = resp.data.data
           this.total = resp.data.total
@@ -1044,6 +1195,10 @@ export default {
     handleSizeChange (val) {
       this.queryInfo.pageSize = val
       this.getQuestionInfo()
+    },
+    InitialSizeandCurrentChange () {
+      this.queryInfo.pageNo = 1
+      this.queryInfo.pageSize = 10
     },
     // 分页插件的页数
     handleCurrentChange (val) {
@@ -1361,7 +1516,51 @@ export default {
           return false
         }
       })
-    }
+    },
+    // 导入文件
+    importFile(){
+      this.getQuestionInfo()
+      this.$notify({
+        title: 'Tips',
+        message: '新增题目成功',
+        type: 'success',
+        duration: 2000
+      })
+    },
+    beforeUpload (file, fileList) {
+      if (this.addQuForm.bankId.length <=0 || this.addQuForm.bankId === null || this.addQuForm.bankId === ''
+      || this.addQuForm.questionLevel=== '' ||this.addQuForm.questionLevel === null
+      || this.addQuForm.questionType === '' ||this.addQuForm.questionType === null) {
+        this.$message.error('请选择必要信息')
+        return false;
+      }
+
+      return true;
+    },
+    exportHand(){
+      const roleId = window.localStorage.getItem('roleId')
+      // 如果是老师，则只查询自己的题库，管理员可以查看全部
+      if(roleId == 2){
+        this.queryInfo.createPerson = window.localStorage.getItem('username')
+      }
+      var dataSource1 = []
+      question.getQuestionExportHand(this.queryInfo).then((resp) => {
+        if (resp.code === 200) {
+          dataSource1 = [...resp.data.data]
+          let sheetName = dateToStr("yyyyMMdd-HHmmss", new Date) + '题目'
+          var excelDatas = []
+
+          let str = {
+            tHeader: ['问题内容*', '题目所有答案', '答案*', '题目图片','题目解析','答案图片','答案解析'],
+            filterVal: ["quContent", "allOption","trueOption", "image", 'questionAnalysis','images','answerAnalysis'],
+            tableDatas: dataSource1,
+            sheetName: ""
+          }
+          excelDatas.push(str);
+          json2excel(excelDatas, sheetName, true, "xlsx")
+        }
+      })
+    },
   },
   computed: {
     // 监测头部信息的token变化

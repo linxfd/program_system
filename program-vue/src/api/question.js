@@ -48,5 +48,19 @@ export default {
       method: 'get',
       params: params
     })
+  },
+  importQurstion(question){
+    return request({
+      url: '/teacher/importQurstion',
+      method: 'post',
+      data: question
+    })
+  },
+  getQuestionExportHand(queryInfo){
+    return request({
+      url: '/teacher/getQuestionExportHand',
+      method: 'get',
+      params: queryInfo
+    })
   }
 }

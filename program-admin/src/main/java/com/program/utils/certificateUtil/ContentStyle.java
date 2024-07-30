@@ -1,4 +1,4 @@
-package com.program.utils.CertificateUtil;
+package com.program.utils.certificateUtil;
 
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Element;

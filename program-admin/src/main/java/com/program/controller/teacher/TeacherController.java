@@ -1,10 +1,12 @@
 package com.program.controller.teacher;
 
 import com.alibaba.excel.EasyExcel;
+import com.program.model.dto.QuestionDto;
 import com.program.model.dto.StudentExamRecordExcelDto;
 import com.program.model.entity.ExamRecord;
 import com.program.model.entity.Question;
 import com.program.model.entity.QuestionBank;
+import com.program.model.vo.*;
 import com.program.service.ExamRecordService;
 import com.program.service.ExamService;
 import com.program.service.QuestionBankService;
@@ -12,12 +14,6 @@ import com.program.service.QuestionService;
 import com.program.service.UserService;
 import com.program.utils.MinioUtil;
 import com.program.utils.OSSUtil;
-import com.program.model.vo.AddExamByBankVo;
-import com.program.model.vo.AddExamByQuestionVo;
-import com.program.model.vo.CommonResult;
-import com.program.model.vo.PageResponse;
-import com.program.model.vo.QuestionVo;
-import com.program.model.vo.UserInfoVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -313,5 +309,25 @@ public class TeacherController {
                 .autoCloseStream(Boolean.FALSE)
                 .sheet("成绩汇总sheet")
                 .doWrite(examService.getAllStudentScoreByExamId(examId));
+    }
+    @PostMapping("/importQurstion")
+    @ApiOperation("导入题目")
+    public CommonResult importQurstion(QuestionDto questionDto, MultipartFile file) {
+        questionService.importQurstion(questionDto,file);
+        return CommonResult.<Void>builder()
+                .message("更新成功")
+                .build();
+    }
+    @GetMapping("/getQuestionExportHand")
+    @ApiOperation("导出题目")
+    public CommonResult<PageResponse<QuestionAnswerVo>> getQuestionExportHand(@RequestParam(required = false) String questionType,
+                                              @RequestParam(required = false) String questionBank,
+                                              @RequestParam(required = false) String questionContent,
+                                              @RequestParam(required = false) String createPerson,
+                                              Integer pageNo, Integer pageSize) {
+        PageResponse<QuestionAnswerVo> questionAnswerVos = questionService.getQuestionExportHand(questionType,questionBank,questionContent,createPerson,pageNo,pageSize);
+        return CommonResult.<PageResponse<QuestionAnswerVo>>builder()
+                .data(questionAnswerVos)
+                .build();
     }
 }
