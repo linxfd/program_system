@@ -295,20 +295,11 @@ public class TeacherController {
             @ApiImplicitParam(name = "examId", value = "考试id", required = true, dataType = "int", paramType = "query")
     })
     @ApiOperation("根据考试将已阅卷的所有学生成绩导出至Excel")
-    public void exportStudentExamRecordToExcel(HttpServletResponse response, @RequestParam(name = "examId") Integer examId) throws IOException {
-        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        response.setCharacterEncoding("utf-8");
-        String fileName;
-        try {
-            fileName = URLEncoder.encode("Score Excel", "UTF-8").replaceAll("\\+", "%20");
-        } catch (UnsupportedEncodingException e) {
-            fileName = "Score Excel";
-        }
-        response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
-        EasyExcel.write(response.getOutputStream(), StudentExamRecordExcelDto.class)
-                .autoCloseStream(Boolean.FALSE)
-                .sheet("成绩汇总sheet")
-                .doWrite(examService.getAllStudentScoreByExamId(examId));
+    public CommonResult<List<StudentExamRecordExcelDto>> exportStudentExamRecordToExcel(HttpServletResponse response, @RequestParam(name = "examId") Integer examId) throws IOException {
+        List<StudentExamRecordExcelDto> allStudentScoreByExamId = examService.getAllStudentScoreByExamId(examId);
+        return CommonResult.<List<StudentExamRecordExcelDto>>builder()
+                .data(allStudentScoreByExamId)
+                .build();
     }
     @PostMapping("/importQurstion")
     @ApiOperation("导入题目")

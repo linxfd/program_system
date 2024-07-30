@@ -327,6 +327,7 @@ export default {
       })
     },
     operation (v) {
+      this.InitialSizeandCurrentChange()
       if (v === '') this.queryInfo.examId = null
       this.getMyGrade()
     },
@@ -339,6 +340,10 @@ export default {
     handleCurrentChange (val) {
       this.queryInfo.pageNo = val
       this.getMyGrade()
+    },
+    InitialSizeandCurrentChange () {
+      this.queryInfo.pageNo = 1
+      this.queryInfo.pageSize = 10
     },
     // 根据ids查询题目信息
     async getQuestionInfoByIds (questionIds) {

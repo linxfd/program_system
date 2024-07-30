@@ -3,7 +3,7 @@
     <el-header>
       <el-input
         v-model="queryInfo.noticeContent"
-        @blur="getNoticeInfo"
+        @blur="createChange"
         placeholder="搜索公告"
         prefix-icon="el-icon-search"
       />
@@ -333,6 +333,10 @@ export default {
     this.getNoticeInfo()
   },
   methods: { // 获取用户信息
+    createChange () {
+      this.InitialSizeandCurrentChange()
+      this.getNoticeInfo()
+    },
     getNoticeInfo () {
       notice.getAllNotice(this.queryInfo).then((resp) => {
         if (resp.code === 200) {
@@ -362,6 +366,10 @@ export default {
     handleCurrentChange (val) {
       this.queryInfo.pageNo = val
       this.getNoticeInfo()
+    },
+    InitialSizeandCurrentChange () {
+      this.queryInfo.pageNo = 1
+      this.queryInfo.pageSize = 10
     },
     // 功能下拉框被选择
     selectChange (val) {

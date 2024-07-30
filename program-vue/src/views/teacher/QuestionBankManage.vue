@@ -203,6 +203,7 @@ export default {
     },
     // 查询内容变化
     contentChange () {
+      this.InitialSizeandCurrentChange()
       this.getBankInfo()
     },
     // 操作选项的被触发
@@ -257,6 +258,10 @@ export default {
     handleCurrentChange (val) {
       this.queryInfo.pageNo = val
       this.getBankInfo()
+    },
+    InitialSizeandCurrentChange () {
+      this.queryInfo.pageNo = 1
+      this.queryInfo.pageSize = 10
     },
     // 添加题库
     addQuestionBank () {

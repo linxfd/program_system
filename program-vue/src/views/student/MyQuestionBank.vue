@@ -279,6 +279,7 @@ export default {
     },
     // 创建人搜索
     createPersonNameChange (val) {
+      this.InitialSizeandCurrentChange()
       this.queryInfo.createPersonName = val
       this.getBankInfo()
     },
@@ -290,6 +291,7 @@ export default {
     },  
     // 查询内容变化
     contentChange () {
+      this.InitialSizeandCurrentChange()
       this.getBankInfo()
     },
     // 表格部分行被选中
@@ -305,6 +307,10 @@ export default {
     handleCurrentChange (val) {
       this.queryInfo.pageNo = val
       this.getBankInfo()
+    },
+    InitialSizeandCurrentChange () {
+      this.queryInfo.pageNo = 1
+      this.queryInfo.pageSize = 10
     },
     // 显示练习对话框
     showTrainDialog (bankId) {

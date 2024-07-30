@@ -366,35 +366,44 @@ public class ExamServiceImpl extends ServiceImpl<ExamMapper, Exam> implements Ex
 
     @Override
     public List<StudentExamRecordExcelDto> getAllStudentScoreByExamId(Integer examId) {
+        //根据传入的考试ID 根据传入的考试ID，查询考试信息。
         Exam exam = examMapper.selectById(examId);
 
         QueryWrapper<ExamRecord> examRecordQueryWrapper = new QueryWrapper<>();
         examRecordQueryWrapper.eq("exam_id", examId)
                 .isNotNull("total_score");
+        // 根据考试ID查询所有考试记录根据考试ID查询所有考试记录，并筛选出成绩不为空的记录，并筛选出成绩不为空的记录。
         List<ExamRecord> examRecords = examRecordMapper.selectList(examRecordQueryWrapper);
         if (CollectionUtils.isEmpty(examRecords)) {
             return Collections.emptyList();
         }
+        // 提取所有学生的用户ID，并根据这些ID查询用户信息。
         List<Integer> uidList = examRecords.stream()
                 .map(ExamRecord::getUserId)
                 .collect(Collectors.toList());
+        // 过滤出角色为学生的用户，并建立学生ID与学生信息的映射。
         Map<Integer, User> studentExamUserMap = userMapper.selectBatchIds(uidList).stream()
-                .filter(user -> user.getRoleId() == 1)
+                .filter(user -> user.getRoleId() == 3)
                 .collect(Collectors.toMap(User::getId, Function.identity()));
 
+        // 根据考试记录和学生信息，构建StudentExamRecordExcelDto对象，并排序。
         List<StudentExamRecordExcelDto> studentExamRecordExcelDtos = examRecords.stream()
                 .filter(examRecord -> studentExamUserMap.containsKey(examRecord.getUserId()))
                 .map(record -> from(record, exam.getExamName(), studentExamUserMap.get(record.getUserId()).getTrueName()))
                 .sorted(Comparator.comparing(StudentExamRecordExcelDto::getExamTime).reversed())
                 .collect(Collectors.toList());
+
+        //计算客观成绩平均分
         double objectiveAverage = studentExamRecordExcelDtos.stream()
                 .mapToInt(StudentExamRecordExcelDto::getObjectiveScore)
                 .average()
                 .orElse(0D);
+        //计算主观成绩平均分
         double subjectiveAverage = studentExamRecordExcelDtos.stream()
                 .mapToInt(StudentExamRecordExcelDto::getSubjectiveScore)
                 .average()
                 .orElse(0D);
+        //计算总分平均分
         double totalScoreAverage = studentExamRecordExcelDtos.stream()
                 .mapToInt(StudentExamRecordExcelDto::getTotalScore)
                 .average()

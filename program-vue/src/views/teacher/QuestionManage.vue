@@ -1537,6 +1537,7 @@ export default {
 
       return true;
     },
+    //导出
     exportHand(){
       const roleId = window.localStorage.getItem('roleId')
       // 如果是老师，则只查询自己的题库，管理员可以查看全部

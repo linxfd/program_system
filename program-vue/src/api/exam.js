@@ -83,7 +83,6 @@ export default {
       params: {
         examId
       },
-      responseType: 'arraybuffer'
     })
   }
 }

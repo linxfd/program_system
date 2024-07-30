@@ -177,6 +177,7 @@ export default {
       })
     },
     operation (v) {
+      this.InitialSizeandCurrentChange()
       if (v === '') this.queryInfo.examId = null
       this.getExamRecords()
     },
@@ -201,6 +202,10 @@ export default {
     handleCurrentChange (val) {
       this.queryInfo.pageNo = val
       this.getExamRecords()
+    },
+    InitialSizeandCurrentChange () {
+      this.queryInfo.pageNo = 1
+      this.queryInfo.pageSize = 10
     },
     // 检查批阅按钮是否展示
     checkMarkButtonNeedShow (record) {

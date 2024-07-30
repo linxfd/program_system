@@ -18,14 +18,14 @@
       <el-date-picker
         style="margin-left: 5px"
         v-model="queryInfo.startTime"
-        @change="getExamInfo"
+        @change="getExamInfoChange"
         type="date"
         placeholder="考试开始时间"
       />
 
       <el-date-picker
         style="margin-left: 5px"
-        @change="getExamInfo"
+        @change="getExamInfoChange"
         v-model="queryInfo.endTime"
         type="date"
         placeholder="考试结束时间"
@@ -34,7 +34,7 @@
       <el-input
         v-model="queryInfo.examName"
         placeholder="考试名称"
-        @blur="getExamInfo"
+        @blur="getExamInfoChange"
         style="margin-left: 5px;width: 220px"
         prefix-icon="el-icon-search"
       />
@@ -181,6 +181,8 @@
 
 <script>
 import exam from '@/api/exam'
+import { json2excel } from '@/utils/setMethods'
+import { dateToStr } from "@/utils/DateUtil"
 
 export default {
   name: 'ExamManage',
@@ -239,7 +241,12 @@ export default {
   methods: {
     // 考试类型搜索
     typeChange (val) {
+      this.InitialSizeandCurrentChange()
       this.queryInfo.examType = val
+      this.getExamInfo()
+    },
+    getExamInfoChange(){
+      this.InitialSizeandCurrentChange()
       this.getExamInfo()
     },
     // 操作多行表格信息
@@ -319,28 +326,37 @@ export default {
       this.queryInfo.pageNo = val
       this.getExamInfo()
     },
+    InitialSizeandCurrentChange () {
+      this.queryInfo.pageNo = 1
+      this.queryInfo.pageSize = 10
+    },
     downloadStudentExamScore (examId) {
       this.loadingDownloadExcel = true
-      exam.exportStudentExamRecordToExcel(examId).then(res => {
-        const binaryData = []
-        binaryData.push(res)
-        // 获取blob链接
-        this.excelUrl = window.URL.createObjectURL(new Blob(binaryData, { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' }))
-        // 创建完毕,动画结束
-        this.loadingDownloadExcel = false
-        const a = document.createElement('a')
-        a.href = this.excelUrl
-        a.download = '成绩汇总.xlsx'
-        a.click()
-        window.URL.revokeObjectURL(this.excelUrl)
-      }).catch((res) => {
-        this.$notify({
-          title: 'Tips',
-          message: '成绩统计导出失败,请稍后再试',
-          type: 'error',
-          duration: 2000
-        })
-        this.loadingDownloadExcel = false
+      exam.exportStudentExamRecordToExcel(examId).then((res) => {
+        let binaryData = {}
+        binaryData = [...res.data]
+        let sheetName = dateToStr("yyyyMMdd-HHmmss", new Date) + '成绩汇总'
+        var excelDatas = []
+        let str = {
+            tHeader: ['考试名称', '学生名称', '客观成绩', '主观成绩','总得分','考试时间'],
+            filterVal: ["examName", "studentName","objectiveScore", "subjectiveScore", 'totalScore','examTime'],
+            tableDatas: binaryData,
+            sheetName: ""
+          }
+          excelDatas.push(str);
+          json2excel(excelDatas, sheetName, true, "xlsx")
+          this.loadingDownloadExcel = false
+        // binaryData.push(res)
+        // // 获取blob链接
+        // this.excelUrl = window.URL.createObjectURL(new Blob(binaryData, { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' }))
+        // // 创建完毕,动画结束
+        // this.loadingDownloadExcel = false
+        // const a = document.createElement('a')
+        // a.href = this.excelUrl
+        // a.download = '成绩汇总.xlsx'
+        // a.click()
+        // window.URL.revokeObjectURL(this.excelUrl)
+
       })
     }
   }

@@ -18,7 +18,7 @@
       <el-input
         v-model="queryInfo.examName"
         placeholder="考试名称"
-        @blur="getExamInfo"
+        @blur="contentChange"
         style="margin-left: 5px;width: 220px"
         prefix-icon="el-icon-search"
       />
@@ -231,16 +231,24 @@ export default {
   methods: {
     // 考试类型搜索
     typeChange (val) {
+      this.InitialSizeandCurrentChange()
       this.queryInfo.examType = val
+      this.getExamInfo()
+    },
+    // 考试名称搜索
+    contentChange () {
+      this.InitialSizeandCurrentChange()
       this.getExamInfo()
     },
     // 创建人搜索
     createPersonNameChange (val) {
+      this.InitialSizeandCurrentChange()
       this.queryInfo.createPersonName = val
       this.getExamInfo()
     },
+
     getCreatePerson(createPerson){
-      
+
       const cPnName = this.createPersonName.find(user => user.username === createPerson)
       return cPnName ? cPnName.trueName : '未知'
     },  
@@ -274,6 +282,10 @@ export default {
     handleCurrentChange (val) {
       this.queryInfo.pageNo = val
       this.getExamInfo()
+    },
+    InitialSizeandCurrentChange () {
+      this.queryInfo.pageNo = 1
+      this.queryInfo.pageSize = 10
     },
     // 去考试准备页面
     toStartExam (row) {

@@ -3,13 +3,13 @@
     <el-header>
       <el-input
         v-model="queryInfo.username"
-        @blur="getUserInfo"
+        @blur="usernameChange"
         placeholder="搜索登录名"
         prefix-icon="el-icon-search"
       />
       <el-input
         v-model="queryInfo.trueName"
-        @blur="getUserInfo"
+        @blur="trueNameChange"
         placeholder="搜索姓名"
         prefix-icon="el-icon-search"
         style="margin-left: 5px"
@@ -527,7 +527,16 @@ export default {
       const roleNameObj = this.roleName.find(role => role.id === roleId)
       return roleNameObj ? roleNameObj.roleName : '未知角色'
     },
+    trueNameChange(){
+      this.InitialSizeandCurrentChange()
+      this.getUserInfo()
+    },
+    usernameChange(){
+      this.InitialSizeandCurrentChange()
+      this.getUserInfo()
+    },
     typeChange (val) {
+      this.InitialSizeandCurrentChange()
       this.queryInfo.roleId = val
       this.getUserInfo()
     },
@@ -621,6 +630,10 @@ export default {
       // this.addForm = {}
       this.uerVisible = '添加用户'
       this.addTableVisible = true
+    },
+    InitialSizeandCurrentChange () {
+      this.queryInfo.pageNo = 1
+      this.queryInfo.pageSize = 10
     },
     // 添加或更新用户
     addUser () {
