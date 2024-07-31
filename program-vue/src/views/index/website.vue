@@ -10,13 +10,13 @@
 
     <div class="container">
         <div
-          v-for="(item,index) in classidiedList"
-          :key="index"
+          v-for="item in classificationList"
+          :key="item.id"
           class="divMain classidiedbutton"
-          @click="selectItem(index)"
-          :class="currentIndex === index? 'black' : 'white'"
+          @click="selectItem(item.id)"
+          :class="currentIndex === item.id? 'black' : 'white'"
         >
-            <p class="p_classidied">{{item}}</p>
+            <p class="p_classidied">{{item.name}}</p>
           </div>
     </div>
 
@@ -46,7 +46,7 @@ export default {
   data(){
     return{
       response:{},
-      classidiedList:{},
+      classificationList:{},
       queryParams: {
         pageNum: 1,
         pageSize: 10,
@@ -63,16 +63,17 @@ export default {
   created () {
     
     this.getList()
-    this.getClassidied()
+    // this.getClassidied()
+    this.getClassificationList()
   },
   methods:{
     selectItem(index) {
       this.currentIndex = index; // 更新当前选中的元素索引
       
-      this.queryParams.classified = this.classidiedList[this.currentIndex];
+      this.queryParams.classificationId = index;
       // 如果当前索引为 0 “全部”，则将 classified 设置为空字符串
       if (this.currentIndex === 0) {
-        this.queryParams.classified = '';
+        this.queryParams.classificationId = '';
       }
       this.getList()
     },
@@ -83,10 +84,16 @@ export default {
           }
         });
     },
-    getClassidied() {
-      website.getClassidied().then((resp) => {
+    getClassificationList() {
+      const queryParams = {
+              pageNum: 1,
+              pageSize: 999,
+            }
+      website.getClassificationList(queryParams).then((resp) => {
         if (resp.code == 200){
-            this.classidiedList = resp.data;
+            this.classificationList = resp.data.data;
+            // 在数组开头添加一个元素
+            this.classificationList.unshift({id:0,name:'全部'});
         }
       });
     },
