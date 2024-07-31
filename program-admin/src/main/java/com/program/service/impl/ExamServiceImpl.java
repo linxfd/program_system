@@ -124,6 +124,7 @@ public class ExamServiceImpl extends ServiceImpl<ExamMapper, Exam> implements Ex
                 break;
             case 3:
                 Map<String, Object> map = new HashMap<>();
+                // 删除考试信息
                 for (String s : id) {
                     map.clear();
                     map.put("exam_id", Integer.parseInt(s));
@@ -316,9 +317,11 @@ public class ExamServiceImpl extends ServiceImpl<ExamMapper, Exam> implements Ex
         }
         List<Exam> exams = examMapper.selectList(ew);
         QueryWrapper<ExamRecord> erWrapper = new QueryWrapper<ExamRecord>();
+        // 获得考试id
         List<Integer> collect = exams.stream().map(Exam::getExamId).collect(Collectors.toList());
         erWrapper.in("exam_id",collect);
 
+        //获得对应考试的分数
         List<ExamRecord> examRecords = examRecordMapper.selectList(erWrapper);
         // 考试的名称
         String[] examNames = new String[exams.size()];

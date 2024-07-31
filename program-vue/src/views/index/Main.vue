@@ -22,15 +22,19 @@
           </span>
         </el-menu-item>
 
-        <!-- 单独的导航 -->
+        
+        <!-- 顶层导航 -->
         <el-menu-item
-          @click="changeBreadInfo(menuInfo[0].topMenuName,menuInfo[0].topMenuName,menuInfo[0].url)"
-          index="/dashboard"
-          v-if="!menuInfo[0].children"
+          v-for="(menu,index) in menuInfo"
+          :key="index"
+          v-if="!menu.children"
+          :index="menu.url"
+          @click="changeBreadInfo(menu.topMenuName,menu.topMenuName,menu.url)"
         >
-          <i :class="menuInfo[0].topIcon" />
-          <span slot="title">{{ menuInfo[0].topMenuName }}</span>
+          <i :class="menu.topIcon" />
+          <span slot="title">{{ menu.topMenuName }}</span>
         </el-menu-item>
+
 
         <!--具有子导航的-->
         <el-submenu
@@ -52,7 +56,7 @@
               v-for="(sub,index) in menu.children"
               :key="index"
             >
-              <i :class="sub.icon" />
+              <i :class="sub.topIcon" />
               <span slot="title">{{ sub.topMenuName }}</span>
             </el-menu-item>
           </el-menu-item-group>

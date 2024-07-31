@@ -4,11 +4,9 @@
     style="height: 100%"
   >
     <div>
+
       <h1 class="title">
-        <a
-          href="https://gitee.com/wzhouzhou/exam_system"
-          target="_blank"
-        >编程云系统</a>
+        编程云系统
       </h1>
 
       <el-row>

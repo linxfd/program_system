@@ -30,6 +30,11 @@ const routes = [
         path: '/dashboard',
         component: () => import('../views/index/Dashboard')
       },
+      // 网站推荐(all)
+      {
+        path: '/website',
+        component: () => import('../views/index/website')
+      },
       // 用户管理(超级管理员)
       {
         path: '/userManage',
