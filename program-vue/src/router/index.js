@@ -38,7 +38,12 @@ const routes = [
       // 网站管理(超级管理员)
       {
         path: '/websiteAdim',
-        component: () => import('../views/admin/website/index')
+        component: () => import('../views/admin/website/websiteAdim')
+      },
+      // 网站分类管理(超级管理员)
+      {
+        path: '/websiteClassificationAdim',
+        component: () => import('../views/admin/website/websiteClassificationAdim')
       },
       // 用户管理(超级管理员)
       {

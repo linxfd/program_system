@@ -3,6 +3,7 @@ package com.program.controller.common;
 import com.program.model.entity.Exam;
 import com.program.model.entity.User;
 import com.program.model.entity.Website;
+import com.program.model.entity.WebsiteClassification;
 import com.program.service.*;
 import com.program.model.vo.*;
 import io.swagger.annotations.Api;
@@ -30,6 +31,10 @@ public class PublicController {
 
     @Autowired
     private WebsiteService websiteService;
+
+    @Autowired
+    private WebsiteClassificationService websiteClassificationService;
+
     @Autowired
     private UserService userService;
 
@@ -123,12 +128,22 @@ public class PublicController {
                 .data(list)
                 .build();
     }
-    @ApiOperation(value = "获得网站分类")
-    @GetMapping("/website/getClassidied")
-    public CommonResult getClassidied(){
-        List<String> list =websiteService.getClassidied();
-        return CommonResult.<List<String>>builder()
+//    @ApiOperation(value = "获得网站分类列表")
+//    @GetMapping("/website/getClassidied")
+//    public CommonResult getClassidied(){
+//        List<String> list =websiteClassificationService.getClassidied();
+//        return CommonResult.<List<String>>builder()
+//                .data(list)
+//                .build();
+//    }
+
+    @ApiOperation(value = "获得网站分类列表列表")
+    @PostMapping("/website/ClassificationList")
+    public CommonResult getClassificationList(@RequestBody WebsiteClassificationVo WebsiteClassificationVo){
+        PageResponse<WebsiteClassification> list = websiteClassificationService.pageList(WebsiteClassificationVo);
+        return CommonResult.<PageResponse<WebsiteClassification>>builder()
                 .data(list)
                 .build();
     }
+
 }

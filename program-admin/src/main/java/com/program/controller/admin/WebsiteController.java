@@ -4,7 +4,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.program.model.entity.Website;
+import com.program.model.entity.WebsiteClassification;
 import com.program.model.vo.*;
+import com.program.service.WebsiteClassificationService;
 import com.program.service.WebsiteService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,8 @@ public class WebsiteController  {
     @Autowired
     private WebsiteService websiteService;
 
+    @Autowired
+    private WebsiteClassificationService websiteClassificationService;
 
 
     @ApiOperation(value = "网站详情")
@@ -54,6 +58,26 @@ public class WebsiteController  {
     @GetMapping("/remove/{ids}")
     public CommonResult remove(@PathVariable Integer[] ids){
         boolean b = websiteService.removeByIds(Arrays.asList(ids));
+        return CommonResult.build(b, CommonResultEnum.SUCCESS_DELETE);
+    }
+
+    @ApiOperation(value = "网站分类新增")
+    @PostMapping("/addClassification")
+    public CommonResult addClassification(@RequestBody WebsiteClassification websiteClassification){
+        websiteClassificationService.save(websiteClassification);
+        return CommonResult.build(null, CommonResultEnum.SUCCESS_ADD);
+    }
+
+    @ApiOperation(value = "网站分类修改")
+    @PostMapping("/editClassification")
+    public CommonResult editClassification(@RequestBody WebsiteClassification websiteClassification){
+        websiteClassificationService.updateById(websiteClassification);
+        return CommonResult.build(null, CommonResultEnum.SUCCESS_QUERY);
+    }
+    @ApiOperation(value = "网站分类删除")
+    @GetMapping("/removeClassification/{ids}")
+    public CommonResult removeClassification(@PathVariable Integer[] ids){
+        boolean b = websiteClassificationService.removeByIds(Arrays.asList(ids));
         return CommonResult.build(b, CommonResultEnum.SUCCESS_DELETE);
     }
 }

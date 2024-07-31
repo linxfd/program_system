@@ -14,13 +14,24 @@
            @blur="handleQuery"
            clearable class="inp"/>
         </el-form-item>
-        <el-form-item label="网站分类" prop="classified">
-          <el-input v-model="queryParams.classified" placeholder="请输入网站分类" 
-           @keyup.enter.native="handleQuery"
-           @blur="handleQuery"
-           clearable class="inp"/>
-        </el-form-item>
-        <el-form-item label="网站注解" prop="notes">
+      分类
+        <el-select
+          label="网站sd"
+          @change="typeChange"
+          clearable
+          v-model="queryParams.classificationId"
+          placeholder="请选择网站分类"
+          style="margin-left: 5px"
+        >
+          <el-option
+            v-for="item in classificationList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          />
+        </el-select>
+
+        <el-form-item label="网站注解" prop="notes" style="margin-left: 5px">
           <el-input v-model="queryParams.notes" placeholder="请输入网站注解" 
            @keyup.enter.native="handleQuery"
            @blur="handleQuery"
@@ -66,7 +77,14 @@
             <img :src="scope.row.icon" alt="" style="width: 50px;height: 50px;">
           </template>
         </el-table-column>
-        <el-table-column label="网站分类" align="center" prop="classified" />
+        <el-table-column
+            align="center"
+            label="网站分类"
+          >
+            <template slot-scope="scope">
+              <span >{{getClassification(scope.row.classificationId) }}</span>
+            </template>
+          </el-table-column>
         <el-table-column label="网站注解" align="center" prop="notes" />
         <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
           <template slot-scope="scope" >
@@ -104,8 +122,23 @@
         <el-form-item label="网址" prop="url">
           <el-input v-model="form.url" placeholder="请输入网址" clearable/>
         </el-form-item>
-        <el-form-item label= '网站分类' prop="classified">
-          <el-input v-model="form.classified" placeholder="请输入网站分类" clearable/>
+
+        <el-form-item
+          label="网站分类"
+          label-width="120px"
+          prop="roleId"
+        >
+          <el-select
+            v-model="form.classificationId"
+            placeholder="请选择用户权限"
+          >
+            <el-option
+              v-for="item in classificationList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="网站图标" prop="icon">
           <el-input v-model="form.icon" placeholder="默认为/favicon.ico" clearable/>
@@ -141,12 +174,15 @@ export default {
       dialogName:'添加',
       // 下拉框所选择的数据
       selected: '',
+      // 网站分类数据
+      classificationList:{},
       queryParams: {
         pageNum: 1,
         pageSize: 10,
         notes: null,
         name: null,
         isDeleted: null,
+        classificationId: null,
         orderByColumn: 'id',
         isAsc: 'desc'
       },
@@ -171,6 +207,7 @@ export default {
   },
   created() {
     this.getList();
+    this.getClassificationList();
   },
   methods: {
     getList() {
@@ -179,6 +216,26 @@ export default {
             this.response = resp.data;
         }
       });
+    },
+     getClassificationList() {
+      const queryParams = {
+              pageNum: 1,
+              pageSize: 999,
+            }
+      website.getClassificationList(queryParams).then((resp) => {
+        if (resp.code == 200){
+            this.classificationList = resp.data.data;
+        }
+      });
+    },
+    getClassification(roleId){
+      const classObj = this.classificationList.find(classif => classif.id === roleId)
+      return classObj ? classObj.name : '未知分类'
+     },
+    typeChange (val) {
+      this.InitialSizeandCurrentChange()
+      this.queryParams.classificationId = val
+      this.getList()
     },
     handleQuery() {
       this.queryParams.pageNum = 1;

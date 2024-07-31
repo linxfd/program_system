@@ -26,6 +26,6 @@ public class Website extends CommonEntity{
     @ApiModelProperty(value = "网站名称")
     private String name;
 
-    @ApiModelProperty(value = "网站分类")
-    private String classified;
+    @ApiModelProperty(value = "网站分类id")
+    private Integer classificationId;
 }

@@ -34,23 +34,28 @@ public class WebsiteServiceImpl extends ServiceImpl<WebsiteMapper, Website> impl
     @Autowired
     private WebsiteMapper websiteMapper;
 
+
+
     @Override
     public PageResponse<Website> pageList(WebsiteVo websiteVo) {
         IPage<Website> websitePage = new Page<>(websiteVo.getPageNum(), websiteVo.getPageSize());
-        // 查询条件
 
+        // 查询条件
         Map<String, Object> queryParams = new HashMap<>();
         queryParams.put("notes", websiteVo.getNotes());
         queryParams.put("name", websiteVo.getName());
         queryParams.put("url", websiteVo.getUrl());
-        queryParams.put("classified", websiteVo.getClassified());
         QueryWrapper<Website> wrapper = new QueryWrapper<>();
         // 模糊查询
         setLikeWrapper(wrapper, queryParams);
+        if (!NotUtils.isNotUtils(websiteVo.getClassificationId())) {
+            wrapper.eq("classification_id", websiteVo.getClassificationId());
+        }
+
         // 查询未删除的数据
         wrapper.eq("is_deleted", 0);
         // 排序
-        wrapper.orderByAsc( "classified","name");
+        wrapper.orderByAsc( "name");
         wrapper.orderByDesc("create_time");
 
         websitePage = websiteMapper.selectPage(websitePage, wrapper);
@@ -67,17 +72,5 @@ public class WebsiteServiceImpl extends ServiceImpl<WebsiteMapper, Website> impl
         websiteMapper.insert(website);
     }
 
-    @Override
-    public List<String> getClassidied() {
-        // 查询所有分类
-        List<Website> websites = websiteMapper.selectList(new QueryWrapper<Website>().eq("is_deleted", IsDeleted.NOT_DELETED));
-        List<String> strings = websites.stream()
-                .map(Website::getClassified)
-                .distinct()
-                .sorted()
-                .collect(Collectors.toList());
-        // 在头部插入全部，刚刚开始是全部查询
-        strings.add(0, "全部");
-        return strings;
-    }
+
 }

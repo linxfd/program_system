@@ -35,4 +35,33 @@ export default {
             method: 'get',
         })
     },
+
+    // 分类管理
+    getClassificationList(queryParams){
+        return request({
+            url: '/public/website/ClassificationList',
+            method: 'post',
+            data: queryParams
+        })
+    },
+    editClassification(queryParams){
+        return request({
+            url: '/admin/website/editClassification',
+            method: 'post',
+            data: queryParams
+        })
+    },
+    removeClassification(ids){
+        return request({
+            url: `/admin/website/removeClassification/${ids}`,
+            method: 'get',
+        })
+    },
+    addClassification(queryParams){
+        return request({
+            url: '/admin/website/addClassification',
+            method: 'post',
+            data: queryParams
+        })
+    },
 }

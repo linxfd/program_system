@@ -18,6 +18,6 @@ public interface WebsiteService extends IService<Website>{
     // 添加
     void saveWebsite(Website website);
 
-    // 获得网站分类
-    List<String> getClassidied();
+
+
 }
