@@ -35,6 +35,11 @@ const routes = [
         path: '/website',
         component: () => import('../views/index/website')
       },
+      // 网站管理(超级管理员)
+      {
+        path: '/websiteAdim',
+        component: () => import('../views/admin/website/index')
+      },
       // 用户管理(超级管理员)
       {
         path: '/userManage',

@@ -2,16 +2,15 @@ package com.program.controller.common;
 
 import com.program.model.entity.Exam;
 import com.program.model.entity.User;
-import com.program.service.ExamService;
-import com.program.service.NoticeService;
-import com.program.service.QuestionBankService;
+import com.program.model.entity.Website;
+import com.program.service.*;
 import com.program.model.vo.*;
-import com.program.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +28,8 @@ public class PublicController {
 
     private final QuestionBankService questionBankService;
 
+    @Autowired
+    private WebsiteService websiteService;
     @Autowired
     private UserService userService;
 
@@ -112,6 +113,22 @@ public class PublicController {
     public CommonResult getCreatePersonName() {
         return CommonResult.<List<User>>builder()
                 .data(userService.getCreatePersonName())
+                .build();
+    }
+    @ApiOperation(value = "获得网站列表")
+    @PostMapping("/website/list")
+    public CommonResult list(@RequestBody WebsiteVo websiteVo){
+        PageResponse<Website> list = websiteService.pageList(websiteVo);
+        return CommonResult.<PageResponse<Website>>builder()
+                .data(list)
+                .build();
+    }
+    @ApiOperation(value = "获得网站分类")
+    @GetMapping("/website/getClassidied")
+    public CommonResult getClassidied(){
+        List<String> list =websiteService.getClassidied();
+        return CommonResult.<List<String>>builder()
+                .data(list)
                 .build();
     }
 }
