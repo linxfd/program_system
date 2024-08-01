@@ -90,15 +90,11 @@ const getCode = () => {
 // 点击图片刷新验证码
 const changeCode = () => {
   const codeImg = document.querySelector('#code')
-  const phoneCodeImg = document.querySelector('#phoneCode')
-  
+
   codeId = utils.getRandomId()
   // 账户登录验证码
   codeImg.src = `${process.env.VUE_APP_CAPTCHA_URL}/util/getCodeImg?id=` + codeId
   codeImg.onload = () => getCode()
-  // 手机登录验证码
-  phoneCodeImg.src= `${process.env.VUE_APP_CAPTCHA_URL}/util/getCodeImg?id=` + codeId
-  phoneCodeImg.onload = () => getCode()
 }
 const toRegisterPage = () => {
   router.push('/register')
@@ -133,7 +129,6 @@ const login = (formEl) => {
 }
 // 手机号登录
 const phoneLogin = (formEl) => {
-  utils.validFormAndInvoke(formEl, () => {
     auth.phoneLogin(phoneLoginForm).then(resp => {
       if (resp.code === 200) {
         localStorage.setItem('authorization', resp.data)
@@ -144,6 +139,8 @@ const phoneLogin = (formEl) => {
           duration: 2000
         })
         router.push('/index')
+        // 清空表单
+        this.phoneLoginForm.resetFields()
       }
     }).catch(err => {
       console.log(err)
@@ -156,7 +153,22 @@ const phoneLogin = (formEl) => {
         type: 'error',
         duration: 2000
       })
+      // 清空验证码
+      phoneLoginForm.codePhone = ''
     })
+    
+}
+//发送手机验证码 
+const sendCode = () => {
+  auth.sendValidateCode(phoneLoginForm.phone).then(resp => {
+    if (resp.code === 200) {
+      Vue.prototype.$notify({
+        title: 'Tips',
+        message: '验证码已发送',
+        type: 'success',
+        duration: 2000
+      })
+    }
   })
 }
 
@@ -170,5 +182,6 @@ export default {
   changeCode,
   toRegisterPage,
   login,
-  phoneLogin
+  phoneLogin,
+  sendCode
 }

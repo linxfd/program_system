@@ -28,7 +28,7 @@ public class MinioUtil {
             // 创建一个Minio的客户端对象，配置好Minio的连接信息连接服务器地址、用户名、密码和桶信息等等
             MinioClient minioClient = MinioClient.builder()
                     .endpoint(minioProperties.getEndpointUrl())
-                    .credentials(minioProperties.getAccessKey(), minioProperties.getSecreKey())
+                    .credentials(minioProperties.getAccessKey(), minioProperties.getSecretKey())
                     .build();
 
             // 判断桶是否存在

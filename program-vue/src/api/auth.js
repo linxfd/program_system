@@ -27,6 +27,12 @@ export default {
       method: 'get'
     })
   },
+  sendValidateCode (phone) {
+    return request({
+      url: `/util/sendValidateCode/${phone}`,
+      method: 'get'
+    })
+  },
   register (registerUser) {
     return request({
       url: '/common/register',

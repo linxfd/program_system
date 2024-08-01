@@ -20,7 +20,7 @@ public class MinioProperties {
     // 访问minio服务器的用户名
     private String accessKey;
     // 访问minio服务器的密码
-    private String secreKey;
+    private String secretKey;
     // 存储桶名称
     private String bucketName;
 }

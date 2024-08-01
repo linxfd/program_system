@@ -48,17 +48,18 @@ mybatis-plus:
 #    # 配置日志
 #    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
+#配置信息，不支持驼峰命名法，以-分隔
 program:
   config:
     # 上传文件Minio-自定义配置
     minio:
-      endpointUrl: http://127.0.0.1:9000
-      accessKey: minioadmin
-      secreKey: minioadmin
+      endpoint-url: http://127.0.0.1:9000
+      access-key: minioadmin
+      secret-key: minioadmin
       bucketName: program-bucket
     validate-code:
-      appCode: b51a8a5989f24168a0071142bd8ed8ff
-      appSecret: tYhSg87MPl7wRGHc8eWIStXj1U5FySlH
-      templateId: CST_ptdie100
+      app-code: b51a8a5989f24168a0071142bd8ed8ff
+      app-secret: tYhSg87MPl7wRGHc8eWIStXj1U5FySlH
+      template-id: CST_ptdie100
 
 

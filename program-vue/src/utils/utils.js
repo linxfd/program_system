@@ -13,25 +13,25 @@ const validFormAndInvoke = (formEl, success, message = '信息有误', fail = fu
     return
   }
   formEl.validate(valid => {
-    if (valid) { // form valid succeed
-      // do success function
+    if (valid) { // form valid succeed 表格有效成功
+      // do success function 执行成功函数
       success()
-      // reset fields
+      // reset fields 重置的字段
       formEl.resetFields()
-    } else { // form valid fail
+    } else { 
       Vue.prototype.$notify({
         title: 'Tips',
         message: message,
         type: 'error',
         duration: 2000
       })
-      // do something when fail
+      // do something when fail失败时做点什么
       fail()
       return false
     }
   })
 }
-// check token and router link
+// check token and router link 检查令牌和路由器链路
 const checkToken = (to) => {
   if (localStorage.getItem('authorization') !== null) {
     auth.checkToken()

@@ -61,7 +61,7 @@ public class UtilController {
                 .build();
     }
 
-    @GetMapping(value = "/sendCode/{phone}")
+    @GetMapping(value = "/sendValidateCode/{phone}")
     public CommonResult sendValidateCode(@PathVariable String phone) {
         utilService.sendValidateCode(phone);
         return CommonResult.build(null, CommonResultEnum.SUCCESS);

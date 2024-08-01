@@ -5,16 +5,15 @@
         class="box-card"
         shadow="always"
       >
-        <!-- <div
-          slot="header"
+       <div
           class="card-header"
         >
           <p>编程云</p>
-        </div> -->
+        </div> 
 
         <div>
-          <el-tabs v-model="activeName" @tab-click="handleClick">
-            <el-tab-pane label="账户登录" name="account">
+          <el-tabs v-model="activeName" @tab-click="handleClick" >
+            <el-tab-pane label="账户登录"  name="account" >
               <el-form
                 :model="loginForm"
                 :rules="loginFormRules"
@@ -94,26 +93,14 @@
                   <el-input
                     class="code"
                     prefix-icon="el-icon-chat-line-round"
-                    v-model="phoneLoginForm.code"
-                    placeholder="验证码"
-                  />
-                  <img
-                    @click="changeCode"
-                    id="phoneCode"
-                    style="float: right;margin-top: 4px;cursor: pointer"
-                    title="看不清,点击刷新"
-                    alt="验证码"
-                  >
-                </el-form-item>
-
-                <el-form-item prop="code">
-                  <el-input
-                    class="code"
-                    prefix-icon="el-icon-chat-line-round"
                     v-model="phoneLoginForm.codePhone"
                     placeholder="手机验证码"
                   />
+                  <button class="zbutton" @click="getPhoneCode">获取验证码</button>
+                  <p class="p-phone">未注册手机号验证通过后将自动注册</p>
                 </el-form-item>
+
+
 
                 <el-form-item>
                   <el-button
@@ -162,10 +149,13 @@ export default {
   created () {
     // 检验用户是否存在token,存在直接跳转主页
     utils.checkToken('/index')
+  
   },
   mounted () {
     loginFunc.changeCode()
   },
+  // updated () {
+  // },
   methods: {
     onEnterLogin () {
       this.login(this.$refs.loginForm)
@@ -176,12 +166,45 @@ export default {
     // tab标签点击事件
     handleClick(tab, event) {
         console.log(tab, event);
-    }
+    },
+    getPhoneCode(){
+      if (this.phoneLoginForm.phone == ''){
+        this.$notify({
+          title: 'Tips',
+          message: '请输入手机号',
+          type: 'error',
+          duration: 2000
+        })
+        return;
+      }
+      this.sendCode()
+    },
   }
 }
 </script>
 
 <style scoped lang="scss">
 @import "../../assets/css/auth/login";
+  .zbutton {
+    width: 23%;
+    height: 10%;
+    padding: 10px 10px;
+    color: #333;
+    position: relative;
+    margin: 10px; /* 设置项目的外边距 */
+    font-size: 2px;
+    text-align: center;
+    text-decoration: none;
+    color: #333;
+    background-color: white;
+    border: 2px solid #e3e2e2;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    overflow: hidden;
+  }
+  .p-phone{
+    color: #999;
+  }
 
 </style>

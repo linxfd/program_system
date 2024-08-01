@@ -188,7 +188,6 @@
           <el-form-item label="用户名">
             <el-input
               v-model="currentUserInfo2.username"
-              disabled
             />
           </el-form-item>
 
@@ -205,6 +204,16 @@
           >
             <el-input
               v-model="currentUserInfo2.password"
+              placeholder="不更改请留空"
+            />
+          </el-form-item>
+          
+          <el-form-item
+            label="再次输入密码"
+            prop="passwordfun"
+          >
+            <el-input
+              v-model="currentUserInfo2.passwordfun"
               placeholder="不更改请留空"
             />
           </el-form-item>
@@ -247,6 +256,19 @@ export default {
       } else {
         callback()
       }
+    }
+    const validatePasswordfun = (rule, value, callback) => {
+      debugger
+      if (value === '') {
+        callback()
+      } else if (value.length < 5) {
+        callback(new Error('新密码少于5位数!'))
+      } else if(value != this.currentUserInfo2.password){
+        callback(new Error('两次密码不一致'))
+      }else{
+        callback()
+      }
+      
     }
     return {
       // 菜单信息
@@ -300,6 +322,12 @@ export default {
         password: [
           {
             validator: validatePassword,
+            trigger: 'blur'
+          }
+        ],
+        passwordfun: [
+          {
+            validator: validatePasswordfun,
             trigger: 'blur'
           }
         ]

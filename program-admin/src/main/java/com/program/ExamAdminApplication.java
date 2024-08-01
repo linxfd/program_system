@@ -1,6 +1,5 @@
 package com.program;
 
-import cn.hutool.core.text.csv.CsvUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -9,7 +8,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @EnableSwagger2
-@ComponentScan(basePackages = {"com.program"})
+//@ComponentScan(basePackages = {"com.program"})
 @SpringBootApplication
 @EnableTransactionManagement //开启注解方式的事务管理
 public class ExamAdminApplication {
