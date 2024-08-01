@@ -56,3 +56,9 @@ program:
       accessKey: minioadmin
       secreKey: minioadmin
       bucketName: program-bucket
+    validate-code:
+      appCode: b51a8a5989f24168a0071142bd8ed8ff
+      appSecret: tYhSg87MPl7wRGHc8eWIStXj1U5FySlH
+      templateId: CST_ptdie100
+
+

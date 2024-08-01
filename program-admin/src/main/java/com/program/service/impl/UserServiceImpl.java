@@ -6,21 +6,21 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.program.annotation.Cache;
+import com.program.model.dict.DictRole;
 import com.program.model.dto.*;
 import com.program.model.entity.User;
 import com.program.exception.BusinessException;
 import com.program.exception.CommonErrorCode;
 import com.program.mapper.UserMapper;
-import com.program.utils.NotUtils;
+import com.program.utils.*;
 import com.program.model.vo.UserVo;
 import com.program.service.UserService;
-import com.program.utils.JwtUtils;
-import com.program.utils.SaltEncryption;
 import com.program.model.vo.PageResponse;
 import com.program.model.vo.UserInfoVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -36,6 +36,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     private final UserMapper userMapper;
 
+    private final RedisUtil redisUtil;
+
     @Override
     public String register(RegisterDto registerDto) {
         if (!checkUsername(registerDto.getUsername())) {
@@ -49,7 +51,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         BeanUtils.copyProperties(registerDto, user);
         user.setPassword(newPwd);
         user.setSalt(salt);
-        user.setRoleId(1);
+        user.setRoleId(DictRole.ROLE_STUDENT);
+        user.setPhone(registerDto.getPhone());
         user.setCreateTime(new Date());
 
         userMapper.insert(user);
@@ -71,6 +74,37 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         String saltPassword = SaltEncryption.saltEncryption(loginDto.getPassword(), user.getSalt());
         // 对用户输入的密码加密后 对比数据库的密码 并且用户的状态是正常的
         if (saltPassword.equals(user.getPassword()) && user.getStatus() == 1) {
+            // 发放token令牌
+            return JwtUtils.createToken(user);
+        } else {
+            // 密码错误 或者 账号封禁
+            throw new BusinessException(CommonErrorCode.E_100101);
+        }
+    }
+
+    @Override
+    public String phoneLogin(PhoneLoginDto phoneLogin) {
+        User user = userMapper.selectOne(new QueryWrapper<User>().eq("phone", phoneLogin.getPhone()));
+        // 判断是否已经发送验证码
+        String code = (String)redisUtil.get("phone:code:" + phoneLogin.getPhone());
+
+        if(phoneLogin.getCodePhone() == null || !phoneLogin.getCodePhone().equals(code)) {
+            throw new BusinessException(CommonErrorCode.E_100104);
+        }
+        // 用户不存在, 则自动注册
+        if (user == null) {
+            //生成随机用户名
+            String name = RandomUtils.generateUsername();
+            String password = RandomUtils.generateUsername();
+            RegisterDto registerDto = new RegisterDto();
+            registerDto.setUsername(name);
+            registerDto.setPassword(password);
+            registerDto.setPhone(phoneLogin.getPhone());
+            return register(registerDto);
+        }
+
+        // 用户存在判断状态是否正常的
+        if (user.getStatus() == 1) {
             // 发放token令牌
             return JwtUtils.createToken(user);
         } else {
@@ -147,6 +181,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         User user = addUserDto.toUser();
         user.setPassword(newPwd);
         user.setSalt(salt);
+        user.setRoleId(addUserDto.getRoleId());
         user.setPhone(addUserDto.getPhone());
         user.setCreateTime(new Date());
         userMapper.insert(user);
@@ -215,6 +250,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         List<User> createPersonName = userMapper.getCreatePersonName();
         return createPersonName;
     }
+
+
 
     public Boolean checkeditUserPhone(User user) {
         // 查询当前用户,如果当前用户名没有变化，则直接返回true

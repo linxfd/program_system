@@ -51,4 +51,6 @@ public interface UserService extends IService<User> {
     // 获取所有角色是老师的用户
     List<User> getCreatePersonName();
 
+    // 手机号登录
+    String phoneLogin(PhoneLoginDto phoneLogin);
 }

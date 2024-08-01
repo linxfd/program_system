@@ -8,6 +8,13 @@ export default {
       data: loginUser
     })
   },
+  phoneLogin (phone) {
+    return request({
+      url: '/common/phoneLogin',
+      method: 'post',
+      data: phone
+    })
+  },
   checkToken () {
     return request({
       url: '/common/checkToken',

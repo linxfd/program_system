@@ -2,6 +2,7 @@ package com.program.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.program.model.entity.SysMenu;
+import com.program.model.entity.User;
 
 import java.util.List;
 
@@ -17,4 +18,5 @@ public interface SysMenuMapper  extends BaseMapper<SysMenu> {
 
     // 根据角色id删除角色菜单关系表数据
     void deleteByRoleId(Integer roleId);
+
 }

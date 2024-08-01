@@ -3,7 +3,7 @@ import {
   Button, Container, Main, Row, Footer, Card, FormItem, Form, Input, Message, MessageBox, Aside, MenuItemGroup,
   Menu, MenuItem, Submenu, Col, Header, Tooltip, Breadcrumb, BreadcrumbItem, Dropdown, DropdownItem, DropdownMenu, Notification,
   Tag, TableColumn, Table, Select, Option, Pagination, Dialog, Loading, Upload, Checkbox, CheckboxGroup, DatePicker, Step, Steps,
-  RadioGroup, Radio, Alert, InputNumber, Scrollbar, Tree 
+  RadioGroup, Radio, Alert, InputNumber, Scrollbar, Tree, Tabs, TabPane 
 } from 'element-ui'
 
 Vue.prototype.$message = Message
@@ -58,4 +58,5 @@ Vue.use(Header)
 Vue.use(Submenu)
 Vue.use(Breadcrumb)
 Vue.use(Tree)
-Vue.use(Tree)
+Vue.use(Tabs)
+Vue.use(TabPane)

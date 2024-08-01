@@ -10,6 +10,15 @@ const loginForm = {
   // 验证码
   code: ''
 }
+// 手机登录表单数据信息
+const phoneLoginForm = {
+  // 手机号
+  phone: '',
+  // 验证码
+  code: '',
+   // 手机验证码
+  codePhone: ''
+}
 // 自定义验证码校验规则
 const validateCode = (rule, value, callback) => {
   // 验证码不区分大小写
@@ -52,6 +61,22 @@ const loginFormRules = {
     }
   ]
 }
+const isPhoneNumberValid = (rule, value, callback) => {
+  const phoneRegex = /^1[3-9]\d{9}$/
+  if (!phoneRegex.test(value)) {
+    callback(new Error('请输入正确的手机号!'))
+  } 
+  callback()
+}
+const phoneLoginFormRules = {
+  phone: [
+    {
+      validator: isPhoneNumberValid,
+      trigger: 'blur'
+    }
+  ]
+}
+
 // 后台验证码id
 let codeId
 // 后台的验证码
@@ -65,9 +90,15 @@ const getCode = () => {
 // 点击图片刷新验证码
 const changeCode = () => {
   const codeImg = document.querySelector('#code')
+  const phoneCodeImg = document.querySelector('#phoneCode')
+  
   codeId = utils.getRandomId()
+  // 账户登录验证码
   codeImg.src = `${process.env.VUE_APP_CAPTCHA_URL}/util/getCodeImg?id=` + codeId
   codeImg.onload = () => getCode()
+  // 手机登录验证码
+  phoneCodeImg.src= `${process.env.VUE_APP_CAPTCHA_URL}/util/getCodeImg?id=` + codeId
+  phoneCodeImg.onload = () => getCode()
 }
 const toRegisterPage = () => {
   router.push('/register')
@@ -100,13 +131,44 @@ const login = (formEl) => {
     })
   })
 }
+// 手机号登录
+const phoneLogin = (formEl) => {
+  utils.validFormAndInvoke(formEl, () => {
+    auth.phoneLogin(phoneLoginForm).then(resp => {
+      if (resp.code === 200) {
+        localStorage.setItem('authorization', resp.data)
+        Vue.prototype.$notify({
+          title: 'Tips',
+          message: '登陆成功^_^',
+          type: 'success',
+          duration: 2000
+        })
+        router.push('/index')
+      }
+    }).catch(err => {
+      console.log(err)
+      // 请求出错
+      changeCode()
+      getCode()
+      Vue.prototype.$notify({
+        title: 'Tips',
+        message: err.response.data.errMsg,
+        type: 'error',
+        duration: 2000
+      })
+    })
+  })
+}
 
 export default {
   loginForm,
+  phoneLoginForm,
   loginFormRules,
   code,
+  phoneLoginFormRules,
   getCode,
   changeCode,
   toRegisterPage,
-  login
+  login,
+  phoneLogin
 }

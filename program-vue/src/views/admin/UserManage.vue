@@ -409,13 +409,6 @@ export default {
             trigger: 'blur'
           }
         ],
-        trueName: [
-          {
-            required: true,
-            message: '请输入用户真实姓名',
-            trigger: 'blur'
-          }
-        ],
         roleId: [
           {
             required: true,
@@ -447,13 +440,6 @@ export default {
           {
             min: 5,
             message: '密码必须5位以上',
-            trigger: 'blur'
-          }
-        ],
-        trueName: [
-          {
-            required: true,
-            message: '请输入用户真实姓名',
             trigger: 'blur'
           }
         ],

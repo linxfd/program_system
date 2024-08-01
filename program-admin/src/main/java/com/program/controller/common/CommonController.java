@@ -1,6 +1,7 @@
 package com.program.controller.common;
 
 import com.program.model.dto.LoginDto;
+import com.program.model.dto.PhoneLoginDto;
 import com.program.model.dto.RegisterDto;
 import com.program.model.dto.UpdateUserInfoDto;
 import com.program.model.entity.User;
@@ -105,6 +106,18 @@ public class CommonController {
     public CommonResult<String> login(@RequestBody @Valid LoginDto loginDto) {
         return CommonResult.<String>builder()
                 .data(userService.login(loginDto))
+                .build();
+    }
+
+    @PostMapping("/phoneLogin")
+    @ApiOperation("手机登录接口")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "username", value = "系统用户唯一用户名", required = true, dataType = "string", paramType = "body"),
+            @ApiImplicitParam(name = "password", value = "系统用户密码", required = true, dataType = "string", paramType = "body"),
+    })
+    public CommonResult<String> phoneLogin(@RequestBody @Valid PhoneLoginDto phoneLogin) {
+        return CommonResult.<String>builder()
+                .data(userService.phoneLogin(phoneLogin))
                 .build();
     }
 

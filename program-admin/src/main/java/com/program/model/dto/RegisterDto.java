@@ -15,6 +15,9 @@ public class RegisterDto {
     @Length(min = 5, max = 20)
     private String password;
 
+    // 手机号
+    private String phone;
+
     private String trueName;
 
 }

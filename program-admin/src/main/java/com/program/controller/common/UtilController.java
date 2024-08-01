@@ -1,6 +1,8 @@
 package com.program.controller.common;
 
 import com.program.model.dict.DictTedisTime;
+import com.program.model.vo.CommonResultEnum;
+import com.program.service.UtilService;
 import com.program.utils.CreateVerificationCode;
 import com.program.utils.RedisUtil;
 import com.program.model.vo.CommonResult;
@@ -9,10 +11,8 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
@@ -28,6 +28,8 @@ public class UtilController {
 
     private final RedisUtil redisUtil;
 
+    @Autowired
+    private final UtilService utilService;
     @GetMapping("/getCodeImg")
     @ApiOperation(value = "获取验证码图片流")
     @ApiImplicitParams({
@@ -57,5 +59,11 @@ public class UtilController {
         return CommonResult.<String>builder()
                 .data((String) redisUtil.get(id))
                 .build();
+    }
+
+    @GetMapping(value = "/sendCode/{phone}")
+    public CommonResult sendValidateCode(@PathVariable String phone) {
+        utilService.sendValidateCode(phone);
+        return CommonResult.build(null, CommonResultEnum.SUCCESS);
     }
 }
