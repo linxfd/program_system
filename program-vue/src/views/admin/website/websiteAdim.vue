@@ -121,7 +121,7 @@
           <el-input v-model="form.name" placeholder="请输入网站名称" clearable/>
         </el-form-item>
         <el-form-item label="网址" prop="url">
-          <el-input v-model="form.url" placeholder="请输入网址" clearable/>
+          <el-input v-model="form.url" placeholder="请输入网址"  @blur="handleIcon" clearable/>
         </el-form-item>
 
         <el-form-item
@@ -143,22 +143,26 @@
         </el-form-item>
         <el-form-item label="网站图标" prop="icon">
           <el-input v-model="form.icon" placeholder="默认为/favicon.ico" clearable/>
-          <el-upload
-                 ref="upload"
-                :action="uploadImageUrl + '/teacher/uploadQuestionImage'"
-                 name="file"
-                :headers="headers"
-                :before-upload="beforeUpload"
-                :on-success="importFile"
-                v-loading="loading"
-              >
-              <el-button
-                size="small"
-                type="primary"
-              >
-                点击上传
-              </el-button>
-            </el-upload>
+          <div style="display: flex;">
+            <img :src="form.icon" alt="" style="width: 50px;height: 50px; margin-right: 15%;">
+            <el-upload
+                  ref="upload"
+                  :action="uploadImageUrl + '/teacher/uploadQuestionImage'"
+                  name="file"
+                  :headers="headers"
+                  :before-upload="beforeUpload"
+                  :on-success="importFile"
+                  v-loading="loading"
+                >
+                <el-button
+                  size="small"
+                  type="primary"
+                >
+                  换图标
+                </el-button>
+              </el-upload>
+          </div>
+          
         </el-form-item>
 
         <el-form-item label="网站注解" prop="notes">
@@ -168,7 +172,7 @@
       </el-form>
       <div class="mfooter">
       <el-button type="primary" @click="submitForm">确 定</el-button>
-      <el-button @click="$layer.close(layerid)">取 消</el-button>
+      <el-button @click="dialogVisible = false">取 消</el-button>
     </div>
     </el-dialog>
   </el-container>
@@ -288,6 +292,9 @@ export default {
     selects(rows) {
       this.ids = rows.map(item => item.id)
     },
+    handleIcon(){
+      this.form.icon = this.form.url+'/favicon.ico'
+    },
     //提交表单
     submitForm() {
       this.$refs["form"].validate(valid => {
@@ -323,10 +330,8 @@ export default {
       if(row != null){
         this.form = {...row}
       }
-      this.uerVisible = vle
+      this.dialogName = vle
       this.dialogVisible = true
-            console.log('this.form')
-      console.log(this.form)
     },
     InitialSizeandCurrentChange () {
       this.queryParams.pageNo = 1

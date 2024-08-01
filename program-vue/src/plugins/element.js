@@ -13,6 +13,9 @@ Vue.prototype.$confirm = MessageBox.confirm
 Vue.prototype.$prompt = MessageBox.prompt
 Vue.prototype.$Loading = Loading
 
+//全局设置 el-dialog对话框点击外面不会关闭
+Dialog.props.closeOnClickModal.default = false
+
 Vue.use(Button)
 Vue.use(Scrollbar)
 Vue.use(InputNumber)
