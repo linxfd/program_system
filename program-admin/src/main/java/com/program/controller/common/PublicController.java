@@ -128,14 +128,6 @@ public class PublicController {
                 .data(list)
                 .build();
     }
-//    @ApiOperation(value = "获得网站分类列表")
-//    @GetMapping("/website/getClassidied")
-//    public CommonResult getClassidied(){
-//        List<String> list =websiteClassificationService.getClassidied();
-//        return CommonResult.<List<String>>builder()
-//                .data(list)
-//                .build();
-//    }
 
     @ApiOperation(value = "获得网站分类列表列表")
     @PostMapping("/website/ClassificationList")

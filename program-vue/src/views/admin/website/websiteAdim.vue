@@ -82,7 +82,7 @@
             label="网站分类"
           >
             <template slot-scope="scope">
-              <span >{{getClassification(scope.row.classificationId) }}</span>
+              <span >{{getClassification(scope.row.classificationId)}}</span>
             </template>
           </el-table-column>
         <el-table-column label="网站注解" align="center" prop="notes" />
@@ -108,6 +108,7 @@
         />
     </el-main>
 
+    <!-- 添加修改对话框  -->
     <el-dialog
       :title="dialogName"
       :visible.sync="dialogVisible"
@@ -142,7 +143,24 @@
         </el-form-item>
         <el-form-item label="网站图标" prop="icon">
           <el-input v-model="form.icon" placeholder="默认为/favicon.ico" clearable/>
+          <el-upload
+                 ref="upload"
+                :action="uploadImageUrl + '/teacher/uploadQuestionImage'"
+                 name="file"
+                :headers="headers"
+                :before-upload="beforeUpload"
+                :on-success="importFile"
+                v-loading="loading"
+              >
+              <el-button
+                size="small"
+                type="primary"
+              >
+                点击上传
+              </el-button>
+            </el-upload>
         </el-form-item>
+
         <el-form-item label="网站注解" prop="notes">
           <el-input v-model="form.notes" placeholder="请输入网站注解" clearable/>
         </el-form-item>
@@ -159,11 +177,14 @@
 
 <script>
 import website from '@/api/website'
+import utils from '@/utils/utils'
+import { generateSign } from '@/utils/sign'
 
 export default {
   name: "Website",
   data() {
     return {
+      uploadImageUrl: process.env.VUE_APP_UPLOAD_IMAGE_URL,
       ids: [],
       form: {},
       showSearch:true,
@@ -176,6 +197,8 @@ export default {
       selected: '',
       // 网站分类数据
       classificationList:{},
+      // 数据预加载
+      loading: false,
       queryParams: {
         pageNum: 1,
         pageSize: 10,
@@ -204,6 +227,23 @@ export default {
         ],
       }
     };
+  },
+  computed: {
+    
+    // 监测头部信息的token变化
+    headers () {
+      const signHeaders = {
+        'body-string': '',
+        'query-string': '',
+        'x-nonce': `${utils.getRandomId()}`,
+        'x-timestamp': `${new Date().getTime()}`
+      }
+      return {
+        ...signHeaders,
+        authorization: localStorage.getItem('authorization') || '',
+        sign: generateSign(JSON.stringify(signHeaders))
+      }
+    }
   },
   created() {
     this.getList();
@@ -285,6 +325,8 @@ export default {
       }
       this.uerVisible = vle
       this.dialogVisible = true
+            console.log('this.form')
+      console.log(this.form)
     },
     InitialSizeandCurrentChange () {
       this.queryParams.pageNo = 1
@@ -323,6 +365,19 @@ export default {
     handleCurrentChange (val) {
       this.queryParams.pageNum = val
       this.getList()
+    },
+    //导入图标前
+    beforeUpload(){
+      this.loading = true
+    },
+    // 导入图标后
+    importFile(val){
+      
+      this.form.icon = val.data
+      this.loading = false
+      // 清除上传列表
+      this.$refs.upload.clearFiles();
+
     },
   }
 };

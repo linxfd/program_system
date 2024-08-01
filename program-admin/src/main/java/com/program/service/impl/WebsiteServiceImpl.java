@@ -55,7 +55,7 @@ public class WebsiteServiceImpl extends ServiceImpl<WebsiteMapper, Website> impl
         // 查询未删除的数据
         wrapper.eq("is_deleted", 0);
         // 排序
-        wrapper.orderByAsc( "name");
+        wrapper.orderByAsc( "classification_id","name");
         wrapper.orderByDesc("create_time");
 
         websitePage = websiteMapper.selectPage(websitePage, wrapper);

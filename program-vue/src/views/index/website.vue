@@ -49,7 +49,7 @@ export default {
       classificationList:{},
       queryParams: {
         pageNum: 1,
-        pageSize: 10,
+        pageSize: 999,
         notes: null,
         name: null,
         isDeleted: null,
