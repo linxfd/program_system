@@ -1,9 +1,6 @@
 package com.program.controller.common;
 
-import com.program.model.dto.LoginDto;
-import com.program.model.dto.PhoneLoginDto;
-import com.program.model.dto.RegisterDto;
-import com.program.model.dto.UpdateUserInfoDto;
+import com.program.model.dto.*;
 import com.program.model.entity.User;
 import com.program.service.UserRoleService;
 import com.program.service.UserService;
@@ -142,8 +139,9 @@ public class CommonController {
     @GetMapping("/getCurrentUser")
     @ApiOperation("供给普通用户查询个人信息使用")
     public CommonResult<UserVo> getCurrentUser(HttpServletRequest request) {
+        User userByUsername = userService.getUserByUsername(JwtUtils.getUserInfoByToken(request).getUsername());
         return CommonResult.<UserVo>builder()
-                .data(fromUser(userService.getUserByUsername(JwtUtils.getUserInfoByToken(request).getUsername())))
+                .data(fromUser(userByUsername))
                 .build();
     }
 
@@ -152,10 +150,16 @@ public class CommonController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "user", value = "系统用户实体", required = true, dataType = "user", paramType = "body")
     })
-    public CommonResult<Object> updateCurrentUser(@RequestBody @Valid UpdateUserInfoDto updateUserInfoDto) {
-        userService.updateUserInfo(updateUserInfoDto);
-        return CommonResult.builder()
-                .build();
+    public CommonResult updateCurrentUser(@RequestBody @Valid UpdateUserInfoDto updateUserInfoDto) {
+
+        return userService.updateUserInfo(updateUserInfoDto);
     }
 
+
+    @PostMapping("/updateCurrentPhone")
+    @ApiOperation("供给用户换绑手机号")
+    public CommonResult updateCurrentPhone(@RequestBody @Valid UpdatePhoneInfoDto updatePhoneInfoDto) {
+
+        return userService.updateCurrentPhone(updatePhoneInfoDto);
+    }
 }

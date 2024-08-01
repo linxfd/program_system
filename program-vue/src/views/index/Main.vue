@@ -104,6 +104,9 @@
                   <el-dropdown-item command="personInfo">
                     个人资料
                   </el-dropdown-item>
+                  <el-dropdown-item command="PhoneInfo">
+                    换绑手机
+                  </el-dropdown-item>
                   <el-dropdown-item command="logout">
                     退出登录
                   </el-dropdown-item>
@@ -198,7 +201,17 @@
             <el-input v-model="currentUserInfo2.trueName" />
           </el-form-item>
 
-          <el-form-item
+          <el-form-item  
+            label="旧密码"
+            prop="oldPassword"
+          >
+            <el-input
+              v-model="currentUserInfo2.oldPassword"
+              placeholder="不更改请留空"
+            />
+          </el-form-item>
+
+          <el-form-item  
             label="密码"
             prop="password"
           >
@@ -234,6 +247,62 @@
           </el-button>
         </div>
       </el-dialog>
+
+      <el-dialog
+        title="换绑手机号"
+        center
+        :visible.sync="updateCurrentPhoneDialog"
+      >
+        <el-form
+          :model="currentUserInfo2"
+          :rules="updatePhoneFormRules"
+          ref="currentUserInfo2"
+        >
+          <el-form-item label="用户名">
+            <el-input
+              v-model="currentUserInfo2.username"
+              disabled
+            />
+          </el-form-item>
+
+          <el-form-item  label="手机号" prop="phone">
+            <el-input
+              
+              prefix-icon="el-icon-phone"
+              v-model="currentUserInfo2.phone"
+              placeholder="手机号"
+            />
+            </el-form-item>
+
+            <el-form-item prop="code">
+              <div style="display: flex">
+                <el-input
+                  class="code"
+                  style="margin: 10px 12px 15px 1px"
+                  prefix-icon="el-icon-chat-line-round"
+                  v-model="currentUserInfo2.codePhone"
+                  placeholder="手机验证码"
+                />
+                <button class="zbutton" @click="getPhoneCode">获取验证码</button>
+              </div>
+            </el-form-item>
+          <div
+            class="dialog-footer"
+          >
+            <el-button @click="updateCurrentPhoneDialog = false">
+              取 消
+            </el-button>
+            <el-button
+              type="primary"
+              @click="updateCurrentPhone"
+            >
+              确 定
+            </el-button>
+          </div>
+        </el-form>
+
+      </el-dialog>
+
     </el-main>
   </el-container>
 </template>
@@ -244,6 +313,7 @@ import menu from '@/api/menu'
 import user from '@/api/user'
 import auth from '@/api/auth'
 import utils from '@/utils/utils'
+
 
 export default {
   name: 'Main',
@@ -258,7 +328,6 @@ export default {
       }
     }
     const validatePasswordfun = (rule, value, callback) => {
-      debugger
       if (value === '') {
         callback()
       } else if (value.length < 5) {
@@ -268,7 +337,14 @@ export default {
       }else{
         callback()
       }
-      
+    }
+    const validatePhone = (rule, value, callback) => {
+      debugger
+        const phoneRegex = /^1[3-9]\d{9}$/
+        if (!phoneRegex.test(value)) {
+          callback(new Error('请输入正确的手机号!'))
+        } 
+        callback()
     }
     return {
       // 菜单信息
@@ -308,6 +384,8 @@ export default {
       ],
       // 跟新当前用户的信息的对话框
       updateCurrentUserDialog: false,
+      // 跟新当前用户的信息的对话框
+      updateCurrentPhoneDialog: false,
       // 当前用户的信息
       currentUserInfo2: {},
       // 更新信息表单信息
@@ -328,6 +406,21 @@ export default {
         passwordfun: [
           {
             validator: validatePasswordfun,
+            trigger: 'blur'
+          }
+        ],
+        oldPassword: [
+          {
+            validator: validatePassword,
+            trigger: 'blur'
+          }
+        ],
+
+      },
+      updatePhoneFormRules: {
+        phone: [
+          {
+            validator: validatePhone,
             trigger: 'blur'
           }
         ]
@@ -478,6 +571,14 @@ export default {
             this.currentUserInfo2 = resp.data
           }
         })
+      }else if(command === 'PhoneInfo'){
+        this.updateCurrentPhoneDialog = true
+        user.getCurrentUser().then((resp) => {
+          if (resp.code === 200) {
+            resp.data.password = ''
+            this.currentUserInfo2 = resp.data
+          }
+        })
       }
     },
     // 退出登录
@@ -525,10 +626,7 @@ export default {
     },
     // 处理面包屑信息和面包屑下的标签信息
     changeBreadInfo (curTopMenuName, curMenuName, url) {
-      // console.log("ssssssssssss")
-      // console.log(curTopMenuName)
-      // console.log(curMenuName)
-      // console.log(url)
+
       // 面包屑信息
       this.breadInfo.top = curTopMenuName
       this.breadInfo.sub = curMenuName
@@ -623,6 +721,28 @@ export default {
         highlight: true
       })
     },
+    // 发送验证码
+    getPhoneCode(){
+      if (this.currentUserInfo2.phone == ''){
+        this.$notify({
+          title: 'Tips',
+          message: '请输入手机号',
+          type: 'error',
+          duration: 2000
+        })
+        return;
+      }
+      auth.sendValidateCode(this.currentUserInfo2.phone).then(resp => {
+        if (resp.code === 200) {
+          this.$notify({
+            title: 'Tips',
+            message: '验证码已发送',
+            type: 'success',
+            duration: 2000
+          })
+        }
+      })
+    },
     // 更新当前用户
     updateCurrentUser () {
       utils.validFormAndInvoke(this.$refs.updateUserForm, () => {
@@ -638,7 +758,19 @@ export default {
           }
         })
       })
-    }
+    },
+    updateCurrentPhone(){
+      user.updateCurrentPhone(this.currentUserInfo2).then((resp) => {
+          if (resp.code === 200) {
+            this.$notify({
+              title: 'Tips',
+              message: resp.message,
+              type: 'success',
+              duration: 2000
+            })
+          }
+        })
+      }
   }
 }
 </script>
@@ -646,4 +778,22 @@ export default {
 <style scoped lang="scss">
 @import "../../assets/css/index/main";
 
+.zbutton {
+    width: 23%;
+    height: 15%;
+    padding: 10px 10px;
+    color: #333;
+    position: relative;
+    margin: 10px; /* 设置项目的外边距 */
+    font-size: 2px;
+    text-align: center;
+    text-decoration: none;
+    color: #333;
+    background-color: white;
+    border: 2px solid #e3e2e2;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    overflow: hidden;
+  }
 </style>

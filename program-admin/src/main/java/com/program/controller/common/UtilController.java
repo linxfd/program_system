@@ -60,7 +60,8 @@ public class UtilController {
                 .data((String) redisUtil.get(id))
                 .build();
     }
-
+    //
+    @ApiOperation(value = "发送手机验证码")
     @GetMapping(value = "/sendValidateCode/{phone}")
     public CommonResult sendValidateCode(@PathVariable String phone) {
         utilService.sendValidateCode(phone);

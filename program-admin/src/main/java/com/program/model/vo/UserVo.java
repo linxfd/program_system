@@ -13,6 +13,8 @@ public class UserVo {
 
     private String trueName;
 
+    private String phone;
+
     public static UserVo fromUser(User user) {
         UserVo userVo = new UserVo();
         BeanUtils.copyProperties(user, userVo);

@@ -12,12 +12,11 @@ import com.program.model.entity.User;
 import com.program.exception.BusinessException;
 import com.program.exception.CommonErrorCode;
 import com.program.mapper.UserMapper;
+import com.program.model.vo.*;
 import com.program.utils.*;
-import com.program.model.vo.UserVo;
 import com.program.service.UserService;
-import com.program.model.vo.PageResponse;
-import com.program.model.vo.UserInfoVo;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang.ObjectUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -114,18 +113,44 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    @Cache(prefix = "user", suffix = "#username", ttl = 10, randomTime = 2, timeUnit = TimeUnit.HOURS)
+    public CommonResult updateCurrentPhone(UpdatePhoneInfoDto updatePhoneInfoDto) {
+        // 判断手机号是否被其他用户绑定
+        User user = userMapper.selectOne(new QueryWrapper<User>().eq("phone", updatePhoneInfoDto.getPhone()));
+        if(!NotUtils.isNotUtils(user)){
+            throw new BusinessException(CommonErrorCode.E_100107);
+        }
+        // 判断验证码是否正确
+        String phoneCode = (String)redisUtil.get("phone:code:" + updatePhoneInfoDto.getPhone());
+        if(NotUtils.isNotUtils(updatePhoneInfoDto.getCodePhone())||
+                !updatePhoneInfoDto.getCodePhone().equals(phoneCode)
+        ){
+            throw new BusinessException(CommonErrorCode.E_100104);
+        }
+        // 获取当前用户, 更新手机号
+        User userNew = userMapper.selectOne(new QueryWrapper<User>().eq("username", updatePhoneInfoDto.getUsername()));
+        userNew.setPhone(updatePhoneInfoDto.getPhone());
+        userNew.setUpdateTime(new Date());
+
+        return CommonResult.build(userMapper.updateById(userNew), CommonResultEnum.SUCCESS_UPDATE);
+    }
+
+    @Override
+//    @Cache(prefix = "user", suffix = "#username", ttl = 10, randomTime = 2, timeUnit = TimeUnit.HOURS)
     public User getUserByUsername(String username) {
         return userMapper.selectOne(new QueryWrapper<User>().eq("username", username));
     }
 
     @Override
     @Cache(prefix = "user", suffix = "#updateUserInfoDto.getUsername()", ttl = 10, randomTime = 2, timeUnit = TimeUnit.HOURS, resetCache = true)
-    public User updateUserInfo(UpdateUserInfoDto updateUserInfoDto) {
-        User user = getUserByUsername(updateUserInfoDto.getUsername());
-        user.updateFrom(updateUserInfoDto);
-        userMapper.updateById(user);
-        return user;
+    public CommonResult updateUserInfo(UpdateUserInfoDto updateUserInfoDto) {
+        if(updateUserInfoDto.getPassword() != null &&
+                updateUserInfoDto.getPassword().equals(updateUserInfoDto.getOldPassword())){
+            User user = getUserByUsername(updateUserInfoDto.getUsername());
+            user.updateFrom(updateUserInfoDto);
+
+            return CommonResult.build(userMapper.updateById(user), CommonResultEnum.SUCCESS_UPDATE);
+        }
+        return CommonResult.build(null, CommonResultEnum.DATA_ERROR);
     }
 
     @Override
@@ -241,6 +266,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (!NotUtils.isNotUtils(user.getPassword())) {
             user1.setPassword(SaltEncryption.saltEncryption(user.getPassword(), user1.getSalt()));
         }
+        user1.setPhone(user.getPhone());
+        user1.setTrueName(user.getTrueName());
+        user1.setUsername(user.getUsername());
+        user1.setRoleId(user.getRoleId());
         user1.setUpdateTime(new Date());
         userMapper.update(user1, qw);
     }

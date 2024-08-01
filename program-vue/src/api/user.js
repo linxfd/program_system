@@ -14,6 +14,13 @@ export default {
       data: updateUser
     })
   },
+  updateCurrentPhone (updateUser) {
+    return request({
+      url: '/common/updateCurrentPhone',
+      method: 'post',
+      data: updateUser
+    })
+  },
   updateUser (user) {
     return request({
       url: '/admin/updateUser',

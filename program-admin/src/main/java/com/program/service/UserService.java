@@ -3,6 +3,7 @@ package com.program.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.program.model.dto.*;
 import com.program.model.entity.User;
+import com.program.model.vo.CommonResult;
 import com.program.model.vo.PageResponse;
 import com.program.model.vo.UserInfoVo;
 import com.program.model.vo.UserVo;
@@ -21,7 +22,7 @@ public interface UserService extends IService<User> {
     User getUserByUsername(String username);
 
     // 这里要reset cache 所以必须要有更新后的数据返回
-    User updateUserInfo(UpdateUserInfoDto updateUserInfoDto);
+    CommonResult updateUserInfo(UpdateUserInfoDto updateUserInfoDto);
 
     PageResponse<UserInfoVo> getUser(UserDto userDto);
 
@@ -53,4 +54,8 @@ public interface UserService extends IService<User> {
 
     // 手机号登录
     String phoneLogin(PhoneLoginDto phoneLogin);
+
+    //换绑手机号
+    CommonResult updateCurrentPhone(UpdatePhoneInfoDto updatePhoneInfoDto);
+
 }

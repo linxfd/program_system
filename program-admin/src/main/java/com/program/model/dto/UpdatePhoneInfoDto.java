@@ -4,17 +4,16 @@ import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 
+/**
+ * @author linxf
+ * @date 2024/8/1
+ */
 @Data
-public class UpdateUserInfoDto {
-
+public class UpdatePhoneInfoDto {
     @NotBlank
     private String username;
 
-    private String password;
-
-    private String oldPassword;
-
-    private String trueName;
-
     private String phone;
+
+    private String codePhone;
 }
