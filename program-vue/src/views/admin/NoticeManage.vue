@@ -104,16 +104,16 @@
         >
           <template slot-scope="scope">
             <el-button
-              type="warning"
+              size="mini" type="text" icon="el-icon-edit"
               @click="showUpdateNoticeDialog(scope.row)"
             >
               更新公告
             </el-button>
             <el-button
-              type="warning"
+              size="mini" type="text" icon="el-icon-delete"
               @click="deleteUpdateNoticeDialog(scope.row)"
             >
-              删除公告
+              删除
             </el-button>
           </template>
         </el-table-column>

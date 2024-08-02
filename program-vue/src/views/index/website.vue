@@ -3,8 +3,8 @@
   <el-header>
     <h1 class="title">
       网站推荐
+      <p style="color: rgb(161, 155, 155);">以下网站均是个人推荐，没有官方背书，请谨慎选择使用</p>
     </h1>
-    
   </el-header>
   <el-main>
 

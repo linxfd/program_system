@@ -49,25 +49,21 @@
           #default="scope"
         >
           <el-button
-            type="success"
-            size="small"
+            size="mini" type="text" icon="el-icon-edit-outline"
             @click="editMenu(scope.row)"
           >
             分配权限
           </el-button>
           <el-button
-            type="primary"
-            size="small"
+            size="mini" type="text" icon="el-icon-edit"
             @click="editShow(scope.row)"
           >
             修改
           </el-button>
           <el-button
-            type="danger"
-            icon="el-icon-delete"
-            size="small"
+            size="mini" type="text" icon="el-icon-delete"
             @click="remove(scope.row)"
-          />
+          >删除</el-button>
         </el-table-column>
       </el-table>
 

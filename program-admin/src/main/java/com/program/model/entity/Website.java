@@ -28,4 +28,7 @@ public class Website extends CommonEntity{
 
     @ApiModelProperty(value = "网站分类id")
     private Integer classificationId;
+
+    @ApiModelProperty(value = "排序（权值，大的先）")
+    private Integer sortValue;
 }

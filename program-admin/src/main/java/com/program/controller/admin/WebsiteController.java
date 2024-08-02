@@ -77,7 +77,8 @@ public class WebsiteController  {
     @ApiOperation(value = "网站分类删除")
     @GetMapping("/removeClassification/{ids}")
     public CommonResult removeClassification(@PathVariable Integer[] ids){
-        boolean b = websiteClassificationService.removeByIds(Arrays.asList(ids));
-        return CommonResult.build(b, CommonResultEnum.SUCCESS_DELETE);
+//        boolean b = .removeByIds(Arrays.asList(ids));
+        CommonResult listResult = websiteClassificationService.removeClassification(ids);
+        return listResult;
     }
 }

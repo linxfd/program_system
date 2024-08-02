@@ -55,8 +55,8 @@ public class WebsiteServiceImpl extends ServiceImpl<WebsiteMapper, Website> impl
         // 查询未删除的数据
         wrapper.eq("is_deleted", 0);
         // 排序
-        wrapper.orderByAsc( "classification_id","name");
-        wrapper.orderByDesc("create_time");
+        wrapper.orderByDesc("sort_value");
+        wrapper.orderByAsc( "classification_id");
 
         websitePage = websiteMapper.selectPage(websitePage, wrapper);
         List<Website> records = websitePage.getRecords();
@@ -66,9 +66,9 @@ public class WebsiteServiceImpl extends ServiceImpl<WebsiteMapper, Website> impl
 
     @Override
     public void saveWebsite(Website website) {
-        if(NotUtils.isNotUtils(website.getIcon())){
-            website.setIcon(website.getUrl()+"/favicon.ico");
-        }
+//        if(NotUtils.isNotUtils(website.getIcon())){
+//            website.setIcon(website.getUrl()+"/favicon.ico");
+//        }
         websiteMapper.insert(website);
     }
 

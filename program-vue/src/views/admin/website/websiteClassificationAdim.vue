@@ -204,14 +204,24 @@ export default {
     },
     del(row) {
         this.$confirm('是否确认删除选中数据?', '警告', { type: 'warning' }).then(() => {
-        website.removeClassification((row.id || this.ids)).then(response => {
-                this.$notify({
-                  title: 'Tips',
-                  message: '操作成功',
-                  type: 'success',
-                  duration: 2000
-                })
-                this.getList();
+          website.removeClassification((row.id || this.ids)).then(response => {
+            if (response.code == 200){
+              this.$notify({
+                    title: 'Tips',
+                    message: '操作成功',
+                    type: 'success',
+                    duration: 2000
+                  })
+                  this.getList();
+            }else{
+              this.$notify({
+                    title: 'Tips',
+                    message: response.message,
+                    type: 'error',
+                    duration: 2000
+                  })
+            }
+                
             });
         });
     },

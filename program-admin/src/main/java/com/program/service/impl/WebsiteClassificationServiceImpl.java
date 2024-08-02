@@ -11,6 +11,7 @@ import com.program.model.dict.IsDeleted;
 import com.program.model.entity.QuestionBank;
 import com.program.model.entity.Website;
 import com.program.model.entity.WebsiteClassification;
+import com.program.model.vo.CommonResult;
 import com.program.model.vo.PageResponse;
 import com.program.model.vo.WebsiteClassificationVo;
 import com.program.model.vo.WebsiteVo;
@@ -19,6 +20,7 @@ import com.program.service.WebsiteClassificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,6 +62,24 @@ public class WebsiteClassificationServiceImpl extends ServiceImpl<WebsiteClassif
         List<WebsiteClassification> records = websiteClassificationPage.getRecords();
 
         return PageResponse.<WebsiteClassification>builder().data(records).total(websiteClassificationPage.getTotal()).build();
+    }
+
+    @Override
+    public CommonResult removeClassification(Integer[] ids) {
+
+        if (ids.length == 0) {
+            return CommonResult.build(null, 506, "请选择要删除的分类");
+        }
+        for (Integer id : ids) {
+            // 查询该分类下是否有网站
+            int count = websiteMapper.selectCount(new QueryWrapper<Website>().eq("classification_id", id));
+            if (count > 0) {
+                return CommonResult.build(null, 505, "该分类下有网站，无法删除");
+            }
+        }
+        // 删除
+        websiteClassificationMapper.deleteBatchIds(Arrays.asList(ids));
+        return CommonResult.build(null, 200, "删除成功");
     }
 
 //    @Override

@@ -85,6 +85,7 @@
               <span >{{getClassification(scope.row.classificationId)}}</span>
             </template>
           </el-table-column>
+        <el-table-column label="权值" align="center" prop="sortValue" />
         <el-table-column label="网站注解" align="center" prop="notes" />
         <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
           <template slot-scope="scope" >
@@ -162,7 +163,10 @@
                 </el-button>
               </el-upload>
           </div>
-          
+        </el-form-item>
+
+        <el-form-item label="权值" prop="notes">
+          <el-input-number v-model="form.sortValue"  clearable/>
         </el-form-item>
 
         <el-form-item label="网站注解" prop="notes">
