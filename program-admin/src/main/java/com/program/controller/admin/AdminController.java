@@ -108,7 +108,7 @@ public class AdminController {
             @ApiImplicitParam(name = "notice", value = "通知实体对象", required = true, dataType = "notice", paramType = "body")
     })
     public CommonResult<Void> updateNotice(@RequestBody Notice notice) {
-        noticeService.updateNotice(notice);
+         noticeService.updateNotice(notice);
         return CommonResult.<Void>builder().build();
     }
 

@@ -13,9 +13,11 @@ public interface NoticeService extends IService<Notice> {
 
     PageResponse<Notice> getAllNotices(String content, Integer pageNo, Integer pageSize);
 
-    void publishNotice(Notice notice);
+    String publishNotice(Notice notice);
 
+    // 批量删除公告
     void deleteNoticeByIds(String noticeIds);
 
-    void updateNotice(Notice notice);
+    // 更新公告
+    String  updateNotice(Notice notice);
 }

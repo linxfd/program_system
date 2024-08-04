@@ -128,7 +128,7 @@
         <el-form-item
           label="网站分类"
           label-width="120px"
-          prop="roleId"
+          prop="classificationId"
         >
           <el-select
             v-model="form.classificationId"
@@ -230,7 +230,7 @@ export default {
         name: [
           { required: true, message: "网站名称不能为空", trigger: "blur" }
         ],
-        classified: [
+        classificationId: [
           { required: true, message: "网站分类不能为空", trigger: "blur" }
         ],
       }
@@ -338,7 +338,7 @@ export default {
       this.dialogVisible = true
     },
     InitialSizeandCurrentChange () {
-      this.queryParams.pageNo = 1
+      this.queryParams.pageNum = 1
       this.queryParams.pageSize = 10
     },
     // 表单信息重置

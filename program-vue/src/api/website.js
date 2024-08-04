@@ -3,9 +3,16 @@ import request from '@/utils/request'
 export default {
     getList(queryParams){
         return request({
-            url: '/public/website/list',
+            url: '/admin/website/list',
             method: 'post',
             data: queryParams
+        })
+    },
+
+    getListByclassificationId(classificationId){
+        return request({
+            url: `/public/website/list/${classificationId}`,
+            method: 'post',
         })
     },
     add(queryParams){

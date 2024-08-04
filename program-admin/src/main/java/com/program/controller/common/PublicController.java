@@ -1,5 +1,6 @@
 package com.program.controller.common;
 
+import com.program.model.dto.WebsiteDto;
 import com.program.model.entity.Exam;
 import com.program.model.entity.User;
 import com.program.model.entity.Website;
@@ -11,7 +12,6 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -120,11 +120,20 @@ public class PublicController {
                 .data(userService.getCreatePersonName())
                 .build();
     }
+
+    /**
+     * 获得网站列表--用户浏览列表
+     * @return
+     */
     @ApiOperation(value = "获得网站列表")
-    @PostMapping("/website/list")
-    public CommonResult list(@RequestBody WebsiteVo websiteVo){
-        PageResponse<Website> list = websiteService.pageList(websiteVo);
-        return CommonResult.<PageResponse<Website>>builder()
+    @PostMapping("/website/list/{classificationId}")
+    public CommonResult getListByclassificationId(@PathVariable("classificationId") Integer classificationId){
+        // -1 代表全部
+        if(classificationId == -1){
+            classificationId = null;
+        }
+        List<Website> list = websiteService.pageUserList(classificationId);
+        return CommonResult.<List<Website>>builder()
                 .data(list)
                 .build();
     }
@@ -137,7 +146,5 @@ public class PublicController {
                 .data(list)
                 .build();
     }
-
-
 
 }

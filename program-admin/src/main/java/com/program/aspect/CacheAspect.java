@@ -53,7 +53,9 @@ public class CacheAspect {
         Class clazz = joinPoint.getTarget().getClass();
         Logger logger = LoggerFactory.getLogger(clazz);
 
+        // 如果设置resetCache为true，则先执行目标方法，再设置缓存
         if (cache.resetCache()) {
+            // 记录日志并执行目标方法，返回result为目标方法的返回值
             Object result = LogAndInvokeTargetMethod(joinPoint, logger,
                     String.format("%s中的%s方法, 准备reset cache: %s", clazz.getName(), method.getName(), cacheKey)
                     , String.format("%s中的%s方法执行结束", clazz.getName(), method.getName()));
@@ -62,6 +64,15 @@ public class CacheAspect {
             }
             redisUtil.set(cacheKey, result, ttl + randomTtl, timeUnit);
             return result;
+        }
+
+        // 如果设置removeCache为true，则删除缓存, 并执行目标方法
+        if(cache.removeCache()){
+            // 以通配符，删除缓存
+            redisUtil.deleteMatchingKeys(cacheKey + ":*");
+            return  LogAndInvokeTargetMethod(joinPoint, logger,
+                    String.format("%s中的%s方法, 查询了cache: %s", clazz.getName(), method.getName(), cacheKey)
+                    , String.format("%s中的%s方法执行结束", clazz.getName(), method.getName()));
         }
 
         return beforeInvokeCheckCache(joinPoint, method, cacheKey, timeUnit, ttl, randomTtl, clazz, logger);

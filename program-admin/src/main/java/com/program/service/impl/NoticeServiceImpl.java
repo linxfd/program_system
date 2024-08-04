@@ -15,6 +15,7 @@ import com.program.utils.RedisUtil;
 import com.program.model.vo.PageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.Date;
@@ -34,7 +35,7 @@ public class NoticeServiceImpl extends ServiceImpl<NoticeMapper, Notice> impleme
         return noticeMapper.setAllNoticeIsHistoryNotice();
     }
 
-    @Cache(prefix = "currentNewNotice", ttl = 10, randomTime = 2, timeUnit = TimeUnit.HOURS)
+    @Cache(prefix = "cache:currentNewNotice", ttl = 10, randomTime = 2, timeUnit = TimeUnit.HOURS)
     @Override
     public String getCurrentNotice() {
         return noticeMapper.selectOne(new QueryWrapper<Notice>().eq("status", "1")).getContent();
@@ -53,19 +54,21 @@ public class NoticeServiceImpl extends ServiceImpl<NoticeMapper, Notice> impleme
     }
 
     @Override
-    public void publishNotice(Notice notice) {
+    @Transactional
+    @Cache(prefix = "cache:currentNewNotice", ttl = 10, randomTime = 2, timeUnit = TimeUnit.HOURS, resetCache = true)
+    public String publishNotice(Notice notice) {
         if (notice.getStatus() == 1) {//  当前发布的是置顶公告
             //  1. 将当前所有公告设置为历史公告
             setAllNoticeIsHistoryNotice();
             //  2. 新增最新公告进去
             notice.setCreateTime(new Date());
-            boolean save = noticeMapper.insert(notice) > 0;
-            if (redisUtil.get("currentNewNotice") != null && save) {
-                redisUtil.set("currentNewNotice", notice.getContent());
-            }
+            noticeMapper.insert(notice);
+            return notice.getContent();
         } else if (notice.getStatus() == 0) {//  不发布最新公告
             notice.setCreateTime(new Date());
             noticeMapper.insert(notice);
+
+            return noticeMapper.selectOne(new QueryWrapper<Notice>().eq("status", "1")).getContent();
         } else {
             throw new BusinessException(CommonErrorCode.E_300001);
         }
@@ -77,6 +80,7 @@ public class NoticeServiceImpl extends ServiceImpl<NoticeMapper, Notice> impleme
         String[] ids = noticeIds.split(",");
         Notice currentNotice = noticeMapper.selectOne(new QueryWrapper<Notice>().eq("status", "1"));
         for (String id : ids) {
+            //  如果当前公告id与需要操作的id相同，则跳过,不删除当前公告
             if (currentNotice.getNId().equals(Integer.parseInt(id))) {
                 continue;
             }
@@ -85,7 +89,8 @@ public class NoticeServiceImpl extends ServiceImpl<NoticeMapper, Notice> impleme
     }
 
     @Override
-    public void updateNotice(Notice notice) {
+    @Cache(prefix = "cache:currentNewNotice", ttl = 10, randomTime = 3, timeUnit = TimeUnit.HOURS, resetCache = true)
+    public String updateNotice(Notice notice) {
         //  查询当前公告信息
         QueryWrapper<Notice> wrapper = new QueryWrapper<Notice>().eq("n_id", notice.getNId());
         Notice targetNotice = noticeMapper.selectOne(wrapper);
@@ -97,14 +102,17 @@ public class NoticeServiceImpl extends ServiceImpl<NoticeMapper, Notice> impleme
             targetNotice.setContent(notice.getContent());
             targetNotice.setStatus(notice.getStatus());
 
-            boolean update = noticeMapper.update(targetNotice, wrapper) > 0;
-            if (redisUtil.get("currentNewNotice") != null && update)//  清楚旧缓存
-                redisUtil.set("currentNewNotice", notice.getContent());
-        } else if (notice.getStatus() == 0) {//  不发布最新公告
+            noticeMapper.update(targetNotice, wrapper);
+            //  返回数据，更新缓存
+            return targetNotice.getContent();
+        } else if (notice.getStatus() == 0) { //  不发布最新公告
             targetNotice.setUpdateTime(new Date());
             targetNotice.setContent(notice.getContent());
             targetNotice.setStatus(notice.getStatus());
             noticeMapper.update(targetNotice, wrapper);
+
+            //  返回数据，更新缓存
+            return noticeMapper.selectOne(new QueryWrapper<Notice>().eq("status", "1")).getContent();
         } else {
             throw new BusinessException(CommonErrorCode.E_300002);
         }

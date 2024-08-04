@@ -1,21 +1,18 @@
 package com.program.service.impl;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.concurrent.TimeUnit;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.program.annotation.Cache;
 import com.program.mapper.WebsiteMapper;
-import com.program.model.dict.IsDeleted;
-import com.program.model.entity.User;
 import com.program.model.entity.Website;
 import com.program.model.vo.PageResponse;
-import com.program.model.vo.UserInfoVo;
-import com.program.model.vo.WebsiteVo;
+import com.program.model.dto.WebsiteDto;
 import com.program.service.WebsiteService;
 import com.program.utils.NotUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,19 +34,19 @@ public class WebsiteServiceImpl extends ServiceImpl<WebsiteMapper, Website> impl
 
 
     @Override
-    public PageResponse<Website> pageList(WebsiteVo websiteVo) {
-        IPage<Website> websitePage = new Page<>(websiteVo.getPageNum(), websiteVo.getPageSize());
+    public PageResponse<Website> pageList(WebsiteDto websiteDto) {
+        IPage<Website> websitePage = new Page<>(websiteDto.getPageNum(), websiteDto.getPageSize());
 
         // 查询条件
         Map<String, Object> queryParams = new HashMap<>();
-        queryParams.put("notes", websiteVo.getNotes());
-        queryParams.put("name", websiteVo.getName());
-        queryParams.put("url", websiteVo.getUrl());
+        queryParams.put("notes", websiteDto.getNotes());
+        queryParams.put("name", websiteDto.getName());
+        queryParams.put("url", websiteDto.getUrl());
         QueryWrapper<Website> wrapper = new QueryWrapper<>();
         // 模糊查询
         setLikeWrapper(wrapper, queryParams);
-        if (!NotUtils.isNotUtils(websiteVo.getClassificationId())) {
-            wrapper.eq("classification_id", websiteVo.getClassificationId());
+        if (!NotUtils.isNotUtils(websiteDto.getClassificationId())) {
+            wrapper.eq("classification_id", websiteDto.getClassificationId());
         }
 
         // 查询未删除的数据
@@ -72,5 +69,21 @@ public class WebsiteServiceImpl extends ServiceImpl<WebsiteMapper, Website> impl
         websiteMapper.insert(website);
     }
 
+    @Override
+    @Cache(prefix = "cache:website", suffix = "#classificationId",ttl = 10, randomTime = 10, timeUnit = TimeUnit.DAYS)
+    public List<Website> pageUserList(Integer classificationId) {
 
+        QueryWrapper<Website> wrapper = new QueryWrapper<>();
+        if (!NotUtils.isNotUtils(classificationId)) {
+            wrapper.eq("classification_id", classificationId);
+        }
+        // 查询未删除的数据
+        wrapper.eq("is_deleted", 0);
+        // 排序
+        wrapper.orderByDesc("sort_value");
+        wrapper.orderByAsc( "classification_id");
+
+        List<Website> websites = websiteMapper.selectList(wrapper);
+        return websites;
+    }
 }

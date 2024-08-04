@@ -62,7 +62,7 @@ export default {
   },
   created () {
     
-    this.getList()
+    this.getListByclassificationId()
     // this.getClassidied()
     this.getClassificationList()
   },
@@ -75,14 +75,18 @@ export default {
       if (this.currentIndex === 0) {
         this.queryParams.classificationId = '';
       }
-      this.getList()
+      this.getListByclassificationId()
     },
-    getList() {
-        website.getList(this.queryParams).then((resp) => {
-          if (resp.code == 200){
-              this.response = resp.data;
-          }
-        });
+    getListByclassificationId() {
+      let classificationId = this.queryParams.classificationId;
+      if(classificationId === '' || classificationId === null || classificationId === undefined){
+        classificationId = -1;
+      }
+      website.getListByclassificationId(classificationId).then((resp) => {
+        if (resp.code == 200){
+            this.response = resp;
+        }
+      });
     },
     getClassificationList() {
       const queryParams = {

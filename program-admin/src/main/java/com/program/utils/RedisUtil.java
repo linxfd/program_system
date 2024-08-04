@@ -2,7 +2,12 @@ package com.program.utils;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.redis.connection.RedisConnection;
+import org.springframework.data.redis.core.Cursor;
+import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -79,6 +84,28 @@ public final class RedisUtil {
                 redisTemplate.delete(CollectionUtils.arrayToList(key));
             }
         }
+    }
+
+    /**
+     * 删除缓存
+     * 删除所有匹配的key
+     * @param pattern
+     */
+    public void deleteMatchingKeys(String pattern) {
+
+        // 使用 execute 执行自定义的 RedisCallback
+        redisTemplate.execute(new RedisCallback<Void>() {
+            @Override
+            public Void doInRedis(RedisConnection connection) throws DataAccessException {
+                Set<byte[]> keys = connection.keys(pattern.getBytes());
+                for (byte[] key : keys) {
+                    connection.del(key);
+                }
+                return null;
+            }
+        });
+
+        System.out.println("已删除所有匹配的密钥");
     }
 
 

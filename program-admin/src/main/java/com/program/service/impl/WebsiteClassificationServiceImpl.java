@@ -4,18 +4,13 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.program.mapper.QuestionBankMapper;
 import com.program.mapper.WebsiteClassificationMapper;
 import com.program.mapper.WebsiteMapper;
-import com.program.model.dict.IsDeleted;
-import com.program.model.entity.QuestionBank;
 import com.program.model.entity.Website;
 import com.program.model.entity.WebsiteClassification;
 import com.program.model.vo.CommonResult;
 import com.program.model.vo.PageResponse;
 import com.program.model.vo.WebsiteClassificationVo;
-import com.program.model.vo.WebsiteVo;
-import com.program.service.QuestionBankService;
 import com.program.service.WebsiteClassificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,7 +19,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+
 
 import static com.program.utils.CommonUtils.setLikeWrapper;
 

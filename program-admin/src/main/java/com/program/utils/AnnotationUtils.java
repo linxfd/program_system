@@ -12,8 +12,12 @@ import org.springframework.util.StringUtils;
 import java.lang.reflect.Method;
 import java.util.Objects;
 
+/**
+ * aop的工具类
+ */
 public class AnnotationUtils {
 
+    // 系统日志记录
     public static Object LogAndInvokeTargetMethod(ProceedingJoinPoint joinPoint, Logger logger, String startLogMsg, String endLogMsg) throws Throwable {
         long startTime = System.currentTimeMillis();
         logger.info(startLogMsg);
@@ -28,6 +32,9 @@ public class AnnotationUtils {
         return result;
     }
 
+    /**
+     * 解析spel表达式，获取需要的参数
+     */
     public static String parseSpel(String key, Method method, Object[] args) {
         if (StringUtils.isEmpty(key)) {
             return "";

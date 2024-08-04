@@ -3,6 +3,8 @@ package com.program.controller.admin;
 import java.util.Arrays;
 import java.util.List;
 
+import com.program.annotation.Cache;
+import com.program.model.dto.WebsiteDto;
 import com.program.model.entity.Website;
 import com.program.model.entity.WebsiteClassification;
 import com.program.model.vo.*;
@@ -40,8 +42,18 @@ public class WebsiteController  {
         return CommonResult.build(websiteService.getById(id), CommonResultEnum.SUCCESS_QUERY);
     }
 
+    @ApiOperation(value = "获得网站列表")
+    @PostMapping("/list")
+    public CommonResult list(@RequestBody WebsiteDto websiteDto){
+        PageResponse<Website> list = websiteService.pageList(websiteDto);
+        return CommonResult.<PageResponse<Website>>builder()
+                .data(list)
+                .build();
+    }
+
     @ApiOperation(value = "网站新增")
     @PostMapping("/add")
+    @Cache(prefix = "cache:website",removeCache = true)
     public CommonResult add(@RequestBody Website website){
         websiteService.saveWebsite(website);
         return CommonResult.build(null, CommonResultEnum.SUCCESS_ADD);
@@ -49,13 +61,15 @@ public class WebsiteController  {
 
     @ApiOperation(value = "网站修改")
     @PostMapping("/edit")
+    @Cache(prefix = "cache:website",removeCache = true)
     public CommonResult edit(@RequestBody Website website){
-
-        return CommonResult.build(websiteService.updateById(website), CommonResultEnum.SUCCESS_QUERY);
+        boolean b = websiteService.updateById(website);
+        return CommonResult.build(b, CommonResultEnum.SUCCESS_UPDATE);
     }
 
     @ApiOperation(value = "网站删除")
     @GetMapping("/remove/{ids}")
+    @Cache(prefix = "cache:website",removeCache = true)
     public CommonResult remove(@PathVariable Integer[] ids){
         boolean b = websiteService.removeByIds(Arrays.asList(ids));
         return CommonResult.build(b, CommonResultEnum.SUCCESS_DELETE);
@@ -81,4 +95,6 @@ public class WebsiteController  {
         CommonResult listResult = websiteClassificationService.removeClassification(ids);
         return listResult;
     }
+
+
 }
