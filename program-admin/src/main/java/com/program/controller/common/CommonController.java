@@ -68,8 +68,9 @@ public class CommonController {
     @PostMapping ("/editUsername")
     @ApiOperation("修改用户时查询用户是否唯一")
     public CommonResult<Boolean> editUsername(@RequestBody User user){
+        Boolean aBoolean = userService.editUsername(user);
         return CommonResult.<Boolean>builder()
-                .data(userService.editUsername(user))
+                .data(aBoolean)
                 .build();
     }
 
@@ -150,7 +151,7 @@ public class CommonController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "user", value = "系统用户实体", required = true, dataType = "user", paramType = "body")
     })
-    public CommonResult updateCurrentUser(@RequestBody @Valid UpdateUserInfoDto updateUserInfoDto) {
+    public CommonResult updateCurrentUser(@RequestBody UpdateUserInfoDto updateUserInfoDto) {
 
         return userService.updateUserInfo(updateUserInfoDto);
     }

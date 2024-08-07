@@ -141,16 +141,34 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    @Cache(prefix = "user", suffix = "#updateUserInfoDto.getUsername()", ttl = 10, randomTime = 2, timeUnit = TimeUnit.HOURS, resetCache = true)
     public CommonResult updateUserInfo(UpdateUserInfoDto updateUserInfoDto) {
-        if(updateUserInfoDto.getPassword() != null &&
-                updateUserInfoDto.getPassword().equals(updateUserInfoDto.getOldPassword())){
-            User user = getUserByUsername(updateUserInfoDto.getUsername());
-            user.updateFrom(updateUserInfoDto);
+        User OldUser = userMapper.selectOne(new QueryWrapper<User>().eq("id", updateUserInfoDto.getId()));
+        String oldPassword = SaltEncryption.saltEncryption(updateUserInfoDto.getOldPassword(), OldUser.getSalt());
 
-            return CommonResult.build(userMapper.updateById(user), CommonResultEnum.SUCCESS_UPDATE);
+        // 根据旧密码修改密码
+        if (!NotUtils.isNotUtils(updateUserInfoDto.getOldPassword())  && !OldUser.getPassword().equals(oldPassword)){
+            throw new BusinessException(CommonErrorCode.E_100100);
         }
-        return CommonResult.build(null, CommonResultEnum.DATA_ERROR);
+
+        // 根据验证码修改密码
+        String phoneCode = (String)redisUtil.get("phone:code:" + updateUserInfoDto.getPhone());
+        if(NotUtils.isNotUtils(updateUserInfoDto.getOldPassword())){
+            String code = updateUserInfoDto.getCodePhone();
+            // 当前密码为空时, 验证码不能为空
+            if(NotUtils.isNotUtils(code)){
+                throw new BusinessException(CommonErrorCode.E_100108);
+            }
+            if(!code.equals(phoneCode)){
+                throw new BusinessException(CommonErrorCode.E_100104);
+            }
+        }
+        if(!NotUtils.isNotUtils(updateUserInfoDto.getPassword()) ){
+            String newPwd = SaltEncryption.saltEncryption(updateUserInfoDto.getPassword(), OldUser.getSalt());
+            OldUser.setPassword(newPwd);
+        }
+        OldUser.setUsername(updateUserInfoDto.getUsername());
+        OldUser.setTrueName(updateUserInfoDto.getTrueName());
+        return CommonResult.build(userMapper.updateById(OldUser), CommonResultEnum.SUCCESS_UPDATE);
     }
 
     @Override

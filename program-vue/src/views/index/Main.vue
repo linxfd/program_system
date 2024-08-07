@@ -107,6 +107,9 @@
                   <el-dropdown-item command="PhoneInfo">
                     换绑手机
                   </el-dropdown-item>
+                  <el-dropdown-item command="updatePassword">
+                    改密码
+                  </el-dropdown-item>
                   <el-dropdown-item command="logout">
                     退出登录
                   </el-dropdown-item>
@@ -188,7 +191,10 @@
           :rules="updateUserFormRules"
           ref="updateUserForm"
         >
-          <el-form-item label="用户名">
+          <el-form-item 
+            label="用户名"
+            prop="username"
+          >
             <el-input
               v-model="currentUserInfo2.username"
             />
@@ -199,36 +205,6 @@
             prop="trueName"
           >
             <el-input v-model="currentUserInfo2.trueName" />
-          </el-form-item>
-
-          <el-form-item  
-            label="旧密码"
-            prop="oldPassword"
-          >
-            <el-input
-              v-model="currentUserInfo2.oldPassword"
-              placeholder="不更改请留空"
-            />
-          </el-form-item>
-
-          <el-form-item  
-            label="密码"
-            prop="password"
-          >
-            <el-input
-              v-model="currentUserInfo2.password"
-              placeholder="不更改请留空"
-            />
-          </el-form-item>
-          
-          <el-form-item
-            label="再次输入密码"
-            prop="passwordfun"
-          >
-            <el-input
-              v-model="currentUserInfo2.passwordfun"
-              placeholder="不更改请留空"
-            />
           </el-form-item>
         </el-form>
 
@@ -302,7 +278,129 @@
         </el-form>
 
       </el-dialog>
+      <el-dialog
+        title="改密码"
+        center
+        :visible.sync="updatePasswordDialog"
+      >
+      <el-tabs v-model="activeName" @tab-click="handleClick" >
+        <el-tab-pane label="根据原密码修改"  name="account" >
+            <el-form
+              :model="currentUserInfo2"
+              :rules="updateUserFormRules"
+              ref="currentUserInfo2"
+            >
+            <el-form-item  
+                label="旧密码"
+                prop="oldPassword"
+              >
+                <el-input
+                  v-model="currentUserInfo2.oldPassword"
+                  placeholder="不更改请留空"
+                />
+              </el-form-item>
 
+              <el-form-item  
+                label="密码"
+                prop="password"
+              >
+                <el-input
+                  v-model="currentUserInfo2.password"
+                  placeholder="不更改请留空"
+                />
+              </el-form-item>
+              
+              <el-form-item
+                label="再次输入密码"
+                prop="passwordfun"
+              >
+                <el-input
+                  v-model="currentUserInfo2.passwordfun"
+                  placeholder="不更改请留空"
+                />
+              </el-form-item>
+              <div
+            class="dialog-footer"
+          >
+            <el-button @click="updatePasswordDialog = false">
+              取 消
+            </el-button>
+            <el-button
+              type="primary"
+              @click="updateCurrentUser"
+            >
+              确 定
+            </el-button>
+          </div>
+        </el-form>
+        </el-tab-pane>
+        <el-tab-pane label="根据手机号修改" name="phone">
+
+          <el-form
+            :model="currentUserInfo2"
+            :rules="updatePhoneFormRules"
+            ref="currentUserInfo2"
+          >
+          <el-form-item  label="手机号" prop="phone">
+            <el-input
+              disabled
+              prefix-icon="el-icon-phone"
+              v-model="currentUserInfo2.phone"
+              placeholder="手机号"
+            />
+            </el-form-item>
+
+            <el-form-item prop="codePhone">
+              <div style="display: flex">
+                <el-input
+                  style="margin: 10px 12px 15px 1px"
+                  prefix-icon="el-icon-chat-line-round"
+                  v-model="currentUserInfo2.codePhone"
+                  placeholder="手机验证码"
+                />
+                <button class="zbutton" @click="getPhoneCode">获取验证码</button>
+              </div>
+            </el-form-item>
+            <el-form-item  
+                label="密码"
+                prop="password"
+              >
+                <el-input
+                  v-model="currentUserInfo2.password"
+                  placeholder="不更改请留空"
+                />
+              </el-form-item>
+              
+              <el-form-item
+                label="再次输入密码"
+                prop="passwordfun"
+              >
+                <el-input
+                  v-model="currentUserInfo2.passwordfun"
+                  placeholder="不更改请留空"
+                />
+              </el-form-item>
+          <div
+            class="dialog-footer"
+          >
+            <el-button @click="updatePasswordDialog = false">
+              取 消
+            </el-button>
+            <el-button
+              type="primary"
+              @click="updateCurrentUser"
+            >
+              确 定
+            </el-button>
+          </div>
+        </el-form>
+         
+            
+          
+        </el-tab-pane>
+        
+      </el-tabs>
+      </el-dialog>
     </el-main>
   </el-container>
 </template>
@@ -318,21 +416,33 @@ import utils from '@/utils/utils'
 export default {
   name: 'Main',
   data () {
+    // 自定义用户名校验规则
+    const validateUsername = (rule, value, callback) => {
+      // 修改时
+      auth.editUsername(this.currentUserInfo2).then((resp) => {
+        if (resp.data) {
+          callback()
+        } else {
+          callback(new Error('用户名已存在'))
+        }
+      })
+    }
     const validatePassword = (rule, value, callback) => {
-      if (value === '') {
+      debugger
+      if (value === ''||this.currentUserInfo2.oldPassword === ''||this.currentUserInfo2.password === ''||this.currentUserInfo2.passwordfun === '') {
         callback()
-      } else if (value.length < 5) {
+      } else if (value != '' && value.length < 5) {
         callback(new Error('新密码少于5位数!'))
       } else {
         callback()
       }
     }
     const validatePasswordfun = (rule, value, callback) => {
-      if (value === '') {
+      if (value === ''||this.currentUserInfo2.oldPassword === ''||this.currentUserInfo2.password === ''||this.currentUserInfo2.passwordfun === '') {
         callback()
-      } else if (value.length < 5) {
+      } else if (value != '' && value.length < 5) {
         callback(new Error('新密码少于5位数!'))
-      } else if(value != this.currentUserInfo2.password){
+      }  else if(value != this.currentUserInfo2.password){
         callback(new Error('两次密码不一致'))
       }else{
         callback()
@@ -382,14 +492,29 @@ export default {
           highlight: true
         }
       ],
+      // tab标签
+      activeName: 'account',
       // 跟新当前用户的信息的对话框
       updateCurrentUserDialog: false,
       // 跟新当前用户的信息的对话框
       updateCurrentPhoneDialog: false,
+      // 更新密码表单信息
+      updatePasswordDialog:false,
       // 当前用户的信息
       currentUserInfo2: {},
       // 更新信息表单信息
       updateUserFormRules: {
+        username: [
+          {
+            required: true,
+            message: '请输入登录用户名',
+            trigger: 'blur'
+          },
+          {
+            validator: validateUsername,
+            trigger: 'blur'
+          }
+        ],
         trueName: [
           {
             required: true,
@@ -423,6 +548,25 @@ export default {
             validator: validatePhone,
             trigger: 'blur'
           }
+        ],
+        password: [
+          {
+            validator: validatePassword,
+            trigger: 'blur'
+          }
+        ],
+        passwordfun: [
+          {
+            validator: validatePasswordfun,
+            trigger: 'blur'
+          }
+        ],
+        codePhone: [
+          {
+            required: true,
+            message: '请输入验证码',
+            trigger: 'blur'
+          },
         ]
       }
     }
@@ -574,6 +718,14 @@ export default {
       }else if(command === 'PhoneInfo'){
         this.updateCurrentPhoneDialog = true
         user.getCurrentUser().then((resp) => {
+          if (resp.code === 200) {
+            resp.data.password = ''
+            this.currentUserInfo2 = resp.data
+          }
+        })
+      }else if(command === 'updatePassword'){
+         this.updatePasswordDialog = true
+         user.getCurrentUser().then((resp) => {
           if (resp.code === 200) {
             resp.data.password = ''
             this.currentUserInfo2 = resp.data
@@ -745,18 +897,16 @@ export default {
     },
     // 更新当前用户
     updateCurrentUser () {
-      utils.validFormAndInvoke(this.$refs.updateUserForm, () => {
-        user.updateCurrentUser(this.currentUserInfo2).then((resp) => {
-          if (resp.code === 200) {
-            this.$notify({
-              title: 'Tips',
-              message: resp.message,
-              type: 'success',
-              duration: 2000
-            })
-            this.logout()
-          }
-        })
+      user.updateCurrentUser(this.currentUserInfo2).then((resp) => {
+        if (resp.code === 200) {
+          this.$notify({
+            title: 'Tips',
+            message: resp.message,
+            type: 'success',
+            duration: 2000
+          })
+          this.logout()
+        }
       })
     },
     updateCurrentPhone(){
@@ -770,7 +920,11 @@ export default {
             })
           }
         })
-      }
+      },
+    // tab标签点击事件
+    handleClick(tab, event) {
+        console.log(tab, event);
+    },
   }
 }
 </script>

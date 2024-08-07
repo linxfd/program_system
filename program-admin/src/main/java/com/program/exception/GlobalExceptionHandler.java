@@ -16,6 +16,9 @@ import javax.validation.ConstraintViolationException;
 import java.util.Objects;
 import java.util.Set;
 
+/**
+ * 全局异常处理器
+ */
 @ControllerAdvice
 public class GlobalExceptionHandler {
 

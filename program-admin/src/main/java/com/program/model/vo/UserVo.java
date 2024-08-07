@@ -6,6 +6,7 @@ import org.springframework.beans.BeanUtils;
 
 @Data
 public class UserVo {
+    private Integer id;
 
     private String username;
 
