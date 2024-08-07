@@ -14,7 +14,7 @@
            @blur="handleQuery"
            clearable class="inp"/>
         </el-form-item>
-      分类
+        分类
         <el-select
           label="网站sd"
           @change="typeChange"
@@ -122,7 +122,7 @@
           <el-input v-model="form.name" placeholder="请输入网站名称" clearable/>
         </el-form-item>
         <el-form-item label="网址" prop="url">
-          <el-input v-model="form.url" placeholder="请输入网址"  @blur="handleIcon" clearable/>
+          <el-input v-model="form.url" placeholder="请输入网址"  @input="handleIcon" clearable/>
         </el-form-item>
 
         <el-form-item
