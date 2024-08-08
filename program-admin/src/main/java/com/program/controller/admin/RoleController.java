@@ -1,4 +1,4 @@
-package com.program.controller;
+package com.program.controller.admin;
 
 import com.program.model.dto.AssginMenuDto;
 import com.program.model.entity.UserRole;
@@ -19,7 +19,7 @@ import java.util.List;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/role")
+@RequestMapping(value = "/admin/role")
 @Api(tags = "角色相关接口")
 public class RoleController {
 

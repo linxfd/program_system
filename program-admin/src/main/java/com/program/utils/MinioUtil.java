@@ -4,7 +4,7 @@ import cn.hutool.core.date.DateUtil;
 import io.minio.BucketExistsArgs;
 import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
-import com.program.config.MinioProperties;
+import com.program.config.properties.MinioProperties;
 import io.minio.PutObjectArgs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

@@ -3,34 +3,34 @@ import request from '@/utils/request'
 export default {
   getRoleInfo () {
     return request({
-      url: '/role/getRole',
+      url: '/admin/role/getRole',
       method: 'get'
     })
   },
   DoAssignMenuIdToSysRole (assignMenuDto) {
     return request({
-      url: '/role/doAssign',
+      url: '/admin/role/doAssign',
       method: 'post',
       data: assignMenuDto
     })
   },
   addRole (addForm) {
     return request({
-      url: '/role/addRole',
+      url: '/admin/role/addRole',
       method: 'post',
       data: addForm
     })
   },
   updateRole (addForm) {
     return request({
-      url: '/role/updateRole',
+      url: '/admin/role/updateRole',
       method: 'post',
       data: addForm
     })
   },
   deleteRole (id) {
     return request({
-      url: `/role/deleteRole/${id}`,
+      url: `/admin/role/deleteRole/${id}`,
       method: 'get'
     })
   },

@@ -1,7 +1,7 @@
 <template>
-  <el-footer>
+  <el-footer >
     <!-- 登录的下边栏 -->
-    <p>编程云系统</p>
+    <p >编程云系统</p>
   </el-footer>
 </template>
 
@@ -13,4 +13,12 @@ export default {
 
 <style scoped>
 
+.el-footer {
+  background-color: transparent;
+}
+p{
+  text-align: center;
+  color: rgb(252, 252, 252);
+  
+}
 </style>

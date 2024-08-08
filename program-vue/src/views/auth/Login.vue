@@ -56,6 +56,10 @@
                 </el-form-item>
 
                 <el-form-item>
+                  <el-checkbox v-model="loginForm.rememberMe">记住我</el-checkbox>
+                </el-form-item>
+
+                <el-form-item>
                   <el-button
                     type="primary"
                     @click="login($refs['loginForm'])"
@@ -149,7 +153,12 @@ export default {
   created () {
     // 检验用户是否存在token,存在直接跳转主页
     utils.checkToken('/index')
-  
+    // 如果上次用户勾选记住我
+    let loginMe = JSON.parse(localStorage.getItem('rememberMe'));
+    if(loginMe.username != ''){
+      this.loginForm.username = loginMe.username
+      this.loginForm.password = loginMe.password
+    }
   },
   mounted () {
     loginFunc.changeCode()
