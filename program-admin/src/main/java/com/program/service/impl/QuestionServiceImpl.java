@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.program.annotation.Cache;
 import com.program.model.dto.QuestionDto;
 import com.program.model.entity.Answer;
 import com.program.model.entity.Question;
@@ -15,7 +14,7 @@ import com.program.mapper.QuestionBankMapper;
 import com.program.mapper.QuestionMapper;
 import com.program.model.vo.QuestionAnswerVo;
 import com.program.service.QuestionService;
-import com.program.utils.NotUtils;
+import com.program.utils.EmptyUtil;
 import com.program.utils.RedisUtil;
 import com.program.model.vo.PageResponse;
 import com.program.model.vo.QuestionVo;
@@ -25,9 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static com.program.utils.CommonUtils.setEqualsQueryWrapper;
@@ -57,7 +54,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
         setLikeWrapper(wrapper, likeQueryParams);
         setEqualsQueryWrapper(wrapper, Collections.singletonMap("qu_type", questionType));
 
-        if(!NotUtils.isNotUtils(createPerson)){
+        if(!EmptyUtil.isNotUtils(createPerson)){
             wrapper.eq("create_person", createPerson);
         }
         questionPage = questionMapper.selectPage(questionPage, wrapper);
@@ -208,7 +205,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
         setLikeWrapper(wrapper, likeQueryParams);
         setEqualsQueryWrapper(wrapper, Collections.singletonMap("qu_type", questionType));
 
-        if(!NotUtils.isNotUtils(createPerson)){
+        if(!EmptyUtil.isNotUtils(createPerson)){
             wrapper.eq("create_person", createPerson);
         }
         questionPage = questionMapper.selectPage(questionPage, wrapper);

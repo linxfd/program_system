@@ -14,7 +14,7 @@ import com.program.model.entity.Website;
 import com.program.model.vo.PageResponse;
 import com.program.model.dto.WebsiteDto;
 import com.program.service.WebsiteService;
-import com.program.utils.NotUtils;
+import com.program.utils.EmptyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,7 +45,7 @@ public class WebsiteServiceImpl extends ServiceImpl<WebsiteMapper, Website> impl
         QueryWrapper<Website> wrapper = new QueryWrapper<>();
         // 模糊查询
         setLikeWrapper(wrapper, queryParams);
-        if (!NotUtils.isNotUtils(websiteDto.getClassificationId())) {
+        if (!EmptyUtil.isNotUtils(websiteDto.getClassificationId())) {
             wrapper.eq("classification_id", websiteDto.getClassificationId());
         }
 
@@ -63,7 +63,7 @@ public class WebsiteServiceImpl extends ServiceImpl<WebsiteMapper, Website> impl
 
     @Override
     public void saveWebsite(Website website) {
-//        if(NotUtils.isNotUtils(website.getIcon())){
+//        if(EmptyUtil.isNotUtils(website.getIcon())){
 //            website.setIcon(website.getUrl()+"/favicon.ico");
 //        }
         websiteMapper.insert(website);
@@ -74,7 +74,7 @@ public class WebsiteServiceImpl extends ServiceImpl<WebsiteMapper, Website> impl
     public List<Website> pageUserList(Integer classificationId) {
 
         QueryWrapper<Website> wrapper = new QueryWrapper<>();
-        if (!NotUtils.isNotUtils(classificationId)) {
+        if (!EmptyUtil.isNotUtils(classificationId)) {
             wrapper.eq("classification_id", classificationId);
         }
         // 查询未删除的数据

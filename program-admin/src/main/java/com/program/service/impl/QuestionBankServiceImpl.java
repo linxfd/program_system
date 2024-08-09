@@ -14,8 +14,8 @@ import com.program.mapper.QuestionBankMapper;
 import com.program.mapper.QuestionMapper;
 import com.program.model.vo.TokenVo;
 import com.program.service.QuestionBankService;
+import com.program.utils.EmptyUtil;
 import com.program.utils.JwtUtils;
-import com.program.utils.NotUtils;
 import com.program.utils.RedisUtil;
 import com.program.model.vo.BankHaveQuestionSum;
 import com.program.model.vo.PageResponse;
@@ -23,7 +23,6 @@ import com.program.model.vo.QuestionVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -48,7 +47,7 @@ public class QuestionBankServiceImpl extends ServiceImpl<QuestionBankMapper, Que
     public PageResponse<BankHaveQuestionSum> getBankHaveQuestionSumByType(String bankName,String createPerson,Integer pageNo, Integer pageSize) {
         QueryWrapper<QuestionBank> wrapper = new QueryWrapper<>();
         setLikeWrapper(wrapper, Collections.singletonMap("bank_name", bankName));
-        if (!NotUtils.isNotUtils(createPerson)){
+        if (!EmptyUtil.isNotUtils(createPerson)){
             wrapper.eq("create_person", createPerson);
         }
 
@@ -144,7 +143,7 @@ public class QuestionBankServiceImpl extends ServiceImpl<QuestionBankMapper, Que
     @Override
     public List<QuestionBank> getAllQuestionBanks(String createPerson) {
         QueryWrapper<QuestionBank> qWrapper = new QueryWrapper<>();
-        if (!NotUtils.isNotUtils(createPerson)) {
+        if (!EmptyUtil.isNotUtils(createPerson)) {
             qWrapper.eq("create_person", createPerson);
         }
         return questionBankMapper.selectList(qWrapper);

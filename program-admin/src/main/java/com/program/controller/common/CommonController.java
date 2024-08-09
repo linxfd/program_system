@@ -103,7 +103,6 @@ public class CommonController {
     })
     public CommonResult<String> login(@RequestBody @Valid LoginDto loginDto) {
         return CommonResult.<String>builder()
-                .data(userService.login(loginDto))
                 .build();
     }
 

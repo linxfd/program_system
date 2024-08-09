@@ -1,11 +1,9 @@
 package com.program.service.impl;
 
-import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.program.annotation.Cache;
 import com.program.model.dict.DictRole;
 import com.program.model.dto.*;
 import com.program.model.entity.User;
@@ -16,13 +14,10 @@ import com.program.model.vo.*;
 import com.program.utils.*;
 import com.program.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang.ObjectUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static com.program.utils.CommonUtils.setLikeWrapper;
@@ -116,12 +111,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public CommonResult updateCurrentPhone(UpdatePhoneInfoDto updatePhoneInfoDto) {
         // 判断手机号是否被其他用户绑定
         User user = userMapper.selectOne(new QueryWrapper<User>().eq("phone", updatePhoneInfoDto.getPhone()));
-        if(!NotUtils.isNotUtils(user)){
+        if(!EmptyUtil.isNotUtils(user)){
             throw new BusinessException(CommonErrorCode.E_100107);
         }
         // 判断验证码是否正确
         String phoneCode = (String)redisUtil.get("phone:code:" + updatePhoneInfoDto.getPhone());
-        if(NotUtils.isNotUtils(updatePhoneInfoDto.getCodePhone())||
+        if(EmptyUtil.isNotUtils(updatePhoneInfoDto.getCodePhone())||
                 !updatePhoneInfoDto.getCodePhone().equals(phoneCode)
         ){
             throw new BusinessException(CommonErrorCode.E_100104);
@@ -146,23 +141,23 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         String oldPassword = SaltEncryption.saltEncryption(updateUserInfoDto.getOldPassword(), OldUser.getSalt());
 
         // 根据旧密码修改密码
-        if (!NotUtils.isNotUtils(updateUserInfoDto.getOldPassword())  && !OldUser.getPassword().equals(oldPassword)){
+        if (!EmptyUtil.isNotUtils(updateUserInfoDto.getOldPassword())  && !OldUser.getPassword().equals(oldPassword)){
             throw new BusinessException(CommonErrorCode.E_100100);
         }
 
         // 根据验证码修改密码
         String phoneCode = (String)redisUtil.get("phone:code:" + updateUserInfoDto.getPhone());
-        if(NotUtils.isNotUtils(updateUserInfoDto.getOldPassword())){
+        if(EmptyUtil.isNotUtils(updateUserInfoDto.getOldPassword())){
             String code = updateUserInfoDto.getCodePhone();
             // 当前密码为空时, 验证码不能为空
-            if(NotUtils.isNotUtils(code)){
+            if(EmptyUtil.isNotUtils(code)){
                 throw new BusinessException(CommonErrorCode.E_100108);
             }
             if(!code.equals(phoneCode)){
                 throw new BusinessException(CommonErrorCode.E_100104);
             }
         }
-        if(!NotUtils.isNotUtils(updateUserInfoDto.getPassword()) ){
+        if(!EmptyUtil.isNotUtils(updateUserInfoDto.getPassword()) ){
             String newPwd = SaltEncryption.saltEncryption(updateUserInfoDto.getPassword(), OldUser.getSalt());
             OldUser.setPassword(newPwd);
         }
@@ -182,7 +177,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         QueryWrapper<User> wrapper = new QueryWrapper<>();
         setLikeWrapper(wrapper, queryParams);
         // 当角色id不为null时查询
-        if (!NotUtils.isNotUtils(userDto.getRoleId()) ){
+        if (!EmptyUtil.isNotUtils(userDto.getRoleId()) ){
             wrapper.eq("role_id",userDto.getRoleId());
         }
         wrapper.eq("is_deleted", 0);
@@ -255,7 +250,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 查询当前用户,如果当前用户名没有变化，则直接返回true
         // 如果当前用户名有变化，则判断当前用户名是否被占用
         User user1 = userMapper.selectOne(new QueryWrapper<User>().eq("id", user.getId()));
-        if (NotUtils.isNotUtils(user1.getUsername())) {
+        if (EmptyUtil.isNotUtils(user1.getUsername())) {
             return this.checkUsername(user.getUsername());
         }
         if (user1.getUsername().equals(user.getUsername())) {
@@ -281,7 +276,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public void updateUser(User user) {
         QueryWrapper<User> qw = new QueryWrapper<User>().eq("id", user.getId());
         User user1 = userMapper.selectOne(qw);
-        if (!NotUtils.isNotUtils(user.getPassword())) {
+        if (!EmptyUtil.isNotUtils(user.getPassword())) {
             user1.setPassword(SaltEncryption.saltEncryption(user.getPassword(), user1.getSalt()));
         }
         user1.setPhone(user.getPhone());
@@ -304,7 +299,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 查询当前用户,如果当前用户名没有变化，则直接返回true
         User user1 = userMapper.selectOne(new QueryWrapper<User>().eq("id", user.getId()));
         // 如果当前用户手机号为空，则直接验证
-        if (NotUtils.isNotUtils(user1.getPhone())) {
+        if (EmptyUtil.isNotUtils(user1.getPhone())) {
             return this.checkUserPhone(user.getPhone());
         }
         if (user1.getPhone().equals(user.getPhone())) {

@@ -157,7 +157,7 @@ router.beforeEach((to, from, next) => {
   // 没有token的情况 直接返回登录页
   if (!token) return next('/')
   // 已经在后端进行拦截了
-  // //属于超级管理员的功能
+  // 属于超级管理员的功能
   // if (to.path === '/userManage' || to.path === '/roleManage' || to.path === '/noticeManage') {
   //   axios.get('/common/checkToken').then((resp) => {
   //     if (resp.data.code === 200 && resp.data.data.id === 1) {//当前用户携带的token信息正确并且是管理员

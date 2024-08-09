@@ -11,11 +11,11 @@ import com.program.model.entity.*;
 import com.program.exception.BusinessException;
 import com.program.exception.CommonErrorCode;
 import com.program.service.ExamRecordService;
+import com.program.utils.EmptyUtil;
 import com.program.utils.certificateUtil.ContentStyle;
 import com.program.utils.certificateUtil.DateTimeUtil;
 import com.program.utils.certificateUtil.PDFUtil;
 import com.program.utils.JwtUtils;
-import com.program.utils.NotUtils;
 import com.program.utils.RedisUtil;
 import com.program.utils.SaltEncryption;
 import com.program.model.vo.PageResponse;
@@ -255,7 +255,7 @@ public class ExamRecordServiceImpl extends ServiceImpl<ExamRecordMapper, ExamRec
     @Override
     public PageResponse<ExamRecord> getExamRecord(Integer examId, String createPerson,Integer pageNo, Integer pageSize) {
         QueryWrapper<ExamRecord> wrapper = new QueryWrapper<>();
-        if(!NotUtils.isNotUtils(createPerson)){
+        if(!EmptyUtil.isNotUtils(createPerson)){
             // 谁创建的考试，谁就批阅
             List<Integer> examIds =  examMapper.selectList(new QueryWrapper<Exam>().eq("create_person", createPerson))
                     .stream()

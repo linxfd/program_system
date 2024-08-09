@@ -21,8 +21,8 @@ import com.program.mapper.QuestionMapper;
 import com.program.mapper.UserMapper;
 import com.program.model.vo.*;
 import com.program.service.ExamService;
+import com.program.utils.EmptyUtil;
 import com.program.utils.JwtUtils;
-import com.program.utils.NotUtils;
 import com.program.utils.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -69,7 +69,7 @@ public class ExamServiceImpl extends ServiceImpl<ExamMapper, Exam> implements Ex
     public PageResponse<Exam> getExamPage(ExamQueryVo examQueryVo) {
         QueryWrapper<Exam> wrapper = new QueryWrapper<>();
 
-        if (!NotUtils.isNotUtils(examQueryVo.getCreatePerson())) {
+        if (!EmptyUtil.isNotUtils(examQueryVo.getCreatePerson())) {
             wrapper.eq("create_person", examQueryVo.getCreatePerson());
         }
         setEqualsQueryWrapper(wrapper, Collections.singletonMap("type", examQueryVo.getExamType()));
@@ -269,7 +269,7 @@ public class ExamServiceImpl extends ServiceImpl<ExamMapper, Exam> implements Ex
 
         QueryWrapper<Exam> ew = new QueryWrapper<Exam>();
         // 加入老师创建人只能查阅创建人的数据
-        if(!NotUtils.isNotUtils(createPerson)){
+        if(!EmptyUtil.isNotUtils(createPerson)){
             ew.eq("create_person",createPerson);
         }
         List<Exam> exams = examMapper.selectList(ew);
@@ -312,7 +312,7 @@ public class ExamServiceImpl extends ServiceImpl<ExamMapper, Exam> implements Ex
     public List<String> getExamNumbersEchartData(String createPerson) {
         QueryWrapper<Exam> ew = new QueryWrapper<Exam>();
         // 加入老师创建人只能查阅创建人的数据
-        if(!NotUtils.isNotUtils(createPerson)){
+        if(!EmptyUtil.isNotUtils(createPerson)){
             ew.eq("create_person",createPerson);
         }
         List<Exam> exams = examMapper.selectList(ew);
