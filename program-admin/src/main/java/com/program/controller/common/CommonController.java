@@ -102,7 +102,9 @@ public class CommonController {
             @ApiImplicitParam(name = "password", value = "系统用户密码", required = true, dataType = "string", paramType = "body"),
     })
     public CommonResult<String> login(@RequestBody @Valid LoginDto loginDto) {
+        String login = userService.login(loginDto);
         return CommonResult.<String>builder()
+                .data(login)
                 .build();
     }
 

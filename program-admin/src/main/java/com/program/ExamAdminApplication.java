@@ -20,13 +20,16 @@ public class ExamAdminApplication {
     public static void main(String[] args) {
         ConfigurableApplicationContext run = SpringApplication.run(ExamAdminApplication.class, args);
         ConfigurableEnvironment env = run.getEnvironment();
+        // 获取端口号
         String port = env.getProperty("server.port");
+        // 获取上下文路径
         String path = env.getProperty("server.servlet.context-path");
         if (EmptyUtil.isEmpty(path)) {
             path = "";
         } else if (path.endsWith("/")) {
             path = path.substring(0, path.length() - 1);
         }
+        // 获取ip地址
         String ipAddress = "";
         try {
             ipAddress = InetAddress.getLocalHost().getHostAddress();
