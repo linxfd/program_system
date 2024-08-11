@@ -151,7 +151,8 @@
                 v-for="(src, index) in form.imgs"
                 :key="index"
                 :src="src"
-                @click="selectIcon(src)"
+                @click="selectIcon(src,index)"
+                :class="{ sel: isSelected(index) }"
                 :style="{ width: '50px', height: '50px', marginRight: '15px', cursor: 'pointer' }"
                 alt=""
               />
@@ -210,10 +211,11 @@ export default {
         url: '',
         icon: '',
         classificationId: '',
-        sortValue: 0,
+        sortValue: '0',
         notes: '',
         imgs: [],
       },
+      selectedImgIndex: 0, // 用于存储选中的图片索引
       showSearch:true,
       response: {},
       // 对话框是否显示
@@ -316,16 +318,17 @@ export default {
       this.ids = rows.map(item => item.id)
     },
     handleIcon(){
-      this.form.icon = this.form.url+'/favicon.ico'
       const urlcom =  encodeURIComponent(this.form.url)
       apis.postHttps(urlcom).then((response)=>{
         if (response.code === 200) {
           this.form.name = response.data.title;
           this.form.notes = response.data.description;
           this.form.imgs = response.data.icon;
+          this.form.icon = this.form.imgs[0];
           console.log(this.form.imgs);
           // 立刻改变form表单
           this.$refs['form'].validateField('name'); 
+          this.$refs['form'].validateField('icon');
           this.$refs['form'].validateField('notes');
           this.$notify({
                     title: 'Tips',
@@ -336,8 +339,11 @@ export default {
         }
       })
     },
-    selectIcon(src){
+    selectIcon(src,index){
+      // 设置选中图片的图片地址
       this.form.icon = src;
+      // 切换选中图片
+      this.selectedImgIndex = this.selectedImgIndex === index ? null : index;
     },
     //提交表单
     submitForm() {
@@ -384,7 +390,15 @@ export default {
     // 表单信息重置
     resetAddForm () {
       // 清空表格数据
-      this.form = {}
+      this.form = {
+        name: '',
+        url: '',
+        icon: '',
+        classificationId: '',
+        sortValue: '0',
+        notes: '',
+        imgs: [],
+      }
     },
     del(row) {
         this.$confirm('是否确认删除选中数据?', '警告', { type: 'warning' }).then(() => {
@@ -403,7 +417,6 @@ export default {
     selectChange (val) {
       let id = {}
       this.del(id)
-      
     },
      // 分页插件的大小改变
     handleSizeChange (val) {
@@ -421,14 +434,22 @@ export default {
     },
     // 导入图标后
     importFile(val){
-      
       this.form.icon = val.data
       this.form.imgs.unshift(val.data)
+      this.selectedImgIndex = 0
       this.loading = false
       // 清除上传列表
       this.$refs.upload.clearFiles();
 
     },
+    isSelected(index) {
+      return this.selectedImgIndex === index;
+    },
   }
 };
 </script>
+<style>
+ .sel {
+    border: 2px solid rgb(60, 208, 231); /* 你可以根据需要自定义样式 */
+  }
+</style>

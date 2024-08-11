@@ -106,7 +106,7 @@ public class UtilController {
         }
         // 获取网页标题、图标和描述
         String title = HtmlUtil.getTitle(httpString);
-        List<String> imgs = HtmlUtil.getIcon(httpString, url);
+        List<String> imgs = HtmlUtil.getIcon(httpString, url , 20);
         String meta = HtmlUtil.getMeta(httpString);
 
         // 返回结果
@@ -115,8 +115,7 @@ public class UtilController {
         response.put("icon", imgs);
         response.put("description", meta);
 
-        return CommonResult.build(response, CommonResultEnum.SUCCESS);
-
+        return CommonResult.build(response, CommonResultEnum.SUCCESS_QUERY);
     }
     private String decodeUrl(String encodedUrl) {
         try {

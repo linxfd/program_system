@@ -103,10 +103,10 @@ const toRegisterPage = () => {
 // 登录
 const login = (formEl) => {
   utils.validFormAndInvoke(formEl, () => {
-    // 勾选记住我
-    if(loginForm.rememberMe){
-      localStorage.setItem('rememberMe', JSON.stringify(loginForm))
-    }
+    // // 勾选记住我
+    // if(loginForm.rememberMe){
+    //   localStorage.setItem('rememberMe', JSON.stringify(loginForm))
+    // }
     auth.login(loginForm).then(resp => {
       if (resp.code === 200) {
         localStorage.setItem('authorization', resp.data)

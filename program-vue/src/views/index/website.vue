@@ -30,7 +30,15 @@
           <img :src="item.icon" :alt="item.notes" style="width: 50px;height: 50px;">
           <div>
             <p class="p_button">{{item.name}}</p>
-            <p class="p">{{item.notes}}</p>
+            <!-- el-tooltip 组件: 是 ElementUI 提供的一个用于创建提示框的组件。它允许您在鼠标悬停时显示额外的信息。 -->
+            <el-tooltip effect="dark" placement="top-start">
+              <template slot="content">
+                {{ item.notes }}
+              </template>
+              <p class="p" style="max-width: 230px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                {{ item.notes }}
+              </p>
+            </el-tooltip>
           </div>
       </div>
     </div>
@@ -40,9 +48,13 @@
 
 <script>
 import website from '@/api/website'
+
 export default {
 
   name: 'Dashboard',
+  components: {
+
+  },
   data(){
     return{
       response:{},

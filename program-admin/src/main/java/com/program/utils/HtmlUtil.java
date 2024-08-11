@@ -9,11 +9,12 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author linxf
  * @date 2024/8/11
- * 对HTML进行解析
+ * Jsoup 提取HTML页面信息
  */
 public class HtmlUtil {
 
@@ -36,29 +37,49 @@ public class HtmlUtil {
      * @param url
      * @return
      */
-    public static List<String> getIcon(String html, String url) {
+    public static List<String> getIcon(String html, String url, Integer maxSize) {
         Document doc = Jsoup.parse(html);
-        HashSet hashSet = new HashSet<String>();
-        // 默认图标
-        hashSet.add(url+"/favicon.ico");
+        ArrayList<String> iconList = new ArrayList<>();
+
         // 提取图标
-        Elements icons = doc.select("link[type=image/x-icon],link[rel=shortcut icon]");
+        Elements icons = doc.select("link[type=image/x-icon],link[rel=shortcut icon],link[rel=icon]");
         for (Element icon : icons) {
             String href = icon.attr("href");
-            if (!href.isEmpty() && !href.startsWith("/favicon.ico")) {
-                hashSet.add(href);
+            if (href.isEmpty() ) {
+                continue;
             }
+            if (href.startsWith("http") || href.startsWith("//")) {
+                iconList.add(href);
+            } else {
+                iconList.add(url + href);
+            }
+        }
+        if (icons.isEmpty()){
+            // 默认图标
+            iconList.add(url+"/favicon.ico");
         }
         // 提取图片
         Elements images = doc.select("img[src$=.png], img[src$=.jpg]");
         for (Element image : images) {
             String src = image.attr("src");
-            if (!src.isEmpty()) {
-                hashSet.add(src);
+            if (src.isEmpty() ) {
+                continue;
+            }
+            if (src.startsWith("http") || src.startsWith("//")) {
+                iconList.add(src);
+            } else {
+                iconList.add(url + src);
             }
         }
+        // 去重
+        List<String> uniqueList = iconList.stream().distinct().collect(Collectors.toList());
+        // 截取
+        if (uniqueList.size() > maxSize) {
+            uniqueList = uniqueList.subList(0, maxSize);
+        }
 
-        return new ArrayList<>(hashSet);
+        return uniqueList;
+
     }
 
     /**

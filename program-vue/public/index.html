@@ -3,6 +3,12 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+     <!-- 网络图片通过img标签显示 错误码403  <meta name="referrer" content="no-referrer">  
+      http请求头中有一个reference字段，用来表示发起http请求的源地址信息
+      服务器端在拿到这个reference值后判断请求是否来自本站
+      如果不是则返回403，从而实现图片的防盗链。以上出现403就是因为请求的是别人服务器的资源，但是把自己的reference信息给带过去了，被对方服务器拦截返回了403
+      -->  
+    <meta name="referrer" content="no-referrer">  
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
 <!--    <title><%= htmlWebpackPlugin.options.title %></title>-->
