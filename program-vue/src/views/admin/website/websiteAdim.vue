@@ -187,6 +187,7 @@
 import website from '@/api/website'
 import utils from '@/utils/utils'
 import { generateSign } from '@/utils/sign'
+import apis from '@/api/api'
 
 export default {
   name: "Website",
@@ -194,7 +195,14 @@ export default {
     return {
       uploadImageUrl: process.env.VUE_APP_UPLOAD_IMAGE_URL,
       ids: [],
-      form: {},
+      form: {
+        name: '',
+        url: '',
+        icon: '',
+        sortValue: '',
+        notes: '',
+        classificationId: ''
+      },
       showSearch:true,
       response: {},
       // 对话框是否显示
@@ -298,6 +306,21 @@ export default {
     },
     handleIcon(){
       this.form.icon = this.form.url+'/favicon.ico'
+      const urlcom =  encodeURIComponent(this.form.url)
+       console.log(this.form.url)
+      console.log(urlcom)
+      debugger
+      apis.postHttps(urlcom).then((response)=>{
+        debugger
+        if (response.code === 200) {
+          let html = response.data.contents;
+          let parser = new DOMParser();
+          console.log(html)
+          let doc = parser.parseFromString(html, 'text/html');
+          console.log(doc.querySelector('title').textContent)
+          this.form.name = doc.querySelector('title').textContent;
+        }
+      })
     },
     //提交表单
     submitForm() {
