@@ -319,6 +319,7 @@ export default {
     },
     handleIcon(){
       const urlcom =  encodeURIComponent(this.form.url)
+      this.loading = true
       apis.postHttps(urlcom).then((response)=>{
         if (response.code === 200) {
           this.form.name = response.data.title;
@@ -337,6 +338,7 @@ export default {
                     duration: 2000
                   })
         }
+        this.loading = false
       })
     },
     selectIcon(src,index){

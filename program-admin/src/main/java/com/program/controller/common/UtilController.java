@@ -117,14 +117,5 @@ public class UtilController {
 
         return CommonResult.build(response, CommonResultEnum.SUCCESS_QUERY);
     }
-    private String decodeUrl(String encodedUrl) {
-        try {
-            // 使用 UTF-8 字符集解码
-            return URLDecoder.decode(encodedUrl, StandardCharsets.UTF_8.toString());
-        } catch (Exception e) {
-            // 处理解码异常
-            throw new RuntimeException("Failed to decode URL", e);
-        }
-    }
 
 }

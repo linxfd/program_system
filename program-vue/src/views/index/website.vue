@@ -32,8 +32,8 @@
             <p class="p_button">{{item.name}}</p>
             <!-- el-tooltip 组件: 是 ElementUI 提供的一个用于创建提示框的组件。它允许您在鼠标悬停时显示额外的信息。 -->
             <el-tooltip effect="dark" placement="top-start">
-              <template slot="content">
-                {{ item.notes }}
+              <template slot="content" >
+                <div class="top-content">{{ item.notes }}</div>
               </template>
               <p class="p" style="max-width: 230px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                 {{ item.notes }}
@@ -121,10 +121,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-  div {
-    animation: leftMoveIn .7s ease-in;
-  }
-
   @keyframes leftMoveIn {
     0% {
       transform: translateX(-100%);
@@ -147,7 +143,6 @@ export default {
   }
   .p_button {
     color: #0a29d7;
-    text-indent: 2em;
     font-size: 22px;
     text-align: right;
   }
@@ -159,10 +154,12 @@ export default {
   .container{
     display: flex;
     flex-wrap: wrap; /* 允许元素换行 */
+    
   }
   .divMain{
     justify-content: space-between; 		/* 用于控制弹性容器中子元素的水平对齐方式。*/
     display: flex ;
+    animation: leftMoveIn .7s ease-in;
   }
 
   .black {
@@ -170,55 +167,61 @@ export default {
     color: white; /* 文字颜色也需要调整为白色以提高可读性 */
   }
 
-.white {
-  background-color: white;
-  color: black; /* 文字颜色也需要调整为黑色以提高可读性 */
-}
-  /* 导航按钮样式 */
-.classidiedbutton{
-  position: relative;
-  padding: 12px 24px;
-  margin: 10px; /* 设置项目的外边距 */
+  .white {
+    background-color: white;
+    color: black; /* 文字颜色也需要调整为黑色以提高可读性 */
+  }
+    /* 导航按钮样式 */
+  .classidiedbutton{
+    position: relative;
+    padding: 12px 24px;
+    margin: 10px; /* 设置项目的外边距 */
 
-  text-align: center;
-  text-decoration: none;
-  border: 2px solid #ccc;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15), 0 2px 6px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  border-radius: 30px;
-}
+    text-align: center;
+    text-decoration: none;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15), 0 2px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    border-radius: 30px;
+  }
 
-  /* 导航列表样式 */
-.button-3d {
-  flex: 0 0 calc(20% - 20px);/* 计算每个项目的宽度为容器宽度的1/3，并减去左右间距的一半 */
-  position: relative;
-  padding: 12px 24px;
-  margin: 10px; /* 设置项目的外边距 */
-  font-size: 16px;
-  text-align: center;
-  text-decoration: none;
-  color: #333;
-  background-color: white;
-  border: 2px solid #ccc;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15), 0 2px 6px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-}
+    /* 导航列表样式 */
+  .button-3d {
+    flex: 0 0 calc(20% - 20px);/* 计算每个项目的宽度为容器宽度的1/3，并减去左右间距的一半 */
+    position: relative;
+    padding: 12px 24px;
+    margin: 10px; /* 设置项目的外边距 */
+    font-size: 16px;
+    text-align: center;
+    text-decoration: none;
+    color: #333;
+    background-color: white;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15), 0 2px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
 
-/* 鼠标悬停效果 */
-.button-3d:hover {
-  transform: translateY(-2px);
-  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
-}
+  /* 鼠标悬停效果 */
+  .button-3d:hover {
+    transform: translateY(-2px);
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
+  }
 
-/* 鼠标点击效果 */
-.button-3d:active {
-  transform: translateY(1px);
-  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
-}
+  /* 鼠标点击效果 */
+  .button-3d:active {
+    transform: translateY(1px);
+    box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+  }
+  .top-content {
+    white-space: pre-wrap; /* 允许文本换行 */
+    word-break: break-word; /* 在长单词或URL上换行 */
+    max-width: 230px;
+    text-indent: 2em; /* 缩进2字符 */
+  }
 </style>

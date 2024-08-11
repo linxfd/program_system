@@ -26,6 +26,9 @@ public class HtmlUtil {
     public static String getTitle(String html) {
         Document doc = Jsoup.parse(html);
         Element title = doc.select("title").first();
+        if (EmptyUtil.isEmpty(title)) {
+            return "";
+        }
         String pageTitle = title.text();
         return pageTitle;
     }
@@ -90,6 +93,9 @@ public class HtmlUtil {
     public static String getMeta(String html) {
         Document doc = Jsoup.parse(html);
         Elements metas = doc.select("meta[name=description]");
+        if (EmptyUtil.isEmpty(metas)) {
+            return "";
+        }
         return metas.attr("content");
     }
 }
