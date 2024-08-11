@@ -1,9 +1,12 @@
 package com.program.controller.common;
 
+import com.program.exception.BusinessException;
+import com.program.exception.CommonErrorCode;
 import com.program.model.dict.DictTedisTime;
 import com.program.model.vo.CommonResultEnum;
 import com.program.service.UtilService;
 import com.program.utils.CreateVerificationCode;
+import com.program.utils.HtmlUtil;
 import com.program.utils.HttpUtils;
 import com.program.utils.RedisUtil;
 import com.program.model.vo.CommonResult;
@@ -19,13 +22,16 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.imageio.ImageIO;
+import javax.lang.model.element.Element;
 import javax.servlet.http.HttpServletResponse;
+import javax.swing.text.Document;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -77,34 +83,39 @@ public class UtilController {
         return CommonResult.build(null, CommonResultEnum.SUCCESS);
     }
 
-    @ApiOperation(value = "访问网址")
-    @PostMapping("/fetchWebsite")
+    @ApiOperation(value = "获得网页的标题和图标")
+    @PostMapping("/documentInfo")
     public CommonResult fetchWebsiteTitle(@RequestBody String websiteUrl) {
-        System.out.println("sss");
-        // 解码 URL
-        String decodedUrl = websiteUrl.substring(0, websiteUrl.length() - 1);
-        URI uri = UriComponentsBuilder.fromHttpUrl("https://api.allorigins.win/get")
-                .queryParam("url", decodedUrl)
-                .build()
-                .toUri();
-        HttpResponse getResponse;
-        Map<String, String> querys = new HashMap<>();
-        querys.put("url", "https://www.baidu.com");
 
         Map<String, String> headers = new HashMap<String, String>();
-        headers.put("Content-Type", "application/json");
-        headers.put("Accept", "application/json");
-        String string = "";
+        headers.put("Content-Type", "application/json; charset=utf-8");
+        headers.put("Accept", "application/json; charset=utf-8");
+        String httpString = "";
+        HttpResponse getResponse;
+        String url = "";
         try {
-            getResponse = HttpUtils.doGet("https://api.allorigins.win", "/get", "GET", headers, querys);
+            String decode = URLDecoder.decode(websiteUrl, StandardCharsets.UTF_8.toString());
+            url = decode.substring(0, decode.length() - 1);
+            // 发送 GET 请求
+            getResponse = HttpUtils.doGet(url, null, "GET", headers, null);
             if (getResponse != null) {
-                string  = EntityUtils.toString(getResponse.getEntity());
+                httpString  = EntityUtils.toString(getResponse.getEntity(),"UTF-8");
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new BusinessException(CommonErrorCode.E_500001);
         }
+        // 获取网页标题、图标和描述
+        String title = HtmlUtil.getTitle(httpString);
+        List<String> imgs = HtmlUtil.getIcon(httpString, url);
+        String meta = HtmlUtil.getMeta(httpString);
 
-        return CommonResult.build(string, CommonResultEnum.SUCCESS);
+        // 返回结果
+        Map<String, Object> response = new HashMap<String, Object>();
+        response.put("title", title);
+        response.put("icon", imgs);
+        response.put("description", meta);
+
+        return CommonResult.build(response, CommonResultEnum.SUCCESS);
 
     }
     private String decodeUrl(String encodedUrl) {

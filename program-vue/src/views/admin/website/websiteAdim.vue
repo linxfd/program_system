@@ -145,7 +145,17 @@
         <el-form-item label="网站图标" prop="icon">
           <el-input v-model="form.icon" placeholder="默认为/favicon.ico" clearable/>
           <div style="display: flex;">
-            <img :src="form.icon" alt="" style="width: 50px;height: 50px; margin-right: 15%;">
+            <!-- <img :src="form.icon" alt="" style="width: 50px;height: 50px; margin-right: 15%;"> -->
+            <div  style="display: flex; flex-wrap: wrap;">
+              <img
+                v-for="(src, index) in form.imgs"
+                :key="index"
+                :src="src"
+                @click="selectIcon(src)"
+                :style="{ width: '50px', height: '50px', marginRight: '15px', cursor: 'pointer' }"
+                alt=""
+              />
+            </div>
             <el-upload
                   ref="upload"
                   :action="uploadImageUrl + '/teacher/uploadQuestionImage'"
@@ -199,9 +209,10 @@ export default {
         name: '',
         url: '',
         icon: '',
-        sortValue: '',
+        classificationId: '',
+        sortValue: 0,
         notes: '',
-        classificationId: ''
+        imgs: [],
       },
       showSearch:true,
       response: {},
@@ -245,9 +256,9 @@ export default {
     };
   },
   computed: {
-    
     // 监测头部信息的token变化
     headers () {
+      
       const signHeaders = {
         'body-string': '',
         'query-string': '',
@@ -307,20 +318,26 @@ export default {
     handleIcon(){
       this.form.icon = this.form.url+'/favicon.ico'
       const urlcom =  encodeURIComponent(this.form.url)
-       console.log(this.form.url)
-      console.log(urlcom)
-      debugger
       apis.postHttps(urlcom).then((response)=>{
-        debugger
         if (response.code === 200) {
-          let html = response.data.contents;
-          let parser = new DOMParser();
-          console.log(html)
-          let doc = parser.parseFromString(html, 'text/html');
-          console.log(doc.querySelector('title').textContent)
-          this.form.name = doc.querySelector('title').textContent;
+          this.form.name = response.data.title;
+          this.form.notes = response.data.description;
+          this.form.imgs = response.data.icon;
+          console.log(this.form.imgs);
+          // 立刻改变form表单
+          this.$refs['form'].validateField('name'); 
+          this.$refs['form'].validateField('notes');
+          this.$notify({
+                    title: 'Tips',
+                    message: this.form.name,
+                    type: 'success',
+                    duration: 2000
+                  })
         }
       })
+    },
+    selectIcon(src){
+      this.form.icon = src;
     },
     //提交表单
     submitForm() {
@@ -406,6 +423,7 @@ export default {
     importFile(val){
       
       this.form.icon = val.data
+      this.form.imgs.unshift(val.data)
       this.loading = false
       // 清除上传列表
       this.$refs.upload.clearFiles();

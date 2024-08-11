@@ -168,6 +168,12 @@
             <artifactId>minio</artifactId>
             <version>8.2.2</version>
         </dependency>
+        <!-- Jsoup 提取HTML页面信息-->
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.13.1</version>
+        </dependency>
     </dependencies>
 
     <build>

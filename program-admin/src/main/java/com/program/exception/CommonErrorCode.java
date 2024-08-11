@@ -25,6 +25,9 @@ public enum CommonErrorCode implements ErrorCode {
 
     E_400001(400001, "考试不存在"),
 
+    E_500001(500001, "网站没有找到"),
+
+
     /**
      * 切面类错误
      */
