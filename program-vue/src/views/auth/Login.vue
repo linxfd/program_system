@@ -154,11 +154,11 @@ export default {
     // 检验用户是否存在token,存在直接跳转主页
     utils.checkToken('/index')
     // 如果上次用户勾选记住我
-    // let loginMe = JSON.parse(localStorage.getItem('rememberMe'));
-    // if(loginMe.username != ''){
-    //   this.loginForm.username = loginMe.username
-    //   this.loginForm.password = loginMe.password
-    // }
+    let loginMe = JSON.parse(localStorage.getItem('rememberMe'));
+    if(loginMe.username != ''){
+      this.loginForm.username = loginMe.username
+      this.loginForm.password = loginMe.password
+    }
   },
   mounted () {
     loginFunc.changeCode()

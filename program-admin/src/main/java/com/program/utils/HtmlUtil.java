@@ -20,11 +20,10 @@ public class HtmlUtil {
 
     /**
      * 获得HTML中的标题
-     * @param html
+     * @param doc
      * @return
      */
-    public static String getTitle(String html) {
-        Document doc = Jsoup.parse(html);
+    public static String getTitle(Document doc) {
         Element title = doc.select("title").first();
         if (EmptyUtil.isEmpty(title)) {
             return "";
@@ -36,42 +35,23 @@ public class HtmlUtil {
 
     /**
      * 获得HTML中的图标
-     * @param html
-     * @param url
+     * @param doc
      * @return
      */
-    public static List<String> getIcon(String html, String url, Integer maxSize) {
-        Document doc = Jsoup.parse(html);
+    public static List<String> getIcon(Document doc, Integer maxSize) {
         ArrayList<String> iconList = new ArrayList<>();
-
-        // 提取图标
-        Elements icons = doc.select("link[type=image/x-icon],link[rel=shortcut icon],link[rel=icon]");
+        // 提取图标, 包括link标签和img标签
+        Elements icons = doc.select("link[type=image/x-icon],link[rel~=icon],img");
+        // 默认添加一个图标
+        iconList.add(doc.location()+"/favicon.ico");
         for (Element icon : icons) {
-            String href = icon.attr("href");
-            if (href.isEmpty() ) {
-                continue;
-            }
-            if (href.startsWith("http") || href.startsWith("//")) {
+            // abs:是获得绝对路径
+            String href = icon.attr("abs:href");
+            String src = icon.attr("abs:src");
+            if (EmptyUtil.isNotEmpty(href)) {
                 iconList.add(href);
-            } else {
-                iconList.add(url + href);
-            }
-        }
-        if (icons.isEmpty()){
-            // 默认图标
-            iconList.add(url+"/favicon.ico");
-        }
-        // 提取图片
-        Elements images = doc.select("img[src$=.png], img[src$=.jpg]");
-        for (Element image : images) {
-            String src = image.attr("src");
-            if (src.isEmpty() ) {
-                continue;
-            }
-            if (src.startsWith("http") || src.startsWith("//")) {
+            }else if (EmptyUtil.isNotEmpty(src)) {
                 iconList.add(src);
-            } else {
-                iconList.add(url + src);
             }
         }
         // 去重
@@ -80,18 +60,15 @@ public class HtmlUtil {
         if (uniqueList.size() > maxSize) {
             uniqueList = uniqueList.subList(0, maxSize);
         }
-
         return uniqueList;
-
     }
 
     /**
      * 获得HTML中的 描述description
-     * @param html
+     * @param doc
      * @return
      */
-    public static String getMeta(String html) {
-        Document doc = Jsoup.parse(html);
+    public static String getMeta(Document doc) {
         Elements metas = doc.select("meta[name=description]");
         if (EmptyUtil.isEmpty(metas)) {
             return "";

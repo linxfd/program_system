@@ -122,7 +122,7 @@
           <el-input v-model="form.name" placeholder="请输入网站名称" clearable/>
         </el-form-item>
         <el-form-item label="网址" prop="url">
-          <el-input v-model="form.url" placeholder="请输入网址"  @input="handleIcon" clearable/>
+          <el-input v-model="form.url" placeholder="输入完整的网址url"  @input="handleIcon" clearable/>
         </el-form-item>
 
         <el-form-item
@@ -246,7 +246,9 @@ export default {
       ],
       rules: {
         url: [
-          { required: true, message: "网址不能为空", trigger: "blur" }
+          { required: true, message: "网址不能为空", trigger: "blur" },
+          { type: 'url', message: '请输入正确的网址', trigger: 'blur' },
+          {}
         ],
         name: [
           { required: true, message: "网站名称不能为空", trigger: "blur" }
@@ -320,6 +322,17 @@ export default {
     handleIcon(){
       const urlcom =  encodeURIComponent(this.form.url)
       this.loading = true
+      const urlPattern = /^(https?:\/\/)(localhost|([a-z\d.-]+)\.([a-z]{2,}))(?::\d{2,5})?(\/.*)?$/i;
+      if (!urlPattern.test(this.form.url)) {
+        this.loading = false
+        return
+      }
+      // 开始查询
+      this.$message({
+        message: '正在查询网站信息，请稍后...',
+        type: 'success',
+        duration: 2000
+      })
       apis.postHttps(urlcom).then((response)=>{
         if (response.code === 200) {
           this.form.name = response.data.title;

@@ -14,6 +14,9 @@ public class BusinessException extends RuntimeException {
         super(errorCode.getDesc());
         this.errorCode = errorCode;
     }
+    public BusinessException(String code , String desc) {
+        super(desc);
+    }
 
     public BusinessException() {
         super();
