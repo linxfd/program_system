@@ -1,7 +1,7 @@
 <template>
   <el-footer >
     <!-- 登录的下边栏 -->
-    <p >编程云系统</p>
+    <p >编程云系统，现在正在测试阶段</p>
   </el-footer>
 </template>
 
@@ -18,7 +18,7 @@ export default {
 }
 p{
   text-align: center;
-  color: rgb(252, 252, 252);
-  
+  /* color: rgb(252, 252, 252); */
+  color: rgb(13, 13, 13);
 }
 </style>

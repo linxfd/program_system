@@ -13,13 +13,13 @@
       >
         <el-menu-item
           index="/index"
-          disabled
-          style="text-align: center"
+          style="text-align: center;"
         >
-          <i class="el-icon-picture-outline-round" />
+          <!-- <i class="el-icon-picture-outline-round" />
           <span slot="title">
             编程系统
-          </span>
+          </span> -->
+          <img class="login-logo" style="width: 50%;" src="~@/assets/imgs/logo1.png" />
         </el-menu-item>
 
         
@@ -97,7 +97,7 @@
                 @command="handleCommand"
               >
                 <span class="el-dropdown-link">
-                  {{ currentUserInfo.username }}
+                  {{ currentUserInfo.trueName ? currentUserInfo.trueName : currentUserInfo.username }}
                   <i class="el-icon-caret-bottom" />
                 </span>
                 <el-dropdown-menu slot="dropdown">
@@ -761,6 +761,7 @@ export default {
         localStorage.removeItem('authorization')
         this.$router.push('/')
       })
+      
     },
     // 关闭tag标签
     handleClose (index) { // 当前点击的tag的下标

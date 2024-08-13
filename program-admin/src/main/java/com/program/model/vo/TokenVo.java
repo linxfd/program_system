@@ -16,6 +16,8 @@ public class TokenVo {
 
     private String username;
 
+    private String trueName;
+
     private String password;
 
 }

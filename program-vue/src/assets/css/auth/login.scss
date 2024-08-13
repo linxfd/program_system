@@ -3,7 +3,7 @@
   height: 100%;
   background: url("../../assets/imgs/bg.png");
   background-size: 100% 100%;
-  // flex-direction: column;
+  flex-direction: column;
 }
 
 a {
@@ -86,10 +86,7 @@ a {
   width: 50%;
   height: 100%;
   float: right;
-  .login-logo {
-    margin: 2% 0px 0px 35%;
-    width: 20%;
-  }
+
   .login-title {
     width: 64px;
     height: 48px;
@@ -103,6 +100,11 @@ a {
   .login-tab {
     margin-top: 5%;
    
+  }
+
+  .login-logo {
+    margin: 2% 0px 0px 35%;
+    width: 20%;
   }
 
   .login-from {

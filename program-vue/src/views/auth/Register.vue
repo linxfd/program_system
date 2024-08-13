@@ -5,7 +5,7 @@
           <div class="sys-name2">注册</div>
           <div class="sys-name1">
             <hr>
-            账户:平台中账户的唯一标识<br>
+            账号:平台中账户的唯一标识<br>
             &nbsp;&nbsp;&nbsp;&nbsp;
             注册完成后可在平台中绑定手机号下次登录可使用手机号登录
           </div>
@@ -82,6 +82,7 @@
 
         </div>
       </div>
+      <Footer />
   </container>
 </template>
 
@@ -106,5 +107,5 @@ export default {
 
 <style scoped lang="scss">
 @import "../../assets/css/auth/register";
-
+@import "../../assets/css/index/main";
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <container class="el-container">
+  <el-container class="el-container">
     <div class="main">
         <div class="from-login-left">
                 <div class="sys-name2">编程云</div>
@@ -126,10 +126,11 @@
               </div>
               </el-tab-pane>
           </el-tabs>
-
         </div>
+
       </div>
-  </container>
+    <Footer />
+  </el-container>
 </template>
 
 <script>
@@ -193,6 +194,7 @@ export default {
 
 <style scoped lang="scss">
 @import "../../assets/css/auth/login";
+
   .zbutton {
     width: 23%;
     height: 10%;
@@ -216,3 +218,4 @@ export default {
   }
 
 </style>
+

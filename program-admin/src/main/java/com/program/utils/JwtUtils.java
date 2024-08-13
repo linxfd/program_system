@@ -30,6 +30,7 @@ public class JwtUtils {
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRE))
 
                 .claim("roleId", user.getRoleId())
+                .claim("trueName", user.getTrueName())
                 .claim("username", user.getUsername())
                 .claim("password", user.getPassword())
 
@@ -85,9 +86,11 @@ public class JwtUtils {
             throw new BusinessException(CommonErrorCode.E_200001);
         }
         Claims claims = claimsJws.getBody();
+        System.out.println(claims.toString());
         return TokenVo.builder()
                 .roleId(claims.get("roleId", Integer.class))
                 .username(claims.get("username", String.class))
+                .trueName(claims.get("trueName", String.class))
                 .password(claims.get("password", String.class))
                 .build();
     }
