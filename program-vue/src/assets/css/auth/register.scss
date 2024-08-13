@@ -56,3 +56,81 @@ a {
 .code {
   width: 72%;
 }
+.from-regiter-left {
+  width: 50%;
+  height: 100%;
+  float: left;
+  background: #f7f8fa url(~@/assets/容器1.png);
+  background-size: cover;
+  .sys-name1 {
+    margin-left: 15%;
+    width: 60%;
+    font-size: 20px;
+    font-family: Source Han Sans CN-Heavy, Source Han Sans CN;
+    font-weight: 800;
+    color: #0f0f0f;
+    line-height: 67px;
+  }
+  .sys-name2 {
+    width: 100%;
+    height: 102px;
+    margin-left: 40%;
+    font-size: 48px;
+    font-family: Source Han Sans CN-Heavy, Source Han Sans CN;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 101px;
+  }
+}
+.from-regiter-right {
+  width: 50%;
+  height: 100%;
+  float: right;
+  .regiter-logo {
+    margin: 2% 0px 0px 35%;
+    width: 20%;
+  }
+  .regiter-title {
+    width: 64px;
+    height: 48px;
+    font-size: 32px;
+    font-family: Source Han Sans CN-Bold, Source Han Sans CN;
+    font-weight: bold;
+    color: #333333;
+    line-height: 48px;
+    margin: 22px 0px 0px 10%;
+  }
+
+
+  .regiter-from {
+    margin: 5% 10%  0px 10%;
+  }
+  .regiter-button {
+    width: 100%;
+    height: 56px;
+    background: #1a4c8b;
+    border-radius: 32px 32px 32px 32px;
+    opacity: 1;
+  }
+  .regiter-login {
+    width: 90%;
+  }
+  // tab字体大小 账户登录
+  ::v-deep .custom-font-size {
+    font-size: 18px !important;
+  }
+
+}
+.main {
+  background: none !important;
+  width: 65%;
+  height: 75%;
+  background: #ffffff;
+  box-shadow: 0px 10px 20px 0px rgba(0, 0, 0, 0.16);
+  border-radius: 24px 24px 24px 24px;
+  opacity: 1;
+  margin: 5% 5% 5% 17%;
+}
+::v-deep .el-tabs__item {
+  font-size: 19px !important;
+}

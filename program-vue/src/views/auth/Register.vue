@@ -1,89 +1,88 @@
 <template>
-  <el-container>
-    <el-main>
-      <el-card
-        class="box-card"
-        shadow="always"
-      >
-        <div
-          slot="header"
-          class="card-header"
-        >
-          <p>编程云系统</p>
+  <container class="el-container">
+    <div class="main">
+        <div class="from-regiter-left">
+          <div class="sys-name2">注册</div>
+          <div class="sys-name1">
+            <hr>
+            账户:平台中账户的唯一标识<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            注册完成后可在平台中绑定手机号下次登录可使用手机号登录
+          </div>
         </div>
+        <div class="from-regiter-right">
+          <img class="regiter-logo" src="~@/assets/imgs/logo1.png" />
+          <div class="regiter-from">
+            <el-form
+              :model="registerForm"
+              :rules="registerFormRules"
+              ref="registerForm"
+              :status-icon="true"
+              label-width="100px"
+            >
+              <el-form-item prop="username">
+                <el-input
+                  prefix-icon="el-icon-user"
+                  v-model="registerForm.username"
+                  placeholder="账号"
+                />
+              </el-form-item>
 
-        <div>
-          <el-form
-            :model="registerForm"
-            :rules="registerFormRules"
-            ref="registerForm"
-            :status-icon="true"
-            label-width="100px"
-          >
-            <el-form-item prop="username">
-              <el-input
-                prefix-icon="el-icon-user"
-                v-model="registerForm.username"
-                placeholder="账号"
-              />
-            </el-form-item>
+              <el-form-item prop="trueName">
+                <el-input
+                  prefix-icon="el-icon-s-check"
+                  v-model="registerForm.trueName"
+                  placeholder="姓名"
+                />
+              </el-form-item>
 
-            <el-form-item prop="trueName">
-              <el-input
-                prefix-icon="el-icon-s-check"
-                v-model="registerForm.trueName"
-                placeholder="姓名"
-              />
-            </el-form-item>
+              <el-form-item prop="password">
+                <el-input
+                  prefix-icon="el-icon-lock"
+                  v-model="registerForm.password"
+                  placeholder="密码"
+                  show-password
+                />
+              </el-form-item>
 
-            <el-form-item prop="password">
-              <el-input
-                prefix-icon="el-icon-lock"
-                v-model="registerForm.password"
-                placeholder="密码"
-                show-password
-              />
-            </el-form-item>
+              <el-form-item prop="code">
+                <el-input
+                  class="code"
+                  prefix-icon="el-icon-chat-line-round"
+                  v-model="registerForm.code"
+                  placeholder="验证码"
+                />
+                <img
+                  :src="`${captchaUrl}/util/getCodeImg`"
+                  @click="changeCode"
+                  id="code"
+                  style="float: right;margin-top: 4px;cursor: pointer"
+                  title="看不清,点击刷新"
+                  alt="验证码"
+                >
+              </el-form-item>
 
-            <el-form-item prop="code">
-              <el-input
-                class="code"
-                prefix-icon="el-icon-chat-line-round"
-                v-model="registerForm.code"
-                placeholder="验证码"
-              />
-              <img
-                :src="`${captchaUrl}/util/getCodeImg`"
-                @click="changeCode"
-                id="code"
-                style="float: right;margin-top: 4px;cursor: pointer"
-                title="看不清,点击刷新"
-                alt="验证码"
-              >
-            </el-form-item>
+              <el-form-item>
+                <el-button
+                  type="warning"
+                  @click="register($refs['registerForm'])"
+                  icon="el-icon el-icon-circle-plus"
+                >
+                  注册
+                </el-button>
+                <el-button
+                  @click="toLoginPage"
+                  icon="el-icon el-icon-s-promotion"
+                >
+                  去登陆
+                </el-button>
+              </el-form-item>
+            </el-form>
+          </div>
 
-            <el-form-item>
-              <el-button
-                type="warning"
-                @click="register($refs['registerForm'])"
-                icon="el-icon el-icon-circle-plus"
-              >
-                注册
-              </el-button>
-              <el-button
-                @click="toLoginPage"
-                icon="el-icon el-icon-s-promotion"
-              >
-                去登陆
-              </el-button>
-            </el-form-item>
-          </el-form>
         </div>
-      </el-card>
-    </el-main>
-
-    <Footer />
-  </el-container>
+      </div>
+  </container>
 </template>
 
 <script>
