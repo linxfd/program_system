@@ -8,13 +8,6 @@ export default {
             data: queryParams
         })
     },
-
-    getListByclassificationId(classificationId){
-        return request({
-            url: `/public/website/list/${classificationId}`,
-            method: 'post',
-        })
-    },
     add(queryParams){
         return request({
             url: '/admin/website/add',
@@ -38,7 +31,7 @@ export default {
     },
     getClassidied(){
         return request({
-            url: '/public/website/getClassidied',
+            url: '/common/website/getClassidied',
             method: 'get',
         })
     },
@@ -46,9 +39,16 @@ export default {
     // 分类管理
     getClassificationList(queryParams){
         return request({
-            url: '/public/website/ClassificationList',
+            url: '/common/website/ClassificationList',
             method: 'post',
             data: queryParams
+        })
+    },
+
+    getListByclassificationId(classificationId){
+        return request({
+            url: `/common/website/list/${classificationId}`,
+            method: 'post',
         })
     },
     editClassification(queryParams){

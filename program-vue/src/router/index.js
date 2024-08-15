@@ -20,6 +20,11 @@ const routes = [
     path: '/register',
     component: () => import('../views/auth/Register')
   },
+  // 不用登录也可以访问的页面
+  {
+    path: '/web',
+    component: () => import('../views/index/website')
+  },
   {
     path: '/index',
     component: () => import('../views/index/Main'),
@@ -30,7 +35,7 @@ const routes = [
         path: '/dashboard',
         component: () => import('../views/index/Dashboard')
       },
-      // 网站推荐(all)
+        // 网站推荐(all)
       {
         path: '/website',
         component: () => import('../views/index/website')
@@ -151,7 +156,7 @@ router.beforeEach((to, from, next) => {
   NProgress.start()
   const token = window.localStorage.getItem('authorization')
   // 2个不用token的页面请求
-  if (to.path === '/' || to.path === '/register') {
+  if (to.path === '/' || to.path === '/register' || to.path === '/website') {
     return next()
   }
   // 没有token的情况 直接返回登录页

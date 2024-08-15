@@ -30,11 +30,7 @@ public class PublicController {
 
     private final QuestionBankService questionBankService;
 
-    @Autowired
-    private WebsiteService websiteService;
 
-    @Autowired
-    private WebsiteClassificationService websiteClassificationService;
 
     @Autowired
     private UserService userService;
@@ -119,32 +115,6 @@ public class PublicController {
     public CommonResult getCreatePersonName() {
         return CommonResult.<List<User>>builder()
                 .data(userService.getCreatePersonName())
-                .build();
-    }
-
-    /**
-     * 获得网站列表--用户浏览列表
-     * @return
-     */
-    @ApiOperation(value = "获得网站列表")
-    @PostMapping("/website/list/{classificationId}")
-    public CommonResult getListByclassificationId(@PathVariable("classificationId") Integer classificationId){
-        // -1 代表全部
-        if(classificationId == -1){
-            classificationId = null;
-        }
-        List<Website> list = websiteService.pageUserList(classificationId);
-        return CommonResult.<List<Website>>builder()
-                .data(list)
-                .build();
-    }
-
-    @ApiOperation(value = "获得网站分类列表列表")
-    @PostMapping("/website/ClassificationList")
-    public CommonResult getClassificationList(@RequestBody WebsiteClassificationVo WebsiteClassificationVo){
-        PageResponse<WebsiteClassification> list = websiteClassificationService.pageList(WebsiteClassificationVo);
-        return CommonResult.<PageResponse<WebsiteClassification>>builder()
-                .data(list)
                 .build();
     }
 

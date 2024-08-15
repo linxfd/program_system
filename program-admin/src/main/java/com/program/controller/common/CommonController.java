@@ -2,24 +2,29 @@ package com.program.controller.common;
 
 import com.program.model.dto.*;
 import com.program.model.entity.User;
+import com.program.model.entity.Website;
+import com.program.model.entity.WebsiteClassification;
+import com.program.model.vo.*;
 import com.program.service.UserRoleService;
 import com.program.service.UserService;
+import com.program.service.WebsiteClassificationService;
+import com.program.service.WebsiteService;
 import com.program.service.impl.UserRoleServiceImpl;
 import com.program.service.impl.UserServiceImpl;
 import com.program.utils.JwtUtils;
-import com.program.model.vo.CommonResult;
-import com.program.model.vo.TokenVo;
-import com.program.model.vo.UserVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+
+import java.util.List;
 
 import static com.program.model.vo.UserVo.fromUser;
 
@@ -34,6 +39,12 @@ public class CommonController {
     private final UserService userService;
 
     private final UserRoleService userRoleService;
+
+    @Autowired
+    private WebsiteService websiteService;
+
+    @Autowired
+    private WebsiteClassificationService websiteClassificationService;
 
     @RequestMapping("/error")
     public CommonResult<String> error() {
@@ -163,5 +174,31 @@ public class CommonController {
     public CommonResult updateCurrentPhone(@RequestBody @Valid UpdatePhoneInfoDto updatePhoneInfoDto) {
 
         return userService.updateCurrentPhone(updatePhoneInfoDto);
+    }
+
+    /**
+     * 获得网站列表--用户浏览列表
+     * @return
+     */
+    @ApiOperation(value = "获得网站列表")
+    @PostMapping("/website/list/{classificationId}")
+    public CommonResult getListByclassificationId(@PathVariable("classificationId") Integer classificationId){
+        // -1 代表全部
+        if(classificationId == -1){
+            classificationId = null;
+        }
+        List<Website> list = websiteService.pageUserList(classificationId);
+        return CommonResult.<List<Website>>builder()
+                .data(list)
+                .build();
+    }
+
+    @ApiOperation(value = "获得网站分类列表列表")
+    @PostMapping("/website/ClassificationList")
+    public CommonResult getClassificationList(@RequestBody WebsiteClassificationVo WebsiteClassificationVo){
+        PageResponse<WebsiteClassification> list = websiteClassificationService.pageList(WebsiteClassificationVo);
+        return CommonResult.<PageResponse<WebsiteClassification>>builder()
+                .data(list)
+                .build();
     }
 }

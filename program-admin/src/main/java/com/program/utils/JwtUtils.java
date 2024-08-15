@@ -86,7 +86,6 @@ public class JwtUtils {
             throw new BusinessException(CommonErrorCode.E_200001);
         }
         Claims claims = claimsJws.getBody();
-        System.out.println(claims.toString());
         return TokenVo.builder()
                 .roleId(claims.get("roleId", Integer.class))
                 .username(claims.get("username", String.class))

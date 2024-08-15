@@ -1,14 +1,17 @@
 <template>
 <el-container>
-  <el-header>
-    <h1 class="title">
-      网站推荐
-      <p style="color: rgb(161, 155, 155);">以下网站均是个人推荐，没有官方背书，请谨慎选择使用</p>
+  <el-header class="my-header">
+    <h1 class="title" >
+      网站推荐   
+      <el-button 
+      v-if="!pathName"
+      class="large-button"
+       type="text" 
+       icon="el-icon-position" 
+       @click="toDashboardPage()" round>编程云</el-button>
+      <p style="color: rgb(161, 155, 155);">以下网站均是个人推荐，没有官方背书，请谨慎选择使 </p>  
     </h1>
-  </el-header>
-  <el-main>
-
-    <div class="container">
+     <div class="container">
         <div
           v-for="item in classificationList"
           :key="item.id"
@@ -17,9 +20,10 @@
           :class="currentIndex === item.id? 'black' : 'white'"
         >
             <p class="p_classidied">{{item.name}}</p>
-          </div>
+        </div>
     </div>
-
+  </el-header>
+  <el-main>
     <div class="container">
         <div
           v-for="(item,index) in response.data"
@@ -48,12 +52,13 @@
 
 <script>
 import website from '@/api/website'
+import router from '@/router/index'
 
 export default {
 
   name: 'Dashboard',
   components: {
-
+    
   },
   data(){
     return{
@@ -67,13 +72,15 @@ export default {
         isDeleted: null,
         orderByColumn: 'id',
         classified:'',
-        isAsc: 'desc'
+        isAsc: 'desc',
+        pathName: false,
       },
       currentIndex: 0 // 初始化为 null 表示没有元素被选中
     }
   },
   created () {
-    
+    // 获取网页路径
+    this.pathName = window.location.href.includes("website");
     this.getListByclassificationId()
     // this.getClassidied()
     this.getClassificationList()
@@ -116,6 +123,9 @@ export default {
   openBaiduInNewTab(vle){
     window.open(vle, '_blank');  
   },
+  toDashboardPage(){
+    router.push('/')
+  }
   }
 }
 </script>
@@ -135,6 +145,7 @@ export default {
   .title {
     text-align: center;
     font-size: 25px;
+    margin: 0 0 0 0;
   }
 
   .p_classidied {
@@ -223,5 +234,11 @@ export default {
     word-break: break-word; /* 在长单词或URL上换行 */
     max-width: 230px;
     text-indent: 2em; /* 缩进2字符 */
+  }
+  .large-button{
+    font-size: 20px !important;
+  }
+  .my-header{
+    margin: 0 0 8% 0 
   }
 </style>
