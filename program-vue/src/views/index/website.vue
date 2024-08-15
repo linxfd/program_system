@@ -2,14 +2,15 @@
 <el-container>
   <el-header class="my-header">
     <h1 class="title" >
-      网站推荐   
-      <el-button 
+      网站推荐
+      <el-button
       v-if="!pathName"
       class="large-button"
-       type="text" 
-       icon="el-icon-position" 
+       type="text"
+       icon="el-icon-position"
+       title="点击前往编程云网站"
        @click="toDashboardPage()" round>编程云</el-button>
-      <p style="color: rgb(161, 155, 155);">以下网站均是个人推荐，没有官方背书，请谨慎选择使 </p>  
+      <p style="color: rgb(161, 155, 155);">以下网站均是个人推荐，没有官方背书，请谨慎选择使 </p>
     </h1>
      <div class="container">
         <div
@@ -19,6 +20,9 @@
           @click="selectItem(item.id)"
           :class="currentIndex === item.id? 'black' : 'white'"
         >
+            <i v-if="currentIndex === item.id"
+              class="el-icon-cloudy"
+              style="font-size: 24px;"></i>
             <p class="p_classidied">{{item.name}}</p>
         </div>
     </div>
@@ -58,7 +62,7 @@ export default {
 
   name: 'Dashboard',
   components: {
-    
+
   },
   data(){
     return{
@@ -79,16 +83,18 @@ export default {
     }
   },
   created () {
-    // 获取网页路径
+    // 获取网页路径,判断是什么路径
     this.pathName = window.location.href.includes("website");
+    // 获取网站列表
     this.getListByclassificationId()
     // this.getClassidied()
+    // 获取网站分类
     this.getClassificationList()
   },
   methods:{
     selectItem(index) {
       this.currentIndex = index; // 更新当前选中的元素索引
-      
+
       this.queryParams.classificationId = index;
       // 如果当前索引为 0 “全部”，则将 classified 设置为空字符串
       if (this.currentIndex === 0) {
@@ -121,7 +127,7 @@ export default {
       });
     },
   openBaiduInNewTab(vle){
-    window.open(vle, '_blank');  
+    window.open(vle, '_blank');
   },
   toDashboardPage(){
     router.push('/')
@@ -149,7 +155,7 @@ export default {
   }
 
   .p_classidied {
-    text-indent: 2em;
+    // text-indent: 2em;
     font-size: 20px;
   }
   .p_button {
@@ -165,7 +171,7 @@ export default {
   .container{
     display: flex;
     flex-wrap: wrap; /* 允许元素换行 */
-    
+
   }
   .divMain{
     justify-content: space-between; 		/* 用于控制弹性容器中子元素的水平对齐方式。*/
@@ -174,11 +180,20 @@ export default {
   }
 
   .black {
+    .p_classidied{
+      text-indent: 1em;
+    }
     background-color: rgb(34, 31, 31);
     color: white; /* 文字颜色也需要调整为白色以提高可读性 */
+    // background-image: url("~@/assets/imgs/logo1.png");
+    // background-size: contain;
+
   }
 
   .white {
+    .p_classidied{
+      text-indent: 2em;
+    }
     background-color: white;
     color: black; /* 文字颜色也需要调整为黑色以提高可读性 */
   }
@@ -239,6 +254,6 @@ export default {
     font-size: 20px !important;
   }
   .my-header{
-    margin: 0 0 8% 0 
+    margin: 0 0 8% 0 ;
   }
 </style>
