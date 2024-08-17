@@ -149,7 +149,7 @@
                 size="centre"
                 :key="index"
                 :class="item.highlight ? 'active' : ''"
-                :closable="item.name !== '产品介绍'"
+                :closable="item.name !== '首页信息'"
                 @click="changeHighlightTag(item.name)"
                 effect="plain"
               >
@@ -221,13 +221,13 @@ export default {
       activeMenu: '',
       // 面包屑信息
       breadInfo: {
-        top: '产品介绍', // 顶级菜单信息
-        sub: '产品介绍'// 当前的菜单信息
+        top: '首页信息', // 顶级菜单信息
+        sub: '首页信息'// 当前的菜单信息
       },
       // 面包屑下的标签数据
       tags: [
         {
-          name: '产品介绍',
+          name: '首页信息',
           url: '/dashboard',
           highlight: true
         }
@@ -247,6 +247,8 @@ export default {
     this.getMenu()
     // 获取登录用户信息
     this.getUserInfoByCheckToken()
+    // 展示系统公告方法
+    this.showSystemNotice()
   },
   mounted () {
     // 根据当前链接的hash设置对应高亮的菜单

@@ -10,9 +10,7 @@ import com.program.service.UserRoleService;
 import com.program.service.UserService;
 import com.program.service.WebsiteClassificationService;
 import com.program.service.WebsiteService;
-import com.program.service.impl.UserRoleServiceImpl;
-import com.program.service.impl.UserServiceImpl;
-import com.program.utils.DateUtil;
+import com.program.utils.DateMyUtil;
 import com.program.utils.JwtUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -26,9 +24,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static com.program.model.vo.UserVo.fromUser;
@@ -163,7 +158,7 @@ public class CommonController {
         UserRole userRole = userRoleService.getById(userByUsername.getRoleId());
         userVo.setRoleName(userRole.getRoleName());
         //获取当前时间与创建时间间隔天数
-        Long todate = DateUtil.getCurrentDate(userVo.getCreateTime());
+        Long todate = DateMyUtil.getCurrentDate(userVo.getCreateTime());
         userVo.setTodate(todate+"");
         return CommonResult.<UserVo>builder()
                 .data(userVo)

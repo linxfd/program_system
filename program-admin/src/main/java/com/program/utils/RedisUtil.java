@@ -1,8 +1,10 @@
 package com.program.utils;
 
 
+import cn.hutool.core.date.DateUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.redis.connection.BitFieldSubCommands;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisCallback;
@@ -11,6 +13,7 @@ import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -107,7 +110,45 @@ public final class RedisUtil {
 
         System.out.println("已删除所有匹配的密钥");
     }
+    //==============Bitmaps叫位图 ================
 
+    /**
+     *  获取位图中指定偏移量的值。
+     * @param signKey
+     * @param offset
+     * @return
+     */
+    public Boolean get(String signKey,int offset){
+        return redisTemplate.opsForValue().getBit(signKey, offset);
+    }
+
+    /**
+     * 设置位图中指定偏移量的值。
+     * @param signKey
+     * @param offset
+     * @param value
+     */
+    public void set(String signKey,int offset,boolean value){
+        redisTemplate.opsForValue().setBit(signKey, offset, value);
+    }
+
+    /**
+     * 获取位图中的值。
+     * @param signKey
+     * @param bitFieldSubCommands
+     * @return
+     */
+    public List<Long> bitField(String signKey, BitFieldSubCommands bitFieldSubCommands) {
+        List<Long> longs = redisTemplate.opsForValue().bitField(signKey, bitFieldSubCommands);
+        return longs;
+    }
+
+
+    // e.g. BITCOUNT user:sign:6:202212
+    public Long execute(String signKey){
+        return (Long) redisTemplate.execute(
+                (RedisCallback<Long>) con -> con.bitCount(signKey.getBytes()));
+    }
 
     // ============================String=============================
 

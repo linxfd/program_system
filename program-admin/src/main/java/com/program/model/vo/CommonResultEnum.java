@@ -17,6 +17,8 @@ public enum CommonResultEnum {
     SUCCESS_ADD(200 , "添加成功"),
     SUCCESS_QUERY(200 , "查询成功"),
     SUCCESS_OBTAIN(200 , "获取成功"),
+    SIGN_SUCCESS(200 , "签到成功"),
+    SIGN_ERROR(201 , "签到失败"),
     LOGIN_ERROR(201 , "用户名或者密码错误"),
     VALIDATECODE_ERROR(202 , "验证码错误") ,
     LOGIN_AUTH(208 , "用户未登录"),
