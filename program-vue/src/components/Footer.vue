@@ -1,7 +1,8 @@
 <template>
   <el-footer >
     <!-- 登录的下边栏 -->
-    <p >编程云系统，现在正在测试阶段</p>
+    <br/>
+    <p >Copyright ©LXF</p>
   </el-footer>
 </template>
 

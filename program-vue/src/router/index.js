@@ -25,6 +25,11 @@ const routes = [
     path: '/web',
     component: () => import('../views/index/website')
   },
+  // 设置用户信息
+  {
+    path: '/setUserInfo',
+    component: () => import('../views/index/SetUserInfo')
+  },
   {
     path: '/index',
     component: () => import('../views/index/Main'),

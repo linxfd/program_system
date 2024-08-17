@@ -4,6 +4,8 @@ import com.program.model.entity.User;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
 
+import java.util.Date;
+
 @Data
 public class UserVo {
     private Integer id;
@@ -15,6 +17,13 @@ public class UserVo {
     private String trueName;
 
     private String phone;
+
+    private String roleName;
+
+    private Date createTime;
+
+    //注册到今天的天数
+    private String todate;
 
     public static UserVo fromUser(User user) {
         UserVo userVo = new UserVo();

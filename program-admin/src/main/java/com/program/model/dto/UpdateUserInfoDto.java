@@ -19,4 +19,6 @@ public class UpdateUserInfoDto {
     private String phone;
     // 手机验证码
     private String codePhone;
+    //校验，为null表示不校验，password为密码校验，phoneCode为手机验证码
+    private String check;
 }

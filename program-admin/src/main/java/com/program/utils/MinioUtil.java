@@ -36,7 +36,7 @@ public class MinioUtil {
             if (!found) {       // 如果不存在，那么此时就创建一个新的桶
                 minioClient.makeBucket(MakeBucketArgs.builder().bucket(minioProperties.getBucketName()).build());
             } else {  // 如果存在打印信息
-                System.out.println("Bucket 'spzx-bucket' already exists.");
+                System.out.println("Bucket 'program-bucket' already exists.");
             }
 
             // 设置存储对象名称：年月日/随机UUID+原文件名

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.program.model.dict.DictCheck;
 import com.program.model.dict.DictRole;
 import com.program.model.dto.*;
 import com.program.model.entity.User;
@@ -139,15 +140,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public CommonResult updateUserInfo(UpdateUserInfoDto updateUserInfoDto) {
         User OldUser = userMapper.selectOne(new QueryWrapper<User>().eq("id", updateUserInfoDto.getId()));
         String oldPassword = SaltEncryption.saltEncryption(updateUserInfoDto.getOldPassword(), OldUser.getSalt());
-
-        // 根据旧密码修改密码
-        if (!EmptyUtil.isNotUtils(updateUserInfoDto.getOldPassword())  && !OldUser.getPassword().equals(oldPassword)){
-            throw new BusinessException(CommonErrorCode.E_100100);
-        }
-
-        // 根据验证码修改密码
-        String phoneCode = (String)redisUtil.get("phone:code:" + updateUserInfoDto.getPhone());
-        if(EmptyUtil.isNotUtils(updateUserInfoDto.getOldPassword())){
+        // 判断是否需要校验规则
+        if(DictCheck.PASSWORD_CHECK.equals(updateUserInfoDto.getCheck())){
+            // 根据旧密码修改密码
+            if (!EmptyUtil.isNotUtils(updateUserInfoDto.getOldPassword())  && !OldUser.getPassword().equals(oldPassword)){
+                throw new BusinessException(CommonErrorCode.E_100100);
+            }
+        }else if(DictCheck.PHONE_CHECK.equals(updateUserInfoDto.getCheck())){
+            // 根据验证码修改密码
+            String phoneCode = (String)redisUtil.get("phone:code:" + updateUserInfoDto.getPhone());
             String code = updateUserInfoDto.getCodePhone();
             // 当前密码为空时, 验证码不能为空
             if(EmptyUtil.isNotUtils(code)){
@@ -157,13 +158,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                 throw new BusinessException(CommonErrorCode.E_100104);
             }
         }
+
         if(!EmptyUtil.isNotUtils(updateUserInfoDto.getPassword()) ){
             String newPwd = SaltEncryption.saltEncryption(updateUserInfoDto.getPassword(), OldUser.getSalt());
             OldUser.setPassword(newPwd);
         }
         OldUser.setUsername(updateUserInfoDto.getUsername());
         OldUser.setTrueName(updateUserInfoDto.getTrueName());
-        return CommonResult.build(userMapper.updateById(OldUser), CommonResultEnum.SUCCESS_UPDATE);
+        userMapper.updateById(OldUser);
+        // 更新token
+        String token = JwtUtils.createToken(userMapper.selectById(OldUser));
+        return CommonResult.build(token, CommonResultEnum.SUCCESS_UPDATE);
     }
 
     @Override

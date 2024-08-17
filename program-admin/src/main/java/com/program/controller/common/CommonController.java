@@ -2,6 +2,7 @@ package com.program.controller.common;
 
 import com.program.model.dto.*;
 import com.program.model.entity.User;
+import com.program.model.entity.UserRole;
 import com.program.model.entity.Website;
 import com.program.model.entity.WebsiteClassification;
 import com.program.model.vo.*;
@@ -11,6 +12,7 @@ import com.program.service.WebsiteClassificationService;
 import com.program.service.WebsiteService;
 import com.program.service.impl.UserRoleServiceImpl;
 import com.program.service.impl.UserServiceImpl;
+import com.program.utils.DateUtil;
 import com.program.utils.JwtUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -24,6 +26,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static com.program.model.vo.UserVo.fromUser;
@@ -153,8 +158,15 @@ public class CommonController {
     @ApiOperation("供给普通用户查询个人信息使用")
     public CommonResult<UserVo> getCurrentUser(HttpServletRequest request) {
         User userByUsername = userService.getUserByUsername(JwtUtils.getUserInfoByToken(request).getUsername());
+        UserVo userVo = fromUser(userByUsername);
+        //获取当前用户角色
+        UserRole userRole = userRoleService.getById(userByUsername.getRoleId());
+        userVo.setRoleName(userRole.getRoleName());
+        //获取当前时间与创建时间间隔天数
+        Long todate = DateUtil.getCurrentDate(userVo.getCreateTime());
+        userVo.setTodate(todate+"");
         return CommonResult.<UserVo>builder()
-                .data(fromUser(userByUsername))
+                .data(userVo)
                 .build();
     }
 
