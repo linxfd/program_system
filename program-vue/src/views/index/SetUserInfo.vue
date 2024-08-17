@@ -27,6 +27,10 @@
             </div>
             <hr>
             <div class="row">
+               <p class="info-item">积分: {{ currentUserInfo.points }}</p>
+            </div>
+            <hr>
+            <div class="row">
               <p class="info-item">手机号: {{ currentUserInfo.phone }}</p>
               <el-button plain class="modify-btn" @click="updatePhone">&nbsp;&nbsp;修改手机号&nbsp;&nbsp;</el-button>
             </div>

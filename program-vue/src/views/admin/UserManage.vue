@@ -99,6 +99,17 @@
           align="center"
           prop="phone"
           label="手机号"
+        >
+          <template #default="{ row }">
+            <span v-if="row.phone">{{ row.phone }}</span>
+            <span v-else style="color: red;">未绑定</span>
+          </template>
+        </el-table-column>
+
+        <el-table-column
+          align="center"
+          prop="points"
+          label="积分"
         />
 
         <el-table-column
@@ -225,6 +236,14 @@
             v-model="addForm.phone"
             placeholder="请输入绑定手机号"
           />
+        </el-form-item>
+
+        <el-form-item
+          label="积分"
+          label-width="120px"
+          prop="points"
+        >
+          <el-input-number  v-model="addForm.points" />
         </el-form-item>
 
         <el-form-item
@@ -379,7 +398,8 @@ export default {
         roleId: '',
         trueName: '',
         phone: '',
-        status: ''
+        status: '',
+        points: ''
       },
       // 添加用户表单的验证规则
       addFormRules: {

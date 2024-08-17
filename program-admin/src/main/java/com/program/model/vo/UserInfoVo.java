@@ -28,6 +28,8 @@ public class UserInfoVo extends CommonEntity {
 
     private String phone;
 
+    private Integer points;
+
 
     public static UserInfoVo fromUser(User user) {
         UserInfoVo userInfoVo = new UserInfoVo();

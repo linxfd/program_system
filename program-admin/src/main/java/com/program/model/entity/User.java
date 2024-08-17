@@ -50,7 +50,8 @@ public class User extends CommonEntity {
     @ApiModelProperty(value = "用户状态", example = "1正常 2禁用")
     private Integer status;
 
-
+    @ApiModelProperty(value = "积分", example = "100")
+    private Integer points;
 
     public void updateFrom(UpdateUserInfoDto updateUserInfoDto) {
         if (StringUtils.hasLength(updateUserInfoDto.getPassword())) {

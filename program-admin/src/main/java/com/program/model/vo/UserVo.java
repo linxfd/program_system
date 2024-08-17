@@ -1,6 +1,7 @@
 package com.program.model.vo;
 
 import com.program.model.entity.User;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
 
@@ -21,6 +22,8 @@ public class UserVo {
     private String roleName;
 
     private Date createTime;
+
+    private Integer points;
 
     //注册到今天的天数
     private String todate;

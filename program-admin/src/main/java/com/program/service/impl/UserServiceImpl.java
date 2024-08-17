@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.program.model.dict.DictCheck;
+import com.program.model.dict.DictConstant;
 import com.program.model.dict.DictRole;
 import com.program.model.dto.*;
 import com.program.model.entity.User;
@@ -49,6 +50,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         user.setRoleId(DictRole.ROLE_STUDENT);
         user.setPhone(registerDto.getPhone());
         user.setCreateTime(new Date());
+        user.setPoints(DictConstant.INITIAL_POINTS);
 
         userMapper.insert(user);
         // 发放token令牌
@@ -289,6 +291,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         user1.setUsername(user.getUsername());
         user1.setRoleId(user.getRoleId());
         user1.setUpdateTime(new Date());
+        user1.setPoints(user.getPoints());
         userMapper.update(user1, qw);
     }
 
