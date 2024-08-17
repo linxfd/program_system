@@ -12,17 +12,15 @@ export default {
     // 获取签到次数
     getSignCount(date){
         return request({
-          url: '/public/sign/getSignCount',
+          url: `/public/sign/getSignCount/${date}`,
           method: 'get',
-          params: date,
         })
       },
     // 获取签到信息
     getSignInfo(dateStr){
         return request({
-          url: '/public/sign/getSignInfo',
+          url: `/public/sign/getSignInfo/${dateStr}`,
           method: 'get',
-          params: dateStr,
         })
     }
 

@@ -39,11 +39,10 @@ public class SignController {
 
     /**
      * 获取签到次数 默认当月
-     * @param date
      * @return
      */
-    @GetMapping("/getSignCount")
-    public CommonResult getSignCount(String date,HttpServletRequest request) {
+    @GetMapping("/getSignCount/{date}")
+    public CommonResult getSignCount(@PathVariable String date,HttpServletRequest request) {
         Long count = signService.getSignCount(date,request);
         return CommonResult.build(count, CommonResultEnum.SUCCESS_QUERY);
     }
@@ -54,8 +53,8 @@ public class SignController {
      * @param request
      * @return
      */
-    @GetMapping("/getSignInfo")
-    public CommonResult getSignInfo(String dateStr,HttpServletRequest request) {
+    @GetMapping("/getSignInfo/{dateStr}")
+    public CommonResult getSignInfo(@PathVariable String dateStr,HttpServletRequest request) {
         Map<String, Boolean> map = signService.getSignInfo(dateStr,request);
         return CommonResult.build(map, CommonResultEnum.SUCCESS_QUERY);
     }

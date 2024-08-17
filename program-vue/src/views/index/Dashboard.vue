@@ -2,7 +2,7 @@
 <el-container>
   <!-- // 头部 -->
   <el-header class="header">
-    <p class="title"> 欢迎您</p>
+    <p class="title">欢迎您</p>
     
   </el-header>
   <el-container>
@@ -11,7 +11,7 @@
     <!-- // 主体 -->
     <el-main class="main">
       <div class="main-left">
-         <el-calendar :range="['2024-08-04', '2024-08-24']" class="calendar">
+         <el-calendar class="calendar" v-model="calendarDate">
           <template #dateCell="{ data }">
             <div class="col">
               <p>{{ data.day.split('-').slice(2).join('-') }}</p>
@@ -26,7 +26,10 @@
             </div>
           </template>
         </el-calendar>
-        <div class="sign-count">签到次数：{{signCount}}</div>
+        <div class="sign-count">
+          <p>本月签到次数：{{signCount}} 次</p>
+          <p>连续签到次数：{{ContinuousCignCount}} 次</p>
+        </div>
         <div class="check-in-button-container">
             <el-button type="primary" @click="signIn" round>签到</el-button>
           </div>
@@ -46,13 +49,14 @@ import { formatDate } from "@/utils/DateUtil"
 export default {
   name: 'Dashboard',
   created () {
-    // // 调用父组件Main的展示系统公告方法
-    // this.$emit('showSystemNotice')
-    // 获得签到次数
-    this.getSignCount()
 
-  // 获得签到信息
-    this.getSignInfo()
+    // 获得当前日期 格式化yyyy-MM-dd
+    const date = formatDate(new Date())
+    // 获得签到次数
+    this.getSignCount(date)
+
+    // 获得签到信息
+    this.getSignInfo(date)
   },
   data(){
     return{
@@ -61,7 +65,22 @@ export default {
       signCount: 0,
       // 连续签到次数
       ContinuousCignCount:0,
+      // 签到日期,初始为当前日期
+      calendarDate: new Date(),
 
+    }
+  },
+  // 监听
+  watch: {
+    calendarDate(val, oldVal){
+      if(val != '' && oldVal != ''){
+        if(val.getMonth() != oldVal.getMonth()){
+          const date = formatDate(val)
+          // 刷新
+          this.getSignCount(date)
+          this.getSignInfo(date)
+        }
+      }
     }
   },
   methods: {
@@ -80,26 +99,32 @@ export default {
       })
       
     },
-    getSignCount(){
-      let date = formatDate(new Date())
-      signIn.getSignCount(date).then(resp => {
+    getSignCount(data){
+      console.log(data);
+      signIn.getSignCount(data).then(resp => {
         if (resp.code === 200) {
           this.signCount = resp.data
-            this.$message  ({
+            this.$notify   ({
             title: 'Tips',
-            message: resp.message,
+            message: '日期-'+resp.message,
             type: 'success',
             duration: 2000
           })
         }
       })
     },
-    getSignInfo(){
-      signIn.getSignInfo().then(resp => {
+    getSignInfo(data){
+      signIn.getSignInfo(data).then(resp => {
         if (resp.code === 200) {
           this.calendarData = resp.data
         }
       })
+    },
+    handleMonthChange(value){
+      debugger
+      
+      console.log("calendarDate"+calendarDate);
+      console.log(value);
     }
 
   }
