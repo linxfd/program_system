@@ -19,5 +19,5 @@ public interface DictConstant {
     /**
      * 最大签到积分
      */
-    Integer MAX_SIGN_IN_POINTS = 15;
+    Integer MAX_SIGN_IN_POINTS = 7;
 }

@@ -11,7 +11,7 @@ public class PointsUtil {
 
     /**
      * 根据连续签到天数计算积分。
-     * 规则：连续签到天数等于获得的积分，最高为15
+     * 规则：连续签到天数等于获得的积分，最高为7
      * @param consecutiveDays 连续签到的天数
      * @return 对应的积分
      */

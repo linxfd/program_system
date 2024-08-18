@@ -3,6 +3,7 @@ package com.program.controller.common;
 import com.program.model.vo.CommonResult;
 import com.program.model.vo.CommonResultEnum;
 import com.program.model.vo.TokenVo;
+import com.program.service.PointsService;
 import com.program.service.SignService;
 import com.program.utils.DateMyUtil;
 import com.program.utils.JwtUtils;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -27,6 +29,9 @@ public class SignController {
 
     @Autowired
     private SignService signService;
+
+    @Autowired
+    private PointsService pointsService;
 
     /**
      * 签到，可以补签
@@ -63,12 +68,27 @@ public class SignController {
         return CommonResult.build(map, CommonResultEnum.SUCCESS_QUERY);
     }
 
-    @GetMapping("/getContinuousSignCount/{date}")
-    public CommonResult getContinuousSignCount (@PathVariable String date,HttpServletRequest request) {
+    /**
+     * 获得初始数据
+     * 累计签到积分、连续的签到次数
+     * @param date
+     * @param request
+     * @return
+     */
+    @GetMapping("/getSignCountInfo/{date}")
+    public CommonResult getSignCountInfo(@PathVariable String date,HttpServletRequest request) {
+        HashMap<String, Object> map = new HashMap<>();
         TokenVo userInfo  = JwtUtils.getUserInfoByToken(request);
         Date data = DateMyUtil.getDate(date);
-        int count  = signService.getContinuousSignCount(userInfo.getId(),data);
-        return CommonResult.build(count, CommonResultEnum.SUCCESS_QUERY);
-    }
 
+        //统计连续签到的次数
+        int continuousSignCount  = signService.getContinuousSignCount(userInfo.getId(),data);
+
+        //获取用户累计签到积分
+        int accumulatedSignCount  = pointsService.getAccumulatedSignCount(userInfo.getId());
+
+        map.put("continuousSignCount",continuousSignCount);
+        map.put("accumulatedSignCount",accumulatedSignCount);
+        return CommonResult.build(map, CommonResultEnum.SUCCESS_QUERY);
+    }
 }

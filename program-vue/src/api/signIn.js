@@ -9,10 +9,11 @@ export default {
           data: data
         })
     },
-    // 获取签到次数
-    getSignCount(date){
+    // 获得初始数据
+    //累计签到积分、连续的签到次数
+    getSignCountInfo(date){
         return request({
-          url: `/public/sign/getSignCount/${date}`,
+          url: `/public/sign/getSignCountInfo/${date}`,
           method: 'get',
         })
       },
@@ -30,5 +31,6 @@ export default {
         method: 'get',
       })
     },
+
 
 }

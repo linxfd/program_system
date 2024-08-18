@@ -21,5 +21,6 @@ public interface SignService {
     // 签到记录
     Map<String, Boolean> getSignInfo(String dateStr,HttpServletRequest request);
 
+    // 统计连续签到的次数
     int getContinuousSignCount(Integer userId, Date date) ;
 }

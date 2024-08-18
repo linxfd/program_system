@@ -89,18 +89,19 @@ public class SignServiceImpl implements SignService {
         String signKey = String.format("user:sign:%d:%s",
                 user.getId(),DateUtil.format(date, "yyyyMM"));
 
+        // 查看是否已签到
+        boolean isSigned = redisUtil.get(signKey, offset);
         // 统计连续签到的次数
         int count = this.getContinuousSignCount(user.getId(), date);
+        if (!isSigned){
+            count ++;
+        }
         // 计算积分
         int pointsCount = PointsUtil.calculatePoints(count);
 
         // 计算下一次的积分
         int nextPointsCount = PointsUtil.calculatePoints(count + 1);
 
-        // 查看是否已签到
-        boolean isSigned = redisUtil.get(signKey, offset);
-        // 累计签到次数
-        int accumulatedSignCount = pointsService.getAccumulatedSignCount(user.getId());
         // 判断是否已签到
         if (!isSigned){
             // 签到
@@ -108,6 +109,9 @@ public class SignServiceImpl implements SignService {
             // 为用户添加积分并记录在积分明细表中
             pointsService.addPoint(user,pointsCount);
         }
+
+        // 累计签到积分
+        int accumulatedSignCount = pointsService.getAccumulatedSignCount(user.getId());
 
         Map<String, Object> map = new HashMap<>();
         // 连续签到次数
