@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TokenVo {
 
+    private Integer id;
+
     private Integer roleId;
 
     private String username;

@@ -15,4 +15,9 @@ public interface DictConstant {
      * 初始积分
      */
     Integer INITIAL_POINTS = 10;
+
+    /**
+     * 最大签到积分
+     */
+    Integer MAX_SIGN_IN_POINTS = 15;
 }

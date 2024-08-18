@@ -29,6 +29,7 @@ public class JwtUtils {
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRE))
 
+                .claim("id", user.getId())
                 .claim("roleId", user.getRoleId())
                 .claim("trueName", user.getTrueName())
                 .claim("username", user.getUsername())
@@ -87,6 +88,7 @@ public class JwtUtils {
         }
         Claims claims = claimsJws.getBody();
         return TokenVo.builder()
+                .id(claims.get("id", Integer.class))
                 .roleId(claims.get("roleId", Integer.class))
                 .username(claims.get("username", String.class))
                 .trueName(claims.get("trueName", String.class))

@@ -22,6 +22,13 @@ export default {
           url: `/public/sign/getSignInfo/${dateStr}`,
           method: 'get',
         })
-    }
+    },
+    // 获取签到信息
+    getContinuousSignCount(date){
+      return request({
+        url: `/public/sign/getContinuousSignCount/${date}`,
+        method: 'get',
+      })
+    },
 
 }

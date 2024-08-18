@@ -5,21 +5,21 @@ import cn.hutool.core.date.LocalDateTimeUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.program.exception.BusinessException;
 import com.program.exception.CommonErrorCode;
+import com.program.mapper.PointsMapper;
 import com.program.mapper.UserMapper;
 import com.program.model.entity.User;
 import com.program.model.vo.TokenVo;
+import com.program.service.PointsService;
 import com.program.service.SignService;
 import com.program.utils.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.BitFieldSubCommands;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * @author linxf
@@ -32,6 +32,9 @@ public class SignServiceImpl implements SignService {
     private final UserMapper userMapper;
 
     private final RedisUtil redisUtil;
+
+    @Autowired
+    private PointsService pointsService;
 
 
     /**
@@ -74,7 +77,7 @@ public class SignServiceImpl implements SignService {
     }
 
     @Override
-    public int doSign(String dateStr, HttpServletRequest request) {
+    public Map<String, Object> doSign(String dateStr, HttpServletRequest request) {
         // 获取登录用户信息
         TokenVo userInfo  = JwtUtils.getUserInfoByToken(request);
         User user = userMapper.selectOne(new QueryWrapper<User>().eq("username", userInfo.getUsername()));
@@ -85,16 +88,39 @@ public class SignServiceImpl implements SignService {
         // 构建 Key user:sign:5:yyyyMM
         String signKey = String.format("user:sign:%d:%s",
                 user.getId(),DateUtil.format(date, "yyyyMM"));
-        // 查看是否已签到
-        boolean isSigned = redisUtil.get(signKey, offset);
-        if (isSigned){
-            throw new BusinessException(CommonErrorCode.E_600001);
-        }
-        // 签到
-        redisUtil.set(signKey, offset,true);
+
         // 统计连续签到的次数
         int count = this.getContinuousSignCount(user.getId(), date);
-        return EmptyUtil.isNotEmpty(count) ? count : 0;
+        // 计算积分
+        int pointsCount = PointsUtil.calculatePoints(count);
+
+        // 计算下一次的积分
+        int nextPointsCount = PointsUtil.calculatePoints(count + 1);
+
+        // 查看是否已签到
+        boolean isSigned = redisUtil.get(signKey, offset);
+        // 累计签到次数
+        int accumulatedSignCount = pointsService.getAccumulatedSignCount(user.getId());
+        // 判断是否已签到
+        if (!isSigned){
+            // 签到
+            redisUtil.set(signKey, offset,true);
+            // 为用户添加积分并记录在积分明细表中
+            pointsService.addPoint(user,pointsCount);
+        }
+
+        Map<String, Object> map = new HashMap<>();
+        // 连续签到次数
+        map.put("count", EmptyUtil.isNotEmpty(count) ? count : 1);
+        // 本次签到积分
+        map.put("pointsCount", pointsCount);
+        // 下一次签到积分
+        map.put("nextPointsCount", nextPointsCount);
+        // 是否已签到
+        map.put("isSigned", isSigned);
+        // 累计签到积分
+        map.put("accumulatedSignCount", accumulatedSignCount);
+        return map;
     }
 
     /**
@@ -157,4 +183,6 @@ public class SignServiceImpl implements SignService {
         }
         return signInfo;
     }
+
+
 }

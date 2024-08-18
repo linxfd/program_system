@@ -2,12 +2,16 @@ package com.program.controller.common;
 
 import com.program.model.vo.CommonResult;
 import com.program.model.vo.CommonResultEnum;
+import com.program.model.vo.TokenVo;
 import com.program.service.SignService;
+import com.program.utils.DateMyUtil;
+import com.program.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -33,8 +37,8 @@ public class SignController {
                              HttpServletRequest request) {
         String date = (String) data.get("date");
         //统计连续签到的次数
-        int count = signService.doSign(date,request);
-        return CommonResult.build(count, CommonResultEnum.SIGN_SUCCESS);
+        Map<String, Object> map = signService.doSign(date,request);
+        return CommonResult.build(map, CommonResultEnum.SIGN_SUCCESS);
     }
 
     /**
@@ -57,6 +61,14 @@ public class SignController {
     public CommonResult getSignInfo(@PathVariable String dateStr,HttpServletRequest request) {
         Map<String, Boolean> map = signService.getSignInfo(dateStr,request);
         return CommonResult.build(map, CommonResultEnum.SUCCESS_QUERY);
+    }
+
+    @GetMapping("/getContinuousSignCount/{date}")
+    public CommonResult getContinuousSignCount (@PathVariable String date,HttpServletRequest request) {
+        TokenVo userInfo  = JwtUtils.getUserInfoByToken(request);
+        Date data = DateMyUtil.getDate(date);
+        int count  = signService.getContinuousSignCount(userInfo.getId(),data);
+        return CommonResult.build(count, CommonResultEnum.SUCCESS_QUERY);
     }
 
 }

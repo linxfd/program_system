@@ -25,7 +25,6 @@ public class CommonEntity implements Serializable {
     private Date createTime;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-
     @ApiModelProperty(value = "修改时间")
     private Date updateTime;
 

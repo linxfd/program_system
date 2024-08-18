@@ -28,7 +28,7 @@
         </el-calendar>
         <div class="sign-count">
           <p>本月签到次数：{{signCount}} 次</p>
-          <p>连续签到次数：{{ContinuousCignCount}} 次</p>
+          <p>本月连续签到次数：{{ContinuousCignCount}} 次</p>
         </div>
         <div class="check-in-button-container">
             <el-button type="primary" @click="signIn" round>签到</el-button>
@@ -36,9 +36,28 @@
       </div>
       <div class="main-right">
           <!-- 签到按钮 -->
-          
       </div>
     </el-main>
+
+     <!-- 签到弹窗 -->
+    <el-dialog title="签到详情" :visible.sync="showDialog" width="30%" >
+      <div class="main">
+        <div class="main-left"> 
+          <img v-if="!isSigned" src="~@/assets/imgs/signSuccessful.png" alt="签到图标" class="check-in-icon">
+          <img v-else src="~@/assets/imgs/sepeatSign.png" alt="签到图标" class="check-in-icon">
+        </div >
+        <div class="main-right">
+          <p>累计签到积分:{{accumulatedSignCount}}</p>
+          <p >连续签到次数: {{ ContinuousCignCount }}</p>
+          <p>本次签到积分: {{ pointsCount }}</p>
+          <p>下一次签到积分: {{ nextPointsCount }}</p>
+        </div>
+        
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="showDialog = false">关闭</el-button>
+      </span>
+    </el-dialog>
   </el-container>
 </el-container>
 </template>
@@ -57,6 +76,8 @@ export default {
 
     // 获得签到信息
     this.getSignInfo(date)
+    // 获得连续签到次数
+    this.getContinuousSignCount(date)
   },
   data(){
     return{
@@ -67,7 +88,17 @@ export default {
       ContinuousCignCount:0,
       // 签到日期,初始为当前日期
       calendarDate: new Date(),
-
+      // 签到弹窗
+      showDialog: false,
+      // 签到积分
+      pointsCount: 0,
+      // 下一次签到积分
+      nextPointsCount: 0,
+      // 今天是否签到
+      isSigned: false,
+      //累计签到积分
+      accumulatedSignCount: 0,
+      
     }
   },
   // 监听
@@ -85,17 +116,32 @@ export default {
   },
   methods: {
     signIn(){
+      // 2024-08-16
+      const date = formatDate(new Date())
       const data = {
-        "date": formatDate(new Date("2024-08-19"))
+        "date": date
       }
+      
       signIn.signIn(data).then(resp => {
+        
         if (resp.code === 200) {
-          this.ContinuousCignCount = resp.data
+          this.ContinuousCignCount = resp.data.count
+          this.pointsCount = resp.data.pointsCount
+          this.isSigned = resp.data.isSigned
+          this.nextPointsCount = resp.data.nextPointsCount
+          this.accumulatedSignCount = resp.data.accumulatedSignCount
+          // 刷新签到信息
+          this.getSignInfo(date)
+          this.getSignCount(date)
           this.$message({  
             message: '恭喜你，这是一条成功消息,已连续签到'+this.ContinuousCignCount+'天',  
             type: 'success'  
           });
         }
+        //弹窗显示
+        this.showDialog = true
+        debugger
+        console.log(this.isSigned)
       })
       
     },
@@ -125,6 +171,13 @@ export default {
       
       console.log("calendarDate"+calendarDate);
       console.log(value);
+    },
+    getContinuousSignCount(data){
+      signIn.getContinuousSignCount(data).then(resp => {
+        if (resp.code === 200) {
+          this.ContinuousCignCount = resp.data
+        }
+      })
     }
 
   }
@@ -150,7 +203,6 @@ export default {
 }
 .main{
   display: flex;
-
   .main-left{
     width: 50%;
     .check-in-button-container {
@@ -170,12 +222,28 @@ export default {
   }
   .main-right{
     width: 50%;
-    border : solid   1px   #333;
+    // border : solid   1px   #333;
 
   }
 }
 .is-passed {
   max-width: 100%; 
   max-height: 100%;
+}
+
+.dialog-content {
+  display: flex;
+  // flex-direction: column;
+  // align-items: center;
+  // // padding-top: 20px;
+  // height: 50%;
+  // width: 100%;
+
+}
+
+.check-in-icon {
+  // width: 50px; /* 调整图标大小 */
+  // margin-bottom: 10px;
+  // margin: 0 auto; /* 横向居中 */
 }
 </style>
