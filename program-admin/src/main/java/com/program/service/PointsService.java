@@ -1,8 +1,13 @@
 package com.program.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.program.model.dto.PointsDto;
 import com.program.model.entity.Points;
 import com.program.model.entity.User;
+import com.program.model.entity.Website;
+import com.program.model.vo.PageResponse;
+
+import java.util.List;
 
 /**
  * @author linxf
@@ -14,4 +19,9 @@ public interface PointsService extends IService<Points> {
 
     //获取用户累计签到积分
     int getAccumulatedSignCount(Integer id);
+
+
+
+    //分页查询
+    PageResponse<Points> pageList(PointsDto pointsDto);
 }

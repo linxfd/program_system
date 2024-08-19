@@ -181,6 +181,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public PageResponse<UserInfoVo> getUser(UserDto userDto) {
+        if(EmptyUtil.isNotUtils(userDto.getPageNo())
+                ||EmptyUtil.isNotUtils(userDto.getPageSize())){
+            userDto.setPageNo(1);
+            userDto.setPageSize(10);
+        }
         IPage<User> userPage = new Page<>(userDto.getPageNo(), userDto.getPageSize());
         // 查询条件
         Map<String, Object> queryParams = new HashMap<>();

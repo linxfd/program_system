@@ -1,7 +1,11 @@
 package com.program.controller.common;
 
+import com.program.model.dto.PointsDto;
+import com.program.model.entity.Points;
+import com.program.model.entity.Website;
 import com.program.model.vo.CommonResult;
 import com.program.model.vo.CommonResultEnum;
+import com.program.model.vo.PageResponse;
 import com.program.model.vo.TokenVo;
 import com.program.service.PointsService;
 import com.program.service.SignService;
@@ -12,9 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author linxf
@@ -91,4 +93,41 @@ public class SignController {
         map.put("accumulatedSignCount",accumulatedSignCount);
         return CommonResult.build(map, CommonResultEnum.SUCCESS_QUERY);
     }
+
+
+    @PostMapping("/list")
+    public CommonResult list(@RequestBody PointsDto pointsDto){
+        PageResponse<Points> list = pointsService.pageList(pointsDto);
+        return CommonResult.<PageResponse<Points>>builder()
+                .data(list)
+                .build();
+    }
+
+    @GetMapping(value = "/detail/{id}")
+    public CommonResult detail(@PathVariable("id") Integer id){
+        return CommonResult.build(pointsService.getById(id), CommonResultEnum.SUCCESS_QUERY);
+    }
+
+
+
+    @PostMapping("/add")
+    public CommonResult add(@RequestBody Points points){
+        return CommonResult.build(pointsService.save(points), CommonResultEnum.SUCCESS_ADD);
+    }
+
+
+
+    @PostMapping("/edit")
+    public CommonResult edit(@RequestBody Points points){
+        return CommonResult.build(pointsService.updateById(points), CommonResultEnum.SUCCESS_UPDATE);
+    }
+
+
+
+    @GetMapping("/remove/{ids}")
+    public CommonResult remove(@PathVariable Integer[] ids){
+        return CommonResult.build(pointsService.removeByIds(Arrays.asList(ids)),
+                CommonResultEnum.SUCCESS_DELETE);
+    }
+
 }

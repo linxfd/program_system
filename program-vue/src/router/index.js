@@ -50,6 +50,10 @@ const routes = [
         path: '/websiteAdim',
         component: () => import('../views/admin/website/websiteAdim')
       },
+      {
+        path: '/pointsList',
+        component: () => import('../views/admin/points/pointsList')
+      },
       // 网站分类管理(超级管理员)
       {
         path: '/websiteClassificationAdim',

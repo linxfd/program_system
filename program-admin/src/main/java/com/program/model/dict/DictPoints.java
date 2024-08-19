@@ -7,11 +7,6 @@ package com.program.model.dict;
 public interface DictPoints {
 
     /**
-     * 其他
-     */
-    Integer METHOD_ELESE =  0;
-
-    /**
      * 签到
      */
     Integer METHOD_SIGN =  1;
@@ -20,4 +15,8 @@ public interface DictPoints {
      * 考试
      */
     Integer METHOD_EXAM =  2;
+    /**
+     * 其他
+     */
+    Integer METHOD_ELESE =  10;
 }

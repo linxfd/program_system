@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import { add } from 'lodash'
 
 export default {
     // 签到
@@ -31,6 +32,34 @@ export default {
         method: 'get',
       })
     },
-
-
+    // 获取积分信息列表
+    getList(queryParams){
+      return request({
+        url: `/public/sign/list`,
+        method: 'post',
+        data: queryParams,
+      })
+    },
+    // 添加积分信息
+    add(queryParams) {
+      return request({
+        url: `/public/sign/add`,
+        method: 'post',
+        data: queryParams,
+      })
+    },
+    edit(queryParams){
+      return request({
+        url: `/public/sign/edit`,
+        method: 'post',
+        data: queryParams,
+      })
+    },
+    remove(ids){
+      return request({
+        url: `/public/sign/remove/${ids}`,
+        method: 'get',
+      })
+    }
+    
 }

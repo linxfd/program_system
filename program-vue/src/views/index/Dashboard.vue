@@ -268,10 +268,11 @@ export default {
     .myimgs{
       
       .item{
-          color: #f8dc07;
+          color: #f80707;
           font-weight: bold;
           font-size: 30px;
-          transform: translateY(80px); /* 向上偏移自身的50%，实现中上1/3的效果 */
+          transform: translateY(-110px) translateX(-38px);  /* 向上偏移自身的50%，实现中上1/3的效果 */
+
         }
         
         background: url('~@/assets/imgs/sign/treasure-trove.png');
