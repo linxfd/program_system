@@ -2,7 +2,7 @@
 <el-container>
   <!-- // 头部 -->
   <el-header class="header">
-    <p class="title">欢迎您</p>
+    <p class="title">{{welcomeMessage}}</p>
   </el-header>
   <el-container>
     <!-- // 侧边栏 -->
@@ -104,9 +104,24 @@ export default {
     this.getSignInfo(date)
     // 获得连续签到次数、累计签到积分
     this.getSignCountInfo(date)
+    // 随机获得欢迎语
+    this.randomizeWelcomeMessage();  
   },
   data(){
     return{
+      welcomeMessage: '',  
+      // 欢迎语
+      welcomeMessages: [
+        '欢迎您',  
+        '很高兴见到您',  
+        '欢迎回来',  
+        '嗨，又见面了',  
+        '感谢您的光临',  
+        '欢迎加入我们的大家庭',  
+        '今天也要元气满满哦',  
+        '期待与您共同创造美好',  
+        '愿您在这里度过愉快的时光',  
+        '欢迎来到我们的世界' ],
       calendarData: {},
       // 签到次数
       signCount: 0,
@@ -207,6 +222,10 @@ export default {
           this.accumulatedSignCount = resp.data.accumulatedSignCount
         }
       })
+    },
+    randomizeWelcomeMessage(){
+      const index = Math.floor(Math.random() * this.welcomeMessages.length);  
+      this.welcomeMessage = this.welcomeMessages[index];  
     }
 
   }
