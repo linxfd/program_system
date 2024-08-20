@@ -98,9 +98,23 @@ public class PointsServiceImpl extends ServiceImpl<PointsMapper, Points> impleme
 //        wrapper.orderByAsc( "classification_id");
 
         pointsPage = pointsMapper.selectPage(pointsPage, pointsWrapper);
+        //这个是插件的分页的数据
         List<Points> records = pointsPage.getRecords();
+//        if(EmptyUtil.isEmpty(pointsDto.getNotes())){
+//            pointsDto.setNotes(null);
+//        }
+        // 查询总points
+        List<Points> pointsList = pointsMapper.selectPointsList(pointsDto);
 
-        return PageResponse.<Points>builder().data(records).total(pointsPage.getTotal()).build();
+        HashMap<String, Object> map = new HashMap<>();
+        int pointsFlowSum = pointsList.stream()
+                .mapToInt(points -> points.getPointsFlow()) // 将Points对象映射为int值（即pointsFlow）
+                .sum(); // 计算总和
+        map.put("pointsFlowSum", pointsFlowSum);
+        return PageResponse.<Points>builder()
+                .data(records)
+                .map(map)
+                .total(pointsPage.getTotal()).build();
     }
 
 

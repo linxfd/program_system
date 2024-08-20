@@ -14,7 +14,8 @@
         where ur.id = #{roleId}
         order by m.sort_value
     </select>
-    <select id="selectList" resultType="com.program.model.entity.SysMenu">
+
+    <select id="selectListMenu" resultType="com.program.model.entity.SysMenu">
         select * from sys_menu
         where
         is_deleted = 0

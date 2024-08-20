@@ -13,7 +13,7 @@ public interface SysMenuMapper  extends BaseMapper<SysMenu> {
     List<SysMenu> getAllSysMenu(Integer roleId);
 
     // 查询所有菜单
-    List<SysMenu> selectList();
+    List<SysMenu> selectListMenu();
 
 
     // 根据角色id删除角色菜单关系表数据

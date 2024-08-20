@@ -44,7 +44,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     public List<SysMenu> findNodes() {
         //查询所有菜单
         QueryWrapper<SysMenu> wrapper = new QueryWrapper<SysMenu>();
-        wrapper.eq("id_deleted", IsDeleted.NOT_DELETED);
+        wrapper.eq("is_deleted", IsDeleted.NOT_DELETED);
         List<SysMenu> sysMenuList = sysMenuMapper.selectList(wrapper);
         if (CollectionUtils.isEmpty(sysMenuList)) {
             return null;
