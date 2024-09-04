@@ -93,16 +93,11 @@ public class PointsServiceImpl extends ServiceImpl<PointsMapper, Points> impleme
 
         // 查询未删除的数据
         pointsWrapper.eq("is_deleted", 0);
-        // 排序
-//        wrapper.orderByDesc("");
-//        wrapper.orderByAsc( "classification_id");
 
         pointsPage = pointsMapper.selectPage(pointsPage, pointsWrapper);
         //这个是插件的分页的数据
         List<Points> records = pointsPage.getRecords();
-//        if(EmptyUtil.isEmpty(pointsDto.getNotes())){
-//            pointsDto.setNotes(null);
-//        }
+
         // 查询总points
         List<Points> pointsList = pointsMapper.selectPointsList(pointsDto);
 

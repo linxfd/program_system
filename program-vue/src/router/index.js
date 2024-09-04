@@ -143,9 +143,15 @@ const routes = [
         path: '/noticeManage',
         component: () => import('../views/admin/NoticeManage')
       },
+      // 系统菜单管理(超级管理员)
       {
         path: '/sysMenu',
         component: () => import('../views/admin/SysMenu')
+      },
+      // 课程分类管理(老师)
+      {
+        path: '/course/courseCategory',
+        component: () => import('../views/teacher/course/CourseCategory')
       }
     ]
   },
