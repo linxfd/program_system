@@ -148,6 +148,7 @@ export default {
       courseCategory.FindNodes().then((resp) => {
         if (resp.code === 200) {
           this.list = resp.data
+
         }
         this.$notify({
           title: 'Tips',

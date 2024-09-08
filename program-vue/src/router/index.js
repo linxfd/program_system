@@ -152,6 +152,16 @@ const routes = [
       {
         path: '/course/courseCategory',
         component: () => import('../views/teacher/course/CourseCategory')
+      },
+      {
+        path: '/course/courseBase',
+        component: () => import('../views/teacher/course/CourseBase')
+      },
+      {
+
+        path: '/course/CourseBaseModel/:id',
+        name: 'CourseBaseModel',
+        component: () => import('../views/teacher/course/CourseBaseModel')
       }
     ]
   },

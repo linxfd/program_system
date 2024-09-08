@@ -74,6 +74,9 @@ public class MenuHelper {
                 courseCategory.getChildren().add(findCategoryChildren(it,treeNodes));
             }
         }
+        if(EmptyUtil.isEmpty(courseCategory.getChildren())){
+            courseCategory.setChildren(null);
+        }
         return courseCategory;
     }
 }

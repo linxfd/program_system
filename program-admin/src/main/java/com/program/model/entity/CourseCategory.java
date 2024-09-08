@@ -29,6 +29,7 @@ public class CourseCategory extends CommonEntity{
     @ApiModelProperty(value = "分类名称")
     private String name;
 
+
     @ApiModelProperty(value = "分类标签默认和名称一样")
     private String label;
 

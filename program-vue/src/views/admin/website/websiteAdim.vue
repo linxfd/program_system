@@ -158,13 +158,13 @@
               />
             </div>
             <el-upload
-                  ref="upload"
-                  :action="uploadImageUrl + '/teacher/uploadQuestionImage'"
-                  name="file"
-                  :headers="headers"
-                  :before-upload="beforeUpload"
-                  :on-success="importFile"
-                  v-loading="loading"
+                ref="upload"
+                :action="uploadImageUrl + '/teacher/uploadQuestionImage'"
+                name="file"
+                :headers="headers"
+                :before-upload="beforeUpload"
+                :on-success="importFile"
+                v-loading="loading"
                 >
                 <el-button
                   size="small"
@@ -449,7 +449,13 @@ export default {
     },
     // 导入图标后
     importFile(val){
+      debugger
+      console.log(val)
       this.form.icon = val.data
+      // 防止空指针错误
+      if(!this.form.imgs){
+          this.form.imgs = []
+      }
       this.form.imgs.unshift(val.data)
       this.selectedImgIndex = 0
       this.loading = false

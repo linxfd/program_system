@@ -49,7 +49,7 @@ public class SignServiceImpl implements SignService {
         // 构建 Key
         String signKey =String.format("user:sign:%d:%s", userId,
                 DateUtil.format(date, "yyyyMM"));
-        // bitfield user:sign:5:202212 u30 0
+        // bitfield user:sign:5:202212 30 0
         BitFieldSubCommands bitFieldSubCommands = BitFieldSubCommands.create()
                 .get(BitFieldSubCommands.BitFieldType.unsigned(dayOfMonth))
                 .valueAt(0);

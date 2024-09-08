@@ -29,6 +29,14 @@
         </div>
         <div class="tip">
           每天签到领积分,连续签到积分更多
+          <el-tooltip 
+              effect="dark"
+              content="连续签到积分,第一天1积分,第二天2积分...第七天7积分,第七天后连续签到都可获得7积分;
+              每天积分签到以一个月为周期,每月1号会清除连续登录的记录,"
+              placement="top-start"
+              >
+            <i class="el-icon-question"></i>
+          </el-tooltip>
         </div>
       </div>
       <div class="main-right">
@@ -112,7 +120,7 @@ export default {
       welcomeMessage: '',  
       // 欢迎语
       welcomeMessages: [
-        '欢迎您',  
+        '欢迎您的莅临',  
         '很高兴见到您',  
         '欢迎回来',  
         '嗨，又见面了',  
@@ -422,5 +430,5 @@ export default {
 	}
 	
 }
-
 </style>
+

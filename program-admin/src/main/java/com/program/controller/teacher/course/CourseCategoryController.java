@@ -29,12 +29,12 @@ public class CourseCategoryController {
     @Autowired
     private CourseCategoryService courseCategoryService;
 
-
+    @ApiOperation("获得课程分类列表")
     @GetMapping("/findNodes")
     public CommonResult findNodes(){
         List<CourseCategory> list = courseCategoryService.findNodes();
         CommonResult build = CommonResult.build(list, CommonResultEnum.SUCCESS_QUERY);
-        return build ;
+        return build;
     }
 
     @ApiOperation("添加课程分类")
