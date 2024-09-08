@@ -16,7 +16,7 @@
           <img
             v-for="(url,index) in currentBankQuestion[curIndex].images"
             :key="index"
-            :src="url"
+            :src="getIconUrl(url)"
             title="点击查看大图"
             alt="题目图片"
             style="width: 200px;height: 200px;cursor: pointer"
@@ -43,7 +43,7 @@
                   title="点击查看大图"
                   v-for="(i2,index2) in item.images"
                   :key="index2"
-                  :src="i2"
+                  :src="getIconUrl(i2)"
                   alt=""
                   @click="showBigImg(i2)"
                 >
@@ -82,7 +82,7 @@
                   
                   v-for="(i2,index2) in item.images"
                   :key="index2"
-                  :src="i2"
+                  :src="getIconUrl(i2)"
                   alt=""
                   @click="showBigImg(i2)"
                 >
@@ -207,6 +207,7 @@ export default {
   name: 'TrainPage',
   data () {
     return {
+      minioUrl: process.env.VUE_APP_MINIO_URL,
       // 当前题库id
       bankId: this.$route.params.bankId,
       // 当前训练类型(1顺序,2随机,3单选,4多选,5判断)
@@ -344,7 +345,7 @@ export default {
     },
     // 点击展示高清大图
     showBigImg (url) {
-      this.bigImgUrl = url
+      this.bigImgUrl = this.getIconUrl(url)
       this.bigImgDialog = true
     },
     // 检验单选题的用户选择的答案
@@ -408,7 +409,18 @@ export default {
     // 自动切换下一题
     nextQuestion () {
       this.curIndex = Math.min(this.curIndex + 1, this.currentBankQuestion.length - 1)
-    }
+    },
+    getIconUrl(iconPath) {
+      // 检查iconPath是否包含协议头（例如http://或https://）
+      if (/^https?:\/\//.test(iconPath)) {
+        // 如果iconPath已经是完整的URL，直接返回
+        return iconPath;
+      } else {
+        // 如果不是完整的URL，则拼接基础URL
+        return `${this.minioUrl}${iconPath}`;
+      }
+
+    },
   },
   computed: {
     // 题目正确的下标
@@ -426,7 +438,8 @@ export default {
         res += String(this.optionName[parseInt(item)])
       })
       return res
-    }
+    },
+
   }
 }
 </script>

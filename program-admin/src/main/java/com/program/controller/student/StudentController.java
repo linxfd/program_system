@@ -1,5 +1,6 @@
 package com.program.controller.student;
 
+import com.program.model.dict.DictFileType;
 import com.program.model.entity.ExamQuestion;
 import com.program.model.entity.ExamRecord;
 import com.program.service.ExamQuestionService;
@@ -125,7 +126,7 @@ public class StudentController {
     public CommonResult<String> uploadQuestionImage(MultipartFile file) throws Exception {
         log.info("开始上传文件: {}", file.getOriginalFilename());
         return CommonResult.<String>builder()
-                .data(minioUtil.fileUpload(file))
+                .data(minioUtil.fileUpload(file, DictFileType.IMAGE_TYPE))
                 .message("上传成功")
                 .build();
     }

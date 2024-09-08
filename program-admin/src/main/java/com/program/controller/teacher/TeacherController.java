@@ -140,7 +140,7 @@ public class TeacherController {
 
 
         if (EmptyUtil.isEmpty(mediaFiles)) {
-            url = minioUtil.fileUpload(file);
+            url = minioUtil.fileUpload(file, DictFileType.IMAGE_TYPE);
 
             MediaFiles newMediaFile = new MediaFiles();
             newMediaFile.setId(fileId);

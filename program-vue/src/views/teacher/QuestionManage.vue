@@ -266,8 +266,8 @@
             label-width="120px"
           >
             <el-upload
+              ref="upload"
               :action="uploadImageUrl + '/teacher/uploadQuestionImage'"
-              :on-preview="uploadPreview"
               :on-remove="handleUpdateRemove"
               :headers="headers"
               :before-upload="beforeAvatarUpload"
@@ -288,6 +288,21 @@
                 只能上传jpg/png文件，且不超过10M
               </div>
             </el-upload>
+            <div v-if="updateQuForm.images.length" class="image-list">
+              <div
+                v-for="(imageUrl, index) in updateQuForm.images"
+                :key="index"
+                class="image-item"
+              >
+                <img :src="getIconUrl(imageUrl)" alt="预览图片" class="preview-image">
+                <el-button
+                  type="text"
+                  size="small"
+                  class="remove-button"
+                  @click="removeImage(index)"
+                >X</el-button>
+              </div>
+            </div>
           </el-form-item>
 
           <el-form-item
@@ -344,9 +359,9 @@
                 <template slot-scope="scope">
                   <el-upload
                     id="answerUpload"
+                    ref="uploadanswer"
                     :limit="1"
                     :action="uploadImageUrl + '/teacher/uploadQuestionImage'"
-                    :on-preview="uploadPreview"
                     :on-remove="handleUpdateAnswerRemove"
                     :headers="headers"
                     :before-upload="beforeAvatarUpload"
@@ -516,8 +531,6 @@
           >
             <el-upload
               :action="uploadImageUrl + '/teacher/uploadQuestionImage'"
-              :on-preview="uploadPreview"
-              :on-remove="handleRemove"
               :headers="headers"
               :before-upload="beforeAvatarUpload"
               list-type="picture"
@@ -537,6 +550,7 @@
                 只能上传jpg/png文件,且不超过10M
               </div>
             </el-upload>
+   
           </el-form-item>
 
           <el-form-item
@@ -594,7 +608,6 @@
                   <el-upload
                     :limit="1"
                     :action="uploadImageUrl + '/teacher/uploadQuestionImage'"
-                    :on-preview="uploadPreview"
                     :on-remove="handleAnswerRemove"
                     :headers="headers"
                     :before-upload="beforeAvatarUpload"
@@ -869,17 +882,6 @@
       </div>
     </el-dialog>
 
-    <!--图片回显-->
-    <el-dialog
-      :visible.sync="backShowImgVisible"
-      @close="backShowImgVisible = false"
-    >
-      <img
-        style="width: 100%"
-        :src="backShowImgUrl"
-        alt=""
-      >
-    </el-dialog>
   </el-container>
 </template>
 
@@ -1085,10 +1087,7 @@ export default {
           }
         ]
       },
-      // 图片回显的样式
-      backShowImgVisible: false,
-      // 图片回显的图片地址
-      backShowImgUrl: '',
+
       // 更新题目的数据信息
       updateQuForm: {
         questionId: '',
@@ -1271,17 +1270,7 @@ export default {
         })
       }, '请选择需要移除的题库')
     },
-    // 新增题目上传后 点击图片的回显
-    uploadPreview (file) {
-      this.backShowImgUrl = file.response.data
-      this.backShowImgVisible = true
-    },
-    // 新增题目中的上传图片的移除
-    handleRemove (file, fileList) {
-      this.addQuForm.images.map((item, index) => { // 移除图片在表单中的数据
-        if (item === file.response.data) this.addQuForm.images.splice(index, 1)
-      })
-    },
+
     // 更新题目中的上传图片的移除
     handleUpdateRemove (file, fileList) {
       this.updateQuForm.images.map((item, index) => { // 移除图片在表单中的数据
@@ -1307,10 +1296,13 @@ export default {
     // 新增题目中的上传图片成功后的钩子函数
     uploadImgSuccess (response, file, fileList) {
       this.addQuForm.images.push(response.data)
+      
     },
     // 更新题目中的上传图片成功后的钩子函数
     updateUploadImgSuccess (response, file, fileList) {
       this.updateQuForm.images.push(response.data)
+      // 清除上传列表
+      this.$refs.upload.clearFiles();
     },
     // 新增题目中的新增答案填写框
     addAnswer () {
@@ -1351,6 +1343,15 @@ export default {
     // 更新的答案上传图片了
     uploadUpdateAnswerImgSuccess (response, id) {
       this.updateQuForm.answer[id].images.push(response.data)
+      debugger
+      console.log(this.updateQuForm)
+      // 清除上传列表
+      this.$refs.uploadanswer.clearFiles();
+    },
+    updateAnswerImg(response, id){
+      this.updateQuForm.answer[id].images
+      debugger
+      console.log(this.updateQuForm)
     },
     // 答案上传成功后删除
     handleAnswerRemove (file) {
@@ -1452,14 +1453,13 @@ export default {
     updateQu (id) {
       question.getQuestionById(id).then((resp) => {
         if (resp.code === 200) {
-
           if (resp.data.questionType !== 4) {
             resp.data.answer.map(item => {
               item.isTrue = item.isTrue === 'true'
             })
           }
           this.updateQuForm = resp.data
-
+          console.log(this.updateQuForm)
           // 处理图片那个参数是个数组
           if (this.updateQuForm.images === null){
             this.updateQuForm.images = []
@@ -1567,6 +1567,10 @@ export default {
         }
       })
     },
+    removeImage(index) {
+      // 移除指定索引的图片
+      this.updateQuForm.images.splice(index, 1);
+    },
     getIconUrl(iconPath) {
       // 检查iconPath是否包含协议头（例如http://或https://）
       if (/^https?:\/\//.test(iconPath)) {
@@ -1608,5 +1612,33 @@ export default {
   /* 或者使用百分比 */
   width: 100px;
   height: 100px;
+}
+
+.image-list {
+  display: flex;
+  flex-wrap: nowrap; /* 默认不换行 */
+  overflow-x: auto; /* 当图片过多时，水平滚动 */
+}
+
+.image-item {
+  margin-right: 10px;
+  position: relative; /* 让移除按钮相对定位 */
+}
+
+.preview-image {
+  max-width: 100px;
+  height: auto;
+}
+
+.remove-button {
+  position: absolute;
+  top: -1%; /* 调整位置，使按钮位于图片上方 */
+  right: 0;
+  background-color: rgba(241, 231, 231, 0.5); /* 设置背景颜色 */
+  color: white; /* 文字颜色 */
+  border: none;
+  padding: 2px 5px;
+  cursor: pointer;
+  border-radius: 3px;
 }
 </style>

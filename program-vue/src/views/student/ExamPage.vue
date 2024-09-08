@@ -43,7 +43,7 @@
               <img
                 v-for="(url,index) in questionInfo[curIndex].images"
                 :key="index"
-                :src="url"
+                :src="getIconUrl(url)"
                 title="点击查看大图"
                 alt="题目图片"
                 style="width: 100px;height: 100px;cursor: pointer"
@@ -71,7 +71,7 @@
                       
                       v-for="(i2,index2) in item.images"
                       :key="index2"
-                      :src="i2"
+                      :src="getIconUrl(i2)"
                       alt=""
                       @click="showBigImg(i2)"
                     >
@@ -101,7 +101,7 @@
                       
                       v-for="(i2,index2) in item.images"
                       :key="index2"
-                      :src="i2"
+                      :src="getIconUrl(i2)"
                       alt=""
                       @click="showBigImg(i2)"
                     >
@@ -267,7 +267,7 @@
     >
       <img
         style="width: 100%"
-        :src="bigImgUrl"
+        :src="getIconUrl(bigImgUrl)"
       >
     </el-dialog>
   </el-container>
@@ -283,6 +283,7 @@ export default {
   name: 'ExamPage',
   data () {
     return {
+      minioUrl: process.env.VUE_APP_MINIO_URL,
       // 当前考试的信息
       examInfo: {},
       // 当前的考试题目
@@ -371,6 +372,17 @@ export default {
     }
   },
   methods: {
+    getIconUrl(iconPath) {
+      // 检查iconPath是否包含协议头（例如http://或https://）
+      if (/^https?:\/\//.test(iconPath)) {
+        // 如果iconPath已经是完整的URL，直接返回
+        return iconPath;
+      } else {
+        // 如果不是完整的URL，则拼接基础URL
+        return `${this.minioUrl}${iconPath}`;
+      }
+
+    },
     // 查询当前考试的信息
     getExamInfo () {
       exam.getExamInfoById(this.$route.params).then((resp) => {

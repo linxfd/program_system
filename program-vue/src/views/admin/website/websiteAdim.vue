@@ -74,7 +74,7 @@
         <el-table-column label="网址" align="center" prop="url" />
         <el-table-column label="网站图标" align="center" prop="icon" >
           <template slot-scope="scope">
-            <img :src="scope.row.icon" alt="" style="width: 50px;height: 50px;">
+            <img :src="getIconUrl(scope.row.icon)" alt="" style="width: 50px;height: 50px;">
           </template>
         </el-table-column>
         <el-table-column
@@ -150,7 +150,7 @@
               <img
                 v-for="(src, index) in form.imgs"
                 :key="index"
-                :src="src"
+                :src="getIconUrl(src)"
                 @click="selectIcon(src,index)"
                 :class="{ sel: isSelected(index) }"
                 :style="{ width: '50px', height: '50px', marginRight: '15px', cursor: 'pointer' }"
@@ -205,6 +205,7 @@ export default {
   data() {
     return {
       uploadImageUrl: process.env.VUE_APP_UPLOAD_IMAGE_URL,
+      minioUrl: process.env.VUE_APP_MINIO_URL,
       ids: [],
       form: {
         name: '',
@@ -466,6 +467,17 @@ export default {
     },
     isSelected(index) {
       return this.selectedImgIndex === index;
+    },
+    getIconUrl(iconPath) {
+      // 检查iconPath是否包含协议头（例如http://或https://）
+      if (/^https?:\/\//.test(iconPath)) {
+        // 如果iconPath已经是完整的URL，直接返回
+        return iconPath;
+      } else {
+        // 如果不是完整的URL，则拼接基础URL
+        return `${this.minioUrl}${iconPath}`;
+      }
+
     },
   }
 };

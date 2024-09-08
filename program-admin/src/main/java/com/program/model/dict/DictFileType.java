@@ -18,4 +18,13 @@ public interface DictFileType {
      */
     Integer DOCUMENT = 3;
 
+    /**
+     * 图片类型
+     */
+    String IMAGE_TYPE = "image";
+    /**
+     * 视频类型
+     */
+    String VIDEO_TYPE = "video";
+
 }
