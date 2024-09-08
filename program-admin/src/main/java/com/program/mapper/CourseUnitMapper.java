@@ -1,14 +1,14 @@
 package com.program.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.program.model.entity.CourseBase;
+import com.program.model.entity.CourseUnit;
 import org.springframework.stereotype.Repository;
 
 /**
- * @author lxf
- * @date 2024-09-05
+ * @author linxf
+ * @date 2024/9/9
  */
 @Repository
-public interface CourseBaseMapper extends BaseMapper<CourseBase> {
+public interface CourseUnitMapper extends BaseMapper<CourseUnit> {
 
 }

@@ -108,7 +108,7 @@
                           <i class="el-icon-upload"></i>
                           <div class="el-upload__text">将图片文件拖到此处，或<em>点击上传</em></div>
                       </div>
-                      <img v-else :src="this.categoryInfo.pic" alt=""  class="preview-image">
+                      <img v-else :src="getIconUrl(this.categoryInfo.pic)" alt=""  class="preview-image">
                     </div>
                 </el-upload>
               </el-form-item>
@@ -122,12 +122,11 @@
         <div id="app">
           <el-card v-for="(card, index) in cards" :key="index" class="box-card">
             <el-input v-model="card.courseName" placeholder="请输入课程单元名称"></el-input>
-            <br><br>
             <el-upload
               class="upload-demo"
               drag
               action="your/upload/url"
-              :file-list="card.fileList"
+              :file-list="fileList"
               :on-success="handleUploadSuccess"
               :before-upload="beforeUpload"
             >
@@ -198,10 +197,13 @@ export default {
       cards: [
         { // 初始化一个
           courseName: '',
-          fileList: []
+          videoUrl: ''
         }
       ],
+      fileList: [],
       uploadImageUrl: process.env.VUE_APP_UPLOAD_IMAGE_URL,
+      // minio的主机名
+      minioUrl: process.env.VUE_APP_MINIO_URL,
       // 当前的步骤
       curStep: 1,
       // 对话框中题目表格的加载
@@ -286,8 +288,6 @@ export default {
     },
     // 导入图标后
     importFile(val){
-      debugger
-      console.log(val)
       this.Uploadloading = false
       this.categoryInfo.pic = val.data
       // 清除上传列表
@@ -297,10 +297,11 @@ export default {
     addCard() {
       this.cards.push({
         courseName: '',
-        fileList: []
+        videoUrl: '',
       });
     },
     handleUploadSuccess(response, file, fileList) {
+      this.categoryInfo.pic = response.data
       // 处理上传成功后的逻辑
       console.log('文件上传成功', response, file, fileList);
     },
@@ -310,7 +311,19 @@ export default {
         this.$message.error('只能上传视频文件！');
       }
       return isVideo;
-    }
+    },
+    getIconUrl(iconPath) {
+      // 检查iconPath是否包含协议头（例如http://或https://）
+      if (/^https?:\/\//.test(iconPath)) {
+        // 如果iconPath已经是完整的URL，直接返回
+        return iconPath;
+      } else {
+        // 如果不是完整的URL，则拼接基础URL
+        return `${this.minioUrl}${iconPath}`;
+      }
+
+
+    },
   },
   computed: {
     // 监测头部信息的token变化
