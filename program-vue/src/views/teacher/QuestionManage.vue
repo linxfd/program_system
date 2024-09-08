@@ -534,7 +534,7 @@
                 slot="tip"
                 class="el-upload__tip"
               >
-                只能上传jpg/png文件，且不超过10M
+                只能上传jpg/png文件,且不超过10M
               </div>
             </el-upload>
           </el-form-item>
@@ -619,7 +619,7 @@
                     style="margin-left: 5px"
                     type="textarea"
                     :rows="2"
-                  /> 
+                  />
                 </template>
               </el-table-column>
 
@@ -896,6 +896,7 @@ export default {
   data () {
     return {
       uploadImageUrl: process.env.VUE_APP_UPLOAD_IMAGE_URL,
+      minioUrl: process.env.VUE_APP_MINIO_URL,
       // 查询用户的参数
       queryInfo: {
         // 题目类型下拉款所选的内容
@@ -1451,14 +1452,18 @@ export default {
     updateQu (id) {
       question.getQuestionById(id).then((resp) => {
         if (resp.code === 200) {
+
           if (resp.data.questionType !== 4) {
             resp.data.answer.map(item => {
               item.isTrue = item.isTrue === 'true'
             })
           }
           this.updateQuForm = resp.data
+
           // 处理图片那个参数是个数组
-          if (this.updateQuForm.images === null) this.updateQuForm.images = []
+          if (this.updateQuForm.images === null){
+            this.updateQuForm.images = []
+          }
 
           if (resp.data.questionType !== 4) {
             this.updateQuForm.answer.map(item => {
@@ -1562,6 +1567,18 @@ export default {
         }
       })
     },
+    getIconUrl(iconPath) {
+      // 检查iconPath是否包含协议头（例如http://或https://）
+      if (/^https?:\/\//.test(iconPath)) {
+        // 如果iconPath已经是完整的URL，直接返回
+        return iconPath;
+      } else {
+        console.log(this.minioUrl)
+        // 如果不是完整的URL，则拼接基础URL
+        return `${this.minioUrl}${iconPath}`;
+      }
+
+    },
   },
   computed: {
     // 监测头部信息的token变化
@@ -1570,7 +1587,8 @@ export default {
         'body-string': '',
         'query-string': '',
         'x-nonce': `${utils.getRandomId()}`,
-        'x-timestamp': `${new Date().getTime()}`
+        'x-timestamp': `${new Date().getTime()}`,
+        'description': "Question picture and answer picture"
       }
       return {
         ...signHeaders,
@@ -1584,4 +1602,11 @@ export default {
 
 <style scoped lang="scss">
 @import "../../assets/css/teacher/questionManage";
+.preview-image {
+  // width: 200px; /* 固定宽度 */
+  // height: auto; /* 自动调整高度以保持原始宽高比 */
+  /* 或者使用百分比 */
+  width: 100px;
+  height: 100px;
+}
 </style>

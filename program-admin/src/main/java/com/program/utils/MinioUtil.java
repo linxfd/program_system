@@ -59,8 +59,8 @@ public class MinioUtil {
             minioClient.putObject(putObjectArgs) ;
 
             // 返回文件访问路径：拼接服务器地址和桶名称和文件名称
-            // http://127.0.0.1:9000/spzx-bucket/20240507/2daa1bdbde3c43b4b900e1891fd6fe512104060Z024-5-1200.jpg
-            return minioProperties.getEndpointUrl() + "/" + minioProperties.getBucketName() + "/" + fileName ;
+            // /spzx-bucket/20240507/2daa1bdbde3c43b4b900e1891fd6fe512104060Z024-5-1200.jpg
+            return "/" + minioProperties.getBucketName() + "/" + fileName ;
 
         } catch (Exception e) {
             throw new RuntimeException(e);

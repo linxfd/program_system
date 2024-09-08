@@ -16,7 +16,7 @@
         </el-form-item>
         分类
         <el-select
-          label="网站sd"
+          label="网站"
           @change="typeChange"
           clearable
           v-model="queryParams.classificationId"
@@ -267,7 +267,8 @@ export default {
         'body-string': '',
         'query-string': '',
         'x-nonce': `${utils.getRandomId()}`,
-        'x-timestamp': `${new Date().getTime()}`
+        'x-timestamp': `${new Date().getTime()}`,
+        'description': "website icon"
       }
       return {
         ...signHeaders,

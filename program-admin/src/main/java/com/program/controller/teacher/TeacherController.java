@@ -1,18 +1,20 @@
 package com.program.controller.teacher;
 
+import com.program.model.dict.DictFileType;
+import com.program.model.dict.DictStatus;
 import com.program.model.dto.QuestionDto;
 import com.program.model.dto.StudentExamRecordExcelDto;
 import com.program.model.entity.ExamRecord;
+import com.program.model.entity.MediaFiles;
 import com.program.model.entity.Question;
 import com.program.model.entity.QuestionBank;
 import com.program.model.vo.*;
-import com.program.service.ExamRecordService;
-import com.program.service.ExamService;
-import com.program.service.QuestionBankService;
-import com.program.service.QuestionService;
-import com.program.service.UserService;
+import com.program.service.*;
+import com.program.utils.EmptyUtil;
+import com.program.utils.HashUtil;
+import com.program.utils.JwtUtils;
 import com.program.utils.MinioUtil;
-import com.program.utils.OSSUtil;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -34,6 +36,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -46,6 +49,9 @@ public class TeacherController {
 
     @Autowired
     private MinioUtil minioUtil;
+
+    @Autowired
+    private MediaFilesService mediaFilesService;
 
     private final ExamService examService;
 
@@ -124,10 +130,44 @@ public class TeacherController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "file", value = "图片文件", required = true, dataType = "file", paramType = "body")
     })
-    public CommonResult<String> uploadQuestionImage(MultipartFile file) throws Exception {
+    public CommonResult<String> uploadQuestionImage(MultipartFile file,HttpServletRequest request) throws Exception {
         log.info("开始上传文件: {}", file.getOriginalFilename());
+        // 生成MD5值
+        String fileId = HashUtil.computeMD5(file.getInputStream());
+        // 检查数据库中是否已有该文件ID
+        MediaFiles mediaFiles = mediaFilesService.getById(fileId);
+        String url = "";
+
+
+        if (EmptyUtil.isEmpty(mediaFiles)) {
+            url = minioUtil.fileUpload(file);
+
+            MediaFiles newMediaFile = new MediaFiles();
+            newMediaFile.setId(fileId);
+            newMediaFile.setFileName(file.getOriginalFilename());
+            newMediaFile.setFileType(DictFileType.IMAGE);
+            newMediaFile.setUrl(url);
+            newMediaFile.setFileSize(file.getSize());
+
+            // 获取当前登录用户信息
+            TokenVo userInfoByToken = JwtUtils.getUserInfoByToken(request);
+            // 设置创建人
+            newMediaFile.setCreatePerson(userInfoByToken.getUsername());
+
+            newMediaFile.setStatus(DictStatus.NORMAL); // 正常状态
+            String description = request.getHeader("description");
+
+            newMediaFile.setRemark(description); // 备注
+            newMediaFile.setCreateTime(new Date());
+            newMediaFile.setUpdateTime(new Date());
+
+            // 保存到数据库
+            mediaFilesService.save(newMediaFile);
+        }else {
+            url = mediaFiles.getUrl();
+        }
         return CommonResult.<String>builder()
-                .data(minioUtil.fileUpload(file))
+                .data(url)
                 .message("上传成功")
                 .build();
     }

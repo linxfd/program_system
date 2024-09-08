@@ -483,9 +483,11 @@ export default {
         const formData = new FormData()
         // convertBase64UrlToBlob函数是将base64编码转换为Blob
         formData.append('file', this.base64ToFile(img, 'examTakePhoto.png'))
-        // 上传阿里云OSS
+        // 上传文件
         await ossUtils.uploadImage(formData).then((resp) => {
-          if (resp.code === 200) this.takePhotoUrl.push(resp.data)
+          if (resp.code === 200) {
+            this.takePhotoUrl.push(resp.data)
+          }
         })
       }
     },

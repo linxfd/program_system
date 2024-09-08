@@ -158,8 +158,6 @@ export default {
     return {
       // 查询课程的参数
       queryInfo: {
-        loginName: '',
-        trueName: '',
         pageNo: 1,
         pageSize: 10
       },

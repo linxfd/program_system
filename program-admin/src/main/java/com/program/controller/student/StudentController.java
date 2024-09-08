@@ -78,8 +78,9 @@ public class StudentController {
             @ApiImplicitParam(name = "id", value = "问题id", required = true, dataType = "int", paramType = "path")
     })
     public CommonResult<QuestionVo> getQuestionById(@PathVariable("id") Integer id) {
+        QuestionVo questionVoById = questionService.getQuestionVoById(id);
         return CommonResult.<QuestionVo>builder()
-                .data(questionService.getQuestionVoById(id))
+                .data(questionVoById)
                 .build();
     }
 

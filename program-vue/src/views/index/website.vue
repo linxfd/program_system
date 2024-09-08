@@ -35,7 +35,9 @@
           class="divMain button-3d"
           @click="openBaiduInNewTab(item.url)"
         >
-          <img :src="item.icon" :alt="item.notes" style="width: 50px;height: 50px;">
+          <img :src="getIconUrl(item.icon)"   
+            :alt="item.notes"
+            style="width: 50px; height: 50px;">
           <div>
             <p class="p_button">{{item.name}}</p>
             <!-- el-tooltip 组件: 是 ElementUI 提供的一个用于创建提示框的组件。它允许您在鼠标悬停时显示额外的信息。 -->
@@ -67,6 +69,7 @@ export default {
   data(){
     return{
       response:{},
+      uploadImageUrl: process.env.VUE_APP_UPLOAD_IMAGE_URL,
       classificationList:{},
       queryParams: {
         pageNum: 1,
@@ -131,7 +134,18 @@ export default {
   },
   toDashboardPage(){
     router.push('/')
-  }
+  },
+  getIconUrl(iconPath) {  
+      // 检查iconPath是否包含协议头（例如http://或https://）  
+      if (/^https?:\/\//.test(iconPath)) {  
+        // 如果iconPath已经是完整的URL，直接返回  
+        return iconPath;  
+      } else {  
+        // 如果不是完整的URL，则拼接基础URL  
+        return `${this.uploadImageUrl}${iconPath}`;  
+      }  
+    },  
+  
   }
 }
 </script>
