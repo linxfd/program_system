@@ -14,4 +14,29 @@ public interface DictStatus {
      */
     String DISABLE = "2";
 
+    /**
+     * 未发布
+     */
+    Integer UNPUBLISHED = 1;
+
+    /**
+     * 已发布
+     */
+    Integer PUBLISHED = 2;
+
+    /**
+     * 未审核
+     */
+    Integer UNAUDITED = 1;
+
+    /**
+     * 审核不通过
+     */
+    Integer UNPASS = 2;
+
+    /**
+     * 审核通过
+     */
+    Integer PASS = 3;
+
 }

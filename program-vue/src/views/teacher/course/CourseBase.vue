@@ -90,7 +90,7 @@
               <p class="p" style="max-width: 230px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                 {{ scope.row.description }}
               </p>
-        </el-tooltip>
+            </el-tooltip>
         </el-table-column>
         <el-table-column label="发布状态" align="center" width="120">
           <template v-slot:default="scope">
@@ -119,8 +119,21 @@
           #default="scope"
         >
           <el-button
-            size="mini" type="text" icon="el-icon-edit"
+            size="mini" type="text" icon="el-icon-guide"
+            @click="showAudit(scope.row)"
+          >
+            审计
+          </el-button>
+          <el-button 
+            size="mini" type="text" :icon="scope.row.courseStatus === 1 ? 'el-icon-upload2' : 'el-icon-download'"
             @click="editShow(scope.row)"
+          >
+            {{scope.row.courseStatus === 1 ? '发布' : '下架'}}
+          </el-button>
+
+          <el-button
+            size="mini" type="text" icon="el-icon-edit"
+            @click="$router.push(`/course/CourseBaseModel/${(scope.row.id)}`)"
           >
             修改
           </el-button>
@@ -143,7 +156,43 @@
         :total="total"
       />
     </el-main>
-  
+
+    <!-- 审计弹窗 -->
+    <el-dialog
+      title="审计"
+      :visible.sync="visible"
+      width="30%"
+      @close="visible = false"
+      center
+    >
+      <el-table
+        :border="true"
+        :data="audit"
+        tooltip-effect="dark"
+        style="width: 100%"
+      >
+      <el-table-column prop="name" label="视频名称" width="200px"></el-table-column>
+      <el-table-column  label="网络地址" width="180px" v-slot:default="scope">
+          <el-tooltip effect="dark" placement="top-start" >
+              <template slot="content" >
+                <div class="top-content">{{ scope.row.url }}</div>
+              </template>
+              <p class="p" style="max-width: 230px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                {{ scope.row.url }}
+              </p>
+            </el-tooltip>
+      </el-table-column>
+      <el-table-column label="审核"  class="text-center">  
+        <template slot-scope="scope">  
+          <span :class="getAuditStatusClass(scope.row.auditStatus)">  
+            {{ getAuditStatusText(scope.row.auditStatus) }}  
+          </span>  
+        </template>  
+      </el-table-column> 
+      
+
+      </el-table>
+    </el-dialog>
   </el-container>
 </template>
 
@@ -163,6 +212,14 @@ export default {
       },
       // 课程信息
       categoryInfo: [],
+      // 审计弹窗
+      visible: false,
+      audit: [
+        { // 初始化一个
+          name: '',
+          url: '',
+        }
+      ],
       // 下拉选择框的数据
       optionInfo: [
         {
@@ -398,7 +455,39 @@ export default {
           }
         })
       })
-    }
+    },
+    showAudit(val){
+      category.queryAudit(val.id).then((resp) => {
+        if (resp.code === 200) {
+          this.$notify({
+            title: 'Tips',
+            message: resp.message,
+            type: 'success',
+            duration: 2000
+          })
+          debugger
+          this.audit = resp.data
+        } 
+        // 弹窗显示
+        this.visible = true
+      })
+    },
+    getAuditStatusText(status) {  
+      switch (status) {  
+        case 1: return '未审核';  
+        case 2: return '不通过';  
+        case 3: return '通过';  
+        default: return '未知';  
+      }  
+    }, 
+    getAuditStatusClass(status) {  
+      switch (status) {  
+        case 1: return 'audit-pending';  
+        case 2: return 'audit-failed';  
+        case 3: return 'audit-passed';  
+        default: return '';  
+      }  
+    }  , 
   }
 }
 </script>
@@ -471,4 +560,18 @@ export default {
     max-width: 230px;
     text-indent: 2em; /* 缩进2字符 */
   }
+
+    
+  
+.audit-pending {  
+  color: orange;  
+}  
+  
+.audit-failed {  
+  color: red;  
+}  
+  
+.audit-passed {  
+  color: green;  
+}  
 </style>

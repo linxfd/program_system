@@ -32,13 +32,13 @@ public class CourseBase extends CommonEntity{
     private String pic;
 
     @ApiModelProperty(value = "课程发布状态 1:未发布  2:已发布")
-    private Long courseStatus;
+    private Integer courseStatus;
 
 
     @ApiModelProperty(value = "是否需要积分，1不需要，2需要")
-    private Long charge;
+    private Integer charge;
 
     @ApiModelProperty(value = "积分数量")
-    private Long pointsNumber;
+    private Integer pointsNumber;
 
 }

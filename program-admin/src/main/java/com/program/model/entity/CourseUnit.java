@@ -35,9 +35,6 @@ public class CourseUnit extends CommonEntity{
     @ApiModelProperty(value = "排序")
     private Integer sortValue;
 
-    @ApiModelProperty(value = "视频审核状态，1:未审核 2:不通过 3通过")
-    private Integer auditStatus;
-
     @ApiModelProperty(value = "课程状态 1启用 2禁用", example = "1")
     private Integer status;
 

@@ -5,9 +5,9 @@ spring:
   servlet:
     multipart:
       # 最大文件大小
-      max-file-size: 10MB
+      max-file-size: 6000MB
       # 最大请求大小
-      max-request-size: 10MB
+      max-request-size: 6000MB
   # json序列化date类型时候防止出现 T
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
@@ -57,6 +57,7 @@ program:
       access-key: minioadmin
       secret-key: minioadmin
       bucketName: program-bucket
+    # 手机发送短信-自定义配置
     validate-code:
       app-code: b51a8a5989f24168a0071142bd8ed8ff
       app-secret: tYhSg87MPl7wRGHc8eWIStXj1U5FySlH

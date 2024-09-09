@@ -4,13 +4,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.program.model.dto.CourseBaseDto;
+import com.program.model.dto.CourseDto;
 import com.program.model.dto.UserDto;
 import com.program.model.entity.CourseBase;
 import com.program.model.entity.CourseCategory;
-import com.program.model.vo.CommonResult;
-import com.program.model.vo.CommonResultEnum;
-import com.program.model.vo.PageResponse;
-import com.program.model.vo.UserInfoVo;
+import com.program.model.entity.CourseUnit;
+import com.program.model.vo.*;
 import com.program.service.CourseBaseService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,6 +20,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -42,6 +43,35 @@ public class CourseBaseController {
                 .build();
     }
 
+    @PostMapping("/addCategory")
+    @ApiOperation("添加课程")
+    public CommonResult addCategory(@RequestBody CourseDto courseDto, HttpServletRequest request){
+        courseBaseService.addCategory(courseDto,request);
+        return CommonResult.<Boolean>builder()
+                .data(null)
+                .build();
+    }
+
+    @ApiOperation("查询审计")
+    @GetMapping("/queryAudit/{id}")
+    public CommonResult queryAudit(@PathVariable Integer id){
+        List<CourseUnitVo> courseUnitVo = courseBaseService.queryAudit(id);
+        return CommonResult.<List<CourseUnitVo>>builder()
+                .data(courseUnitVo)
+                .message(CommonResultEnum.SUCCESS_QUERY.getMessage())
+                .build();
+    }
+
+
+    @ApiOperation("查询需要编辑的课程信息")
+    @GetMapping("/getCategoryInfo/{id}")
+    public CommonResult getCategoryInfo(@PathVariable Integer id){
+        CourseDto courseUnitVo = courseBaseService.getCategoryInfo(id);
+        return CommonResult.<CourseDto>builder()
+                .data(courseUnitVo)
+                .message(CommonResultEnum.SUCCESS_QUERY.getMessage())
+                .build();
+    }
 //    @PreAuthorize("@ss.hasPermi('work:base:list')")
 //    @GetMapping("/list")
 //    public TableDataInfo list(CourseBase courseBase){

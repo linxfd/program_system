@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.program.mapper.CourseUnitMapper">
+
+
+    <select id="queryAudit" resultType="com.program.model.vo.CourseUnitVo">
+        select cu.* , mf.audit_status
+        from course_unit cu join media_files mf on cu.url = mf.url
+        where cu.course_id = #{id}
+    </select>
+</mapper>

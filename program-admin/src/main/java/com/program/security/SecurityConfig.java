@@ -28,11 +28,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 //这表示所有以/public/开头的URL路径，只有当用户具有student、teacher或admin任意一种角色时才能访问。
-                .mvcMatchers("/public/**").hasAnyAuthority("student", "teacher", "admin")
-                .mvcMatchers("/student/**").hasAnyAuthority("student", "admin", "teacher")
-                .mvcMatchers("/teacher/**").hasAnyAuthority("teacher", "admin")
+                .mvcMatchers("/public/**").hasAnyAuthority("student", "teacher", "admin","generalAdmin")
+                .mvcMatchers("/student/**").hasAnyAuthority("student", "admin", "teacher","generalAdmin")
+                .mvcMatchers("/teacher/**").hasAnyAuthority("teacher", "admin","generalAdmin")
+                .mvcMatchers("/generalAdmin/**").hasAnyAuthority( "admin","generalAdmin")
                 .mvcMatchers("/admin/**").hasAnyAuthority("admin")
-                // 配合下面的web.ignore 将下面所有的路径的校验都过滤掉了
+                // 配合下面的web.ignore,将下面所有的路径的校验都过滤掉了
                 .mvcMatchers("/util/**", "/common/**", "/actuator/**", "/api/**").permitAll()
 
                 .anyRequest().authenticated()

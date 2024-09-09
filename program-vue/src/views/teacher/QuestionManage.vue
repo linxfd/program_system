@@ -267,7 +267,7 @@
           >
             <el-upload
               ref="upload"
-              :action="uploadImageUrl + '/teacher/uploadQuestionImage'"
+              :action="uploadImageUrl + '/teacher/uploadImage'"
               :on-remove="handleUpdateRemove"
               :headers="headers"
               :before-upload="beforeAvatarUpload"
@@ -361,7 +361,7 @@
                     id="answerUpload"
                     ref="uploadanswer"
                     :limit="1"
-                    :action="uploadImageUrl + '/teacher/uploadQuestionImage'"
+                    :action="uploadImageUrl + '/teacher/uploadImage'"
                     :on-remove="handleUpdateAnswerRemove"
                     :headers="headers"
                     :before-upload="beforeAvatarUpload"
@@ -530,7 +530,7 @@
             prop="image"
           >
             <el-upload
-              :action="uploadImageUrl + '/teacher/uploadQuestionImage'"
+              :action="uploadImageUrl + '/teacher/uploadImage'"
               :headers="headers"
               :before-upload="beforeAvatarUpload"
               list-type="picture"
@@ -607,7 +607,7 @@
                 <template slot-scope="scope">
                   <el-upload
                     :limit="1"
-                    :action="uploadImageUrl + '/teacher/uploadQuestionImage'"
+                    :action="uploadImageUrl + '/teacher/uploadImage'"
                     :on-remove="handleAnswerRemove"
                     :headers="headers"
                     :before-upload="beforeAvatarUpload"

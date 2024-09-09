@@ -159,7 +159,7 @@
             </div>
             <el-upload
                 ref="upload"
-                :action="uploadImageUrl + '/teacher/uploadQuestionImage'"
+                :action="uploadImageUrl + '/teacher/uploadImage'"
                 name="file"
                 :headers="headers"
                 :before-upload="beforeUpload"

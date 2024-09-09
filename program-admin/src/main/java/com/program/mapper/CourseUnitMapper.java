@@ -2,7 +2,10 @@ package com.program.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.program.model.entity.CourseUnit;
+import com.program.model.vo.CourseUnitVo;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * @author linxf
@@ -11,4 +14,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CourseUnitMapper extends BaseMapper<CourseUnit> {
 
+    List<CourseUnitVo> queryAudit(Integer id);
 }

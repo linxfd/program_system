@@ -39,7 +39,7 @@
         style="float:right;margin-top: 10px"
         v-show="curStep === 3"
         type="primary"
-
+        @click="submit"
       >
         提交
       </el-button>
@@ -88,14 +88,13 @@
                   @change="handleChange"  
                 />
               </el-form-item>
-              
-              
+            
               <el-form-item
                 label="课程首页图片"
               >
                 <el-upload
                     ref="upload"
-                    :action="uploadImageUrl + '/teacher/uploadQuestionImage'"
+                    :action="uploadImageUrl + '/teacher/uploadImage'"
                     name="file"
                     drag
                     :headers="headers"
@@ -117,22 +116,33 @@
         </div>
       </el-card>
 
-
       <el-card v-show="curStep === 2">
         <div id="app">
           <el-card v-for="(card, index) in cards" :key="index" class="box-card">
-            <el-input v-model="card.courseName" placeholder="请输入课程单元名称"></el-input>
+            <el-button @click="removeCard(index)" type="text" style="float: right;">
+              <i class="el-icon-close"  style="font-size: 24px;"></i>
+            </el-button>
+            <div class="card-number"> 课程{{ index + 1 }}</div> 
+            <el-input  v-model="cards[index].name" placeholder="请输入课程单元名称"></el-input>
+            <br><br>
             <el-upload
-              class="upload-demo"
-              drag
-              action="your/upload/url"
-              :file-list="fileList"
-              :on-success="handleUploadSuccess"
+              :action="uploadImageUrl + '/teacher/uploadVideo'"
+              :headers="headers"
+              :on-success="handleUploadSuccess.bind(this, index)" 
               :before-upload="beforeUpload"
             >
-              <i class="el-icon-upload"></i>
-              <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-              <div class="el-upload__tip" slot="tip">只能上传视频文件</div>
+                <div>
+                  <video v-if="cards[index].url" controls style="width: 500px;  ">  
+                    <source :src="getIconUrl(cards[index].url)" type="video/mp4">  
+                        Your browser does not support the video tag.  您的浏览器不支持视频标签。
+                  </video> 
+                </div>
+                <el-button
+                  size="small"
+                  type="primary"
+                >
+                  点击上传
+                </el-button>
             </el-upload>
           </el-card>
           <el-button @click="addCard" type="primary" style="margin-top: 20px;">添加课程单元</el-button>
@@ -175,8 +185,6 @@
           />
         </el-card>
       </el-card>
-
-
     </el-main>
 
 
@@ -196,11 +204,10 @@ export default {
       //课程视频列表
       cards: [
         { // 初始化一个
-          courseName: '',
-          videoUrl: ''
+          name: '',
+          url: ''
         }
       ],
-      fileList: [],
       uploadImageUrl: process.env.VUE_APP_UPLOAD_IMAGE_URL,
       // minio的主机名
       minioUrl: process.env.VUE_APP_MINIO_URL,
@@ -213,6 +220,7 @@ export default {
       // 当前课程的信息
       categoryInfo: {
         pic : '',
+        charge: 1,
       },
       // 表单验证
       examInfoRules: {
@@ -232,8 +240,14 @@ export default {
   },
   props: ['tagInfo'],
   created () {
+    if(this.$route.params.id != 0){
+      this.courseCategoryName = "编辑课程"
+      // 查询需要编辑的课程信息
+      this.getCategoryInfo()
+    }
     // 一创建就改变头部的面包屑
     this.$emit('giveChildChangeBreakInfo', this.courseCategoryName, this.courseCategoryName)
+    // 向父组件中添加头部的tags标签
     this.createTagsInParent()
     // 查询分类数据
     this.fetchData()
@@ -253,11 +267,36 @@ export default {
       })
       if (!flag) this.$emit('giveChildAddTag', this.courseCategoryName, this.$route.path)
     },
+    // 查询需要编辑的课程信息
+    getCategoryInfo(){
+      const id = this.$route.params.id
+      category.getCategoryInfo(id).then(res => {
+        if(res.code == 200){
+          this.$notify({
+            title: 'Tips',
+            message: res.message,
+            type: 'success',
+            duration: 2000
+          })
+          this.cards = res.data.cards
+          this.categoryInfo = res.data.courseBase
+          //复原分类信息
+          this.recoverChange()
+          console.log("categoryInfo")
+          console.log(this.selectedCategories)
+        }
+        
+      })
+    },
 
     // 选择分类
     handleChange(){
       this.categoryInfo.mt = this.selectedCategories[0]
       this.categoryInfo.st = this.selectedCategories[1]
+    },
+    // 复原分类列表
+    recoverChange(){
+      this.selectedCategories.push(this.categoryInfo.mt, this.categoryInfo.st );
     },
     // 查询分类数据
     fetchData () {
@@ -294,16 +333,18 @@ export default {
       this.$refs.upload.clearFiles();
     },
 
+    removeCard(index) {
+          // 删除指定索引的卡片
+          this.cards.splice(index, 1);
+        },
     addCard() {
       this.cards.push({
-        courseName: '',
-        videoUrl: '',
+        name: '',
+        url: ''
       });
     },
-    handleUploadSuccess(response, file, fileList) {
-      this.categoryInfo.pic = response.data
-      // 处理上传成功后的逻辑
-      console.log('文件上传成功', response, file, fileList);
+    handleUploadSuccess(index, response, file, fileList) { 
+      this.cards[index].url = response.data; // 假设服务器返回的url在data.url中
     },
     beforeUpload(file) {
       const isVideo = file.type.indexOf('video') === 0;
@@ -321,9 +362,24 @@ export default {
         // 如果不是完整的URL，则拼接基础URL
         return `${this.minioUrl}${iconPath}`;
       }
-
-
     },
+    submit(){
+      const data = {
+        courseBase: this.categoryInfo,
+        cards: this.cards,
+      }
+      category.addCategory(data).then((resp) => {
+        if (resp.code === 200) {
+            this.$notify({
+              title: 'Tips',
+              message: resp.message,
+              type: 'success',
+              duration: 2000
+            })
+            this.$router.push('/course/courseBase')
+          }
+      })
+    }
   },
   computed: {
     // 监测头部信息的token变化
@@ -341,7 +397,6 @@ export default {
         sign: generateSign(JSON.stringify(signHeaders))
       }
     },
-
   }
 }
 </script>
@@ -402,4 +457,8 @@ export default {
 .box-card {
   margin-bottom: 20px;
 }
+.card-number {  
+  margin-bottom: 10px; /* 示例：给序号添加一些底部外边距 */  
+  font-weight: bold; /* 示例：将序号加粗 */  
+}  
 </style>

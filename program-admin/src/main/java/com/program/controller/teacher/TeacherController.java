@@ -125,19 +125,18 @@ public class TeacherController {
                 .build();
     }
 
-    @PostMapping("/uploadQuestionImage")
+    @PostMapping("/uploadImage")
     @ApiOperation("接受前端上传的图片,返回上传图片地址")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "file", value = "图片文件", required = true, dataType = "file", paramType = "body")
     })
-    public CommonResult<String> uploadQuestionImage(MultipartFile file,HttpServletRequest request) throws Exception {
+    public CommonResult<String> uploadImage(MultipartFile file,HttpServletRequest request) throws Exception {
         log.info("开始上传文件: {}", file.getOriginalFilename());
         // 生成MD5值
         String fileId = HashUtil.computeMD5(file.getInputStream());
         // 检查数据库中是否已有该文件ID
         MediaFiles mediaFiles = mediaFilesService.getById(fileId);
         String url = "";
-
 
         if (EmptyUtil.isEmpty(mediaFiles)) {
             url = minioUtil.fileUpload(file, DictFileType.IMAGE_TYPE);
@@ -146,6 +145,50 @@ public class TeacherController {
             newMediaFile.setId(fileId);
             newMediaFile.setFileName(file.getOriginalFilename());
             newMediaFile.setFileType(DictFileType.IMAGE);
+            newMediaFile.setUrl(url);
+            newMediaFile.setFileSize(file.getSize());
+
+            // 获取当前登录用户信息
+            TokenVo userInfoByToken = JwtUtils.getUserInfoByToken(request);
+            // 设置创建人
+            newMediaFile.setCreatePerson(userInfoByToken.getUsername());
+
+            newMediaFile.setStatus(DictStatus.NORMAL); // 正常状态
+            String description = request.getHeader("description");
+
+            newMediaFile.setRemark(description); // 备注
+            newMediaFile.setCreateTime(new Date());
+            newMediaFile.setUpdateTime(new Date());
+
+            // 保存到数据库
+            mediaFilesService.save(newMediaFile);
+        }else {
+            url = mediaFiles.getUrl();
+        }
+        return CommonResult.<String>builder()
+                .data(url)
+                .message("上传成功")
+                .build();
+    }
+
+
+    @PostMapping("/uploadVideo")
+    @ApiOperation("接受前端上传的视频,返回上传图片地址")
+    public CommonResult<String> uploadVideo(MultipartFile file,HttpServletRequest request) throws Exception {
+        log.info("开始上传文件: {}", file.getOriginalFilename());
+        // 生成MD5值
+        String fileId = HashUtil.computeMD5(file.getInputStream());
+        // 检查数据库中是否已有该文件ID
+        MediaFiles mediaFiles = mediaFilesService.getById(fileId);
+        String url = "";
+
+        if (EmptyUtil.isEmpty(mediaFiles)) {
+            url = minioUtil.fileUpload(file, DictFileType.VIDEO_TYPE);
+
+            MediaFiles newMediaFile = new MediaFiles();
+            newMediaFile.setId(fileId);
+            newMediaFile.setFileName(file.getOriginalFilename());
+            newMediaFile.setFileType(DictFileType.VIDEO);
             newMediaFile.setUrl(url);
             newMediaFile.setFileSize(file.getSize());
 

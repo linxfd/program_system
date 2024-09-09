@@ -9,4 +9,25 @@ export default {
             data: data
         })
     },
+    addCategory(data){
+        return request({
+            url: '/teacher/coursebase/addCategory',
+            method: 'post',
+            data: data
+        })
+    },
+    // 查询审计
+    queryAudit (id) {
+        return request({
+        url: `/teacher/coursebase/queryAudit/${id}`,
+        method: 'get'
+        })
+    },
+    // 查询需要编辑的课程信息
+    getCategoryInfo(id){
+        return request({
+        url: `/teacher/coursebase/getCategoryInfo/${id}`,
+        method: 'get'
+        })
+    }
 }

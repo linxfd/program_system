@@ -153,15 +153,22 @@ const routes = [
         path: '/course/courseCategory',
         component: () => import('../views/teacher/course/CourseCategory')
       },
+      // 课程管理(老师)
       {
         path: '/course/courseBase',
         component: () => import('../views/teacher/course/CourseBase')
       },
+      // 课程管理添加和修改(老师)
       {
-
         path: '/course/CourseBaseModel/:id',
         name: 'CourseBaseModel',
         component: () => import('../views/teacher/course/CourseBaseModel')
+      },
+      // 课程详情(学生)
+      {
+        path: '/course',
+        name: 'course',
+        component: () => import('../views/index/course/CourseInfo.vue')
       }
     ]
   },
