@@ -62,7 +62,6 @@ public class CourseBaseController {
                 .build();
     }
 
-
     @ApiOperation("查询需要编辑的课程信息")
     @GetMapping("/getCategoryInfo/{id}")
     public CommonResult getCategoryInfo(@PathVariable Integer id){
@@ -72,6 +71,34 @@ public class CourseBaseController {
                 .message(CommonResultEnum.SUCCESS_QUERY.getMessage())
                 .build();
     }
+
+    @PostMapping("/updateCourse")
+    @ApiOperation("修改课程")
+    public CommonResult updateCourse(@RequestBody CourseDto courseDto, HttpServletRequest request){
+        courseBaseService.updateCourse(courseDto,request);
+        return CommonResult.<Boolean>builder()
+                .data(null)
+                .build();
+    }
+
+
+    @ApiOperation("删除课程信息")
+    @GetMapping("/deleteCourse/{id}")
+    public CommonResult deleteCourse(@PathVariable Integer id){
+        courseBaseService.deleteCourse(id);
+        return CommonResult.<Void>builder()
+                .data(null)
+                .message(CommonResultEnum.SUCCESS_DELETE.getMessage())
+                .build();
+    }
+
+    @GetMapping("/handle/{type}")
+    @ApiOperation("type=1(启用) 2(禁用) 3(删除) ids(需要操作的id)")
+    public CommonResult<Void> handle(@PathVariable("type") Integer type, String ids) {
+        courseBaseService.handle(type, ids);
+        return CommonResult.<Void>builder().build();
+    }
+    
 //    @PreAuthorize("@ss.hasPermi('work:base:list')")
 //    @GetMapping("/list")
 //    public TableDataInfo list(CourseBase courseBase){

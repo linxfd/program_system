@@ -9,6 +9,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.program.exception.BusinessException;
+import com.program.exception.CommonErrorCode;
 import com.program.mapper.CourseBaseMapper;
 import com.program.mapper.CourseUnitMapper;
 import com.program.model.dict.DictStatus;
@@ -119,4 +121,47 @@ public class CourseBaseServiceImpl extends ServiceImpl<CourseBaseMapper, CourseB
         return courseDto;
     }
 
+    @Override
+    @Transactional
+    public void updateCourse(CourseDto courseDto, HttpServletRequest request) {
+        // 修改课程基础信息
+        CourseBase courseBase = courseDto.getCourseBase();
+        courseBaseMapper.updateById(courseBase);
+        // 修改课程视频信息
+        courseUnitMapper.delete(new QueryWrapper<CourseUnit>().eq("course_id", courseDto.getCourseBase().getId()));
+        List<CourseUnit> cards = courseDto.getCards();
+        for (int i = 0; i < cards.size(); i++) {
+            CourseUnit courseUnit = cards.get(i);
+            if (EmptyUtil.isEmpty(courseUnit.getUrl())){
+                continue;
+            }
+            courseUnit.setCourseId(courseBase.getId());
+            courseUnit.setSortValue(i);
+            courseUnitMapper.insert(courseUnit);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void deleteCourse(Integer id) {
+        // 删除课程基础信息
+        courseBaseMapper.deleteById(id);
+        // 删除课程视频信息
+        courseUnitMapper.delete(new QueryWrapper<CourseUnit>().eq("course_id", id));
+    }
+
+    @Override
+    public void handle(Integer type, String ids) {
+        // 转换成数组 需要操作的用户的id数组
+        String[] list = ids.split(",");
+        switch (type) {
+            case 3:
+                for (String id : list) {
+                    this.deleteCourse(Integer.parseInt(id));
+                }
+                break;
+            default:
+                throw new BusinessException(CommonErrorCode.E_100105);
+        }
+    }
 }

@@ -29,5 +29,25 @@ export default {
         url: `/teacher/coursebase/getCategoryInfo/${id}`,
         method: 'get'
         })
-    }
+    },
+    updateCourse(data){
+        return request({
+            url: '/teacher/coursebase/updateCourse',
+            method: 'post',
+            data: data
+        })
+    },
+    deleteCourse(id){
+        return request({
+        url: `/teacher/coursebase/deleteCourse/${id}`,
+        method: 'get'
+        })
+    },
+    handle(id, params) {
+        return request({
+          url: `/teacher/coursebase/handle/${id}`,
+          method: 'get',
+          params: params
+        })
+      },
 }

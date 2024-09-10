@@ -84,7 +84,6 @@
                   style="margin-left: 5px"
                   placeholder="搜索分类"
                   v-model="selectedCategories"  
-                  clearable  
                   @change="handleChange"  
                 />
               </el-form-item>
@@ -282,8 +281,6 @@ export default {
           this.categoryInfo = res.data.courseBase
           //复原分类信息
           this.recoverChange()
-          console.log("categoryInfo")
-          console.log(this.selectedCategories)
         }
         
       })
@@ -291,26 +288,28 @@ export default {
 
     // 选择分类
     handleChange(){
+      console.log(this.selectedCategories)
       this.categoryInfo.mt = this.selectedCategories[0]
       this.categoryInfo.st = this.selectedCategories[1]
     },
     // 复原分类列表
     recoverChange(){
-      this.selectedCategories.push(this.categoryInfo.mt, this.categoryInfo.st );
+      this.$set(this.selectedCategories, 0,Number(this.categoryInfo.mt));
+      this.$set(this.selectedCategories, 1,Number(this.categoryInfo.st));
     },
     // 查询分类数据
     fetchData () {
       courseCategory.FindNodes().then((resp) => {
         if (resp.code === 200) {
           this.categoryOptions = resp.data
-          console.log(this.categoryOptions)
+          this.$notify({
+            title: 'Tips',
+            message: resp.message,
+            type: 'success',
+            duration: 2000
+          })
         }
-        this.$notify({
-          title: 'Tips',
-          message: resp.message,
-          type: 'success',
-          duration: 2000
-        })
+        
       })
     },    
     //导入图标前
@@ -368,17 +367,32 @@ export default {
         courseBase: this.categoryInfo,
         cards: this.cards,
       }
-      category.addCategory(data).then((resp) => {
-        if (resp.code === 200) {
-            this.$notify({
-              title: 'Tips',
-              message: resp.message,
-              type: 'success',
-              duration: 2000
-            })
-            this.$router.push('/course/courseBase')
-          }
-      })
+      if(this.$route.params.id == 0 ){
+        category.addCategory(data).then((resp) => {
+          if (resp.code === 200) {
+              this.$notify({
+                title: 'Tips',
+                message: resp.message,
+                type: 'success',
+                duration: 2000
+              })
+              this.$router.push('/course/courseBase')
+            }
+        })
+      }else{
+        category.updateCourse(data).then((resp) => {
+          if (resp.code === 200) {
+              this.$notify({
+                title: 'Tips',
+                message: resp.message,
+                type: 'success',
+                duration: 2000
+              })
+              this.$router.push('/course/courseBase')
+            }
+        })
+      }
+      
     }
   },
   computed: {

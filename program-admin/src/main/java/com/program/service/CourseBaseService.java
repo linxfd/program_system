@@ -28,4 +28,14 @@ public interface CourseBaseService extends IService<CourseBase>{
 
     //// 查询需要编辑的课程信息
     CourseDto getCategoryInfo(Integer id);
+
+
+    // 修改课程
+    void updateCourse(CourseDto courseDto, HttpServletRequest request);
+
+    // 删除课程
+    void deleteCourse(Integer id);
+
+    //
+    void handle(Integer type, String ids);
 }

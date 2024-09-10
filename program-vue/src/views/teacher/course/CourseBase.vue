@@ -68,7 +68,7 @@
         <el-table-column label="课程名称" align="center" prop="name" />
         <el-table-column label="课程图片" align="center" prop="pic" > 
           <template slot-scope="scope">
-              <img :src="scope.row.pic" alt="" style="height: 50px;">
+              <img :src="getIconUrl(scope.row.pic)" alt="" style="height: 50px;">
           </template>
         </el-table-column>
         
@@ -124,9 +124,10 @@
           >
             审计
           </el-button>
+
           <el-button 
             size="mini" type="text" :icon="scope.row.courseStatus === 1 ? 'el-icon-upload2' : 'el-icon-download'"
-            @click="editShow(scope.row)"
+            @click="announce(scope.row)"
           >
             {{scope.row.courseStatus === 1 ? '发布' : '下架'}}
           </el-button>
@@ -205,6 +206,8 @@ export default {
   name: 'CourseBase',
   data () {
     return {
+      // minio的主机名
+      minioUrl: process.env.VUE_APP_MINIO_URL,
       // 查询课程的参数
       queryInfo: {
         pageNo: 1,
@@ -223,26 +226,8 @@ export default {
       // 下拉选择框的数据
       optionInfo: [
         {
-          label: '启用',
-          desc: 'on'
-        },
-        {
-          label: '禁用',
-          desc: 'off'
-        },
-        {
           label: '删除',
           desc: 'delete'
-        }
-      ],
-      statusInfo: [
-        {
-          name: '正常',
-          status: '1'
-        },
-        {
-          name: '禁用',
-          status: '2'
         }
       ],
       // 下拉框所选择的数据
@@ -347,12 +332,12 @@ export default {
       // 清空上一次的操作
       this.selected = ''
       // 表格中所选中的用户的id
-      const userIds = []
+      const ids = []
       this.selectedInTable.map(item => {
-        userIds.push(item.id)
+        ids.push(item.id)
       })
-      if (val === 'on') { // 状态设置为正常
-        category.handlerUser(1, { userIds: userIds.join(',') }).then((resp) => {
+      if (val === 'delete') { // 删除用户
+        category.handle(3, { ids: ids.join(',') }).then((resp) => {
           if (resp.code === 200) {
             // 删除成功后,回调更新用户数据
             this.getListInfo()
@@ -362,54 +347,7 @@ export default {
               type: 'success',
               duration: 2000
             })
-          } else {
-            this.$notify({
-              title: 'Tips',
-              message: '操作失败',
-              type: 'error',
-              duration: 2000
-            })
-          }
-        })
-      } else if (val === 'off') { // 禁用用户
-        category.handlerUser(2, { userIds: userIds.join(',') }).then((resp) => {
-          if (resp.code === 200) {
-            // 删除成功后,回调更新用户数据
-            this.getListInfo()
-            this.$notify({
-              title: 'Tips',
-              message: '操作成功',
-              type: 'success',
-              duration: 2000
-            })
-          } else {
-            this.$notify({
-              title: 'Tips',
-              message: '操作失败',
-              type: 'error',
-              duration: 2000
-            })
-          }
-        })
-      } else if (val === 'delete') { // 删除用户
-        category.handlerUser(3, { userIds: userIds.join(',') }).then((resp) => {
-          if (resp.code === 200) {
-            // 删除成功后,回调更新用户数据
-            this.getListInfo()
-            this.$notify({
-              title: 'Tips',
-              message: '操作成功',
-              type: 'success',
-              duration: 2000
-            })
-          } else {
-            this.$notify({
-              title: 'Tips',
-              message: '操作失败',
-              type: 'error',
-              duration: 2000
-            })
-          }
+          } 
         })
       }
     },
@@ -431,12 +369,12 @@ export default {
     
     //= ===========删除====
     remove (val) {
-      this.$confirm(`此操作将永久删除"${val.username}"用户, 是否继续?`, '注意', {
+      this.$confirm(`此操作将永久删除"${val.name}", 是否继续?`, '注意', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(async () => {
-        category.deleteUser(val.id).then((resp) => {
+        category.deleteCourse(val.id).then((resp) => {
           if (resp.code === 200) {
             this.$notify({
               title: 'Tips',
@@ -445,17 +383,11 @@ export default {
               duration: 2000
             })
             this.getListInfo()
-          } else {
-            this.$notify({
-              title: 'Tips',
-              message: resp.message,
-              type: 'error',
-              duration: 2000
-            })
-          }
+          } 
         })
       })
     },
+    //= ===========审核====
     showAudit(val){
       category.queryAudit(val.id).then((resp) => {
         if (resp.code === 200) {
@@ -472,6 +404,10 @@ export default {
         this.visible = true
       })
     },
+    //= ===========发布/下架====
+    announce(val){
+
+    },
     getAuditStatusText(status) {  
       switch (status) {  
         case 1: return '未审核';  
@@ -487,7 +423,17 @@ export default {
         case 3: return 'audit-passed';  
         default: return '';  
       }  
-    }  , 
+    } ,
+    getIconUrl(iconPath) {
+      // 检查iconPath是否包含协议头（例如http://或https://）
+      if (/^https?:\/\//.test(iconPath)) {
+        // 如果iconPath已经是完整的URL，直接返回
+        return iconPath;
+      } else {
+        // 如果不是完整的URL，则拼接基础URL
+        return `${this.minioUrl}${iconPath}`;
+      }
+    }, 
   }
 }
 </script>
