@@ -23,9 +23,10 @@
             </div>
             <ol>
               <li v-for="(item, index) in courseUnitList" :key="index">
-                 <div class="unitItem" @click="changeVideo(item)">
-                    {{ item.name }}
-                 </div>
+                <div class="unitItem" @click="changeVideo(item)">
+                  {{ item.name }}
+                  <span class="video-duration">{{ item.videoDuration }}</span>
+                </div>
               </li>
             </ol>
           </el-card>
@@ -103,34 +104,47 @@ export default {
 </script>
 
 <style>
-/* 基础样式 */
-.course-list {
-  margin: 20px;
+/* 定义卡片的基本样式 */
+.box-card {
+    margin-bottom: 15px;
+    border: 1px solid #ebeef5;
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 
-.header-style span {
-  font-size: 1.2em;
-  color: #333;
+/* 定义标题部分的样式 */
+.box-card .clearfix span {
+    font-size: 18px;
+    color: #303133;
+    display: block;
+    padding: 10px 20px;
 }
 
-.unit-item {
-  list-style-type: none; /* 移除列表符号 */
-  padding: 5px 0;
-}
-
+/* 定义列表项的样式 */
 .unitItem {
-  cursor: pointer;
-  padding: 10px;
-  transition: background-color 0.3s ease;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background 0.3s;
+    position: relative;
 }
 
+/* 鼠标悬停时改变背景色 */
 .unitItem:hover {
-  background-color: #f0f0f0;
+    background-color: #f0f1fa;
 }
 
-/* 当前选中的项目 */
+/* 当前选中的列表项高亮显示 */
 .unitItem.active {
-  background-color: #e6e6e6;
-  font-weight: bold;
+    background-color: #e6f7ff;
+    color: #409EFF;
+}
+
+/* 设置列表项中的视频时长显示位置 */
+.unitItem .video-duration {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    color: #909399;
 }
 </style>

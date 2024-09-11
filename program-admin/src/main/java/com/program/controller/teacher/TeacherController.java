@@ -175,7 +175,9 @@ public class TeacherController {
 
     @PostMapping("/uploadVideo")
     @ApiOperation("接受前端上传的视频,返回上传图片地址")
-    public CommonResult<String> uploadVideo(MultipartFile file,HttpServletRequest request) throws Exception {
+    public CommonResult<String> uploadVideo(@RequestParam("file")MultipartFile file,
+                                            @RequestParam(value = "videoDuration", required = false) String videoDuration,
+                                            HttpServletRequest request) throws Exception {
         log.info("开始上传文件: {}", file.getOriginalFilename());
         // 生成MD5值
         String fileId = HashUtil.computeMD5(file.getInputStream());
@@ -202,6 +204,7 @@ public class TeacherController {
             String description = request.getHeader("description");
 
             newMediaFile.setRemark(description); // 备注
+            newMediaFile.setVideoDuration(videoDuration);
             newMediaFile.setCreateTime(new Date());
             newMediaFile.setUpdateTime(new Date());
 

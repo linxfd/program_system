@@ -20,9 +20,9 @@ public class CourseInfoVO {
     /**
      * 课程单元集合
      */
-    private List<CourseUnit> courseUnitList;
+    private List<CourseUnitVo> courseUnitList;
 
-    public void setCourseUnits(List<CourseUnit> courseUnits) {
+    public void setCourseUnits(List<CourseUnitVo> courseUnits) {
         this.courseUnitList = courseUnits;
     }
 }

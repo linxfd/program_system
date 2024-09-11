@@ -12,5 +12,8 @@ import lombok.Data;
 public class CourseUnitVo extends CourseUnit {
     @ApiModelProperty(value = "视频审核状态，1:未审核 2:不通过 3通过")
     private Integer auditStatus;
+
+    @ApiModelProperty(value = "若是视频，表示视频时长", example = "16:12")
+    private String videoDuration;
     
 }

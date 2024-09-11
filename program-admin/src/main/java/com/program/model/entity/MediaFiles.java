@@ -40,6 +40,9 @@ public class MediaFiles {
     @ApiModelProperty(value = "文件大小", example = "32")
     private String createPerson;
 
+    @ApiModelProperty(value = "若是视频，表示视频时长", example = "16:12")
+    private String videoDuration;
+
     @ApiModelProperty(value = "状态,1:正常，0:不展示")
     private String status;
 

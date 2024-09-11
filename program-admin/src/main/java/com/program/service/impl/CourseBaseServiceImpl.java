@@ -167,7 +167,7 @@ public class CourseBaseServiceImpl extends ServiceImpl<CourseBaseMapper, CourseB
     public CommonResult announce(Integer id) {
         CourseBase courseBase = courseBaseMapper.selectById(id);
         if (DictStatus.UNPUBLISHED.equals(courseBase.getCourseStatus())){
-            List<CourseUnit> courseUnits = courseUnitMapper.auditStatusNumber(id);
+            List<CourseUnitVo> courseUnits = courseUnitMapper.auditStatusNumber(id);
             if (courseUnits.size() <=0 ){
                 return CommonResult.<Boolean>builder()
                         .data(false)
@@ -193,7 +193,7 @@ public class CourseBaseServiceImpl extends ServiceImpl<CourseBaseMapper, CourseB
         }
         courseInfoVO.setCourseBase(courseBase);
         // 查询课程视频信息
-        List<CourseUnit> courseUnits = courseUnitMapper.auditStatusNumber(id);
+        List<CourseUnitVo> courseUnits = courseUnitMapper.auditStatusNumber(id);
         courseInfoVO.setCourseUnits(courseUnits);
         return courseInfoVO;
     }

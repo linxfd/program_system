@@ -139,6 +139,8 @@
               :headers="headers"
               :on-success="handleUploadSuccess.bind(this, index)" 
               :before-upload="beforeUpload"
+              :on-change="onChange"
+              :data="getExtraData(index)"
             >
                 <div>
                   <video v-if="cards[index].url" controls style="width: 500px;  ">  
@@ -224,6 +226,8 @@ export default {
       loading: true,
       // 数据预加载
       Uploadloading: false,
+      //视频时长
+      videoDuration:'',
       // 当前课程的信息
       categoryInfo: {
         pic : '',
@@ -296,7 +300,6 @@ export default {
 
     // 选择分类
     handleChange(){
-      console.log(this.selectedCategories)
       this.categoryInfo.mt = this.selectedCategories[0]
       this.categoryInfo.st = this.selectedCategories[1]
     },
@@ -353,11 +356,38 @@ export default {
     handleUploadSuccess(index, response, file, fileList) { 
       this.cards[index].url = response.data; // 假设服务器返回的url在data.url中
     },
+    onChange(file){
+      if (file.raw) {  
+        // 创建一个视频元素来加载视频  
+        const video = document.createElement('video');  
+        video.src = URL.createObjectURL(file.raw);  
+        video.onloadedmetadata = () => {  
+          // 视频元数据加载完成后获取时长  
+          const durationInSeconds = video.duration;  
+      
+          // 将秒转换为分钟和秒  
+          const minutes = Math.floor(durationInSeconds / 60);  
+          const seconds = Math.floor(durationInSeconds % 60);  
+
+          // 格式化时长为 "分钟:秒"  
+          this.videoDuration = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;  
+          // 清理工作：释放创建的 URL 对象，避免内存泄漏  
+          URL.revokeObjectURL(video.src);
+        };  
+        // 注意：这里不需要监听视频加载完成，因为metadata足够我们获取时长  
+      }  
+    },
+    getExtraData(index) {
+      // 返回一个对象，包含你想发送的额外数据
+      return {
+        videoDuration: this.videoDuration+'',
+      };
+    },
     beforeUpload(file) {
       const isVideo = file.type.indexOf('video') === 0;
       if (!isVideo) {
         this.$message.error('只能上传视频文件！');
-      }
+      } 
       return isVideo;
     },
     getIconUrl(iconPath) {
@@ -414,7 +444,8 @@ export default {
         'query-string': '',
         'x-nonce': `${utils.getRandomId()}`,
         'x-timestamp': `${new Date().getTime()}`,
-        'description': "Course home picture"
+        'description': "Course home picture",
+        'duration': this.videoDuration,
       }
       return {
         ...signHeaders,
