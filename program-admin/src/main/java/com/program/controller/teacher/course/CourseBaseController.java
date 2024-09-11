@@ -98,6 +98,15 @@ public class CourseBaseController {
         courseBaseService.handle(type, ids);
         return CommonResult.<Void>builder().build();
     }
+
+
+
+    @ApiOperation("发布/下架")
+    @GetMapping("/announce/{id}")
+    public CommonResult announce(@PathVariable Integer id){
+
+        return courseBaseService.announce(id);
+    }
     
 //    @PreAuthorize("@ss.hasPermi('work:base:list')")
 //    @GetMapping("/list")

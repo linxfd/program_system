@@ -21,10 +21,10 @@
 
       <el-button
         style="margin-top: 10px"
-        v-show="curStep !== 1"
-        @click="curStep--"
+        type="primary"
+        @click="backtrack"
       >
-        上一步
+        返回
       </el-button>
 
       <el-button
@@ -35,6 +35,8 @@
       >
         下一步
       </el-button>
+
+       
       <el-button
         style="float:right;margin-top: 10px"
         v-show="curStep === 3"
@@ -42,6 +44,14 @@
         @click="submit"
       >
         提交
+      </el-button>
+      
+      <el-button
+        style="float:right;margin-top: 10px"
+        v-show="curStep !== 1"
+        @click="curStep--"
+      >
+        上一步
       </el-button>
       <br/>
 
@@ -185,8 +195,6 @@
         </el-card>
       </el-card>
     </el-main>
-
-
   </el-container>
 </template>
 
@@ -361,6 +369,9 @@ export default {
         // 如果不是完整的URL，则拼接基础URL
         return `${this.minioUrl}${iconPath}`;
       }
+    },
+    backtrack(){
+      this.$router.push('/course/courseBase')
     },
     submit(){
       const data = {

@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.program.model.dto.CourseBaseDto;
 import com.program.model.dto.CourseDto;
 import com.program.model.entity.CourseBase;
+import com.program.model.vo.CommonResult;
+import com.program.model.vo.CourseInfoVO;
 import com.program.model.vo.CourseUnitVo;
 import com.program.model.vo.PageResponse;
 
@@ -38,4 +40,10 @@ public interface CourseBaseService extends IService<CourseBase>{
 
     //
     void handle(Integer type, String ids);
+
+    //发布/下架
+    CommonResult announce(Integer id);
+
+    // 查询课程详情和视频集合
+    CourseInfoVO getCourseInfo(Integer id);
 }

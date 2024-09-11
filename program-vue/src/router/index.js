@@ -160,16 +160,22 @@ const routes = [
       },
       // 课程管理添加和修改(老师)
       {
-        path: '/course/CourseBaseModel/:id',
-        name: 'CourseBaseModel',
-        component: () => import('../views/teacher/course/CourseBaseModel')
+        path: '/course/PlayCourse/:id',
+        name: 'PlayCourse',
+        component: () => import('../views/teacher/course/PlayCourse')
       },
       // 课程详情(学生)
       {
         path: '/course',
         name: 'course',
         component: () => import('../views/index/course/CourseInfo.vue')
-      }
+      },
+      // 课程管理添加和修改(老师)
+      {
+        path: '/course/CourseBaseModel/:id',
+        name: 'CourseBaseModel',
+        component: () => import('../views/teacher/course/CourseBaseModel')
+      },
     ]
   },
   // 考试界面(管理员和学生)

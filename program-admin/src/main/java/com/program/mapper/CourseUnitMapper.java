@@ -15,4 +15,7 @@ import java.util.List;
 public interface CourseUnitMapper extends BaseMapper<CourseUnit> {
 
     List<CourseUnitVo> queryAudit(Integer id);
+
+    // 根据课程id，获得视频单元中审核通过的数量
+    List<CourseUnit> auditStatusNumber(Integer id);
 }

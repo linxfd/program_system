@@ -21,7 +21,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@Api(tags = "三个角色公共的相关接口")
+@Api(tags = "公共的相关接口")
 @RequestMapping(value = "/public")
 public class PublicController {
 

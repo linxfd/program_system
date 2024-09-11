@@ -8,6 +8,19 @@ export default {
             method: 'post',
             data: data
         })
+    },   
+    getCourseList (data) {
+        return request({
+            url: '/public/course/list',
+            method: 'post',
+            data: data
+        })
+    },
+    getCourseInfo(id) {
+        return request({
+        url: `/public/course/getCourseInfo/${id}`,
+        method: 'get'
+        })
     },
     addCategory(data){
         return request({
@@ -49,5 +62,11 @@ export default {
           method: 'get',
           params: params
         })
+      },
+      announce(id){
+        return request({
+            url: `/teacher/coursebase/announce/${id}`,
+            method: 'get'
+            })
       },
 }

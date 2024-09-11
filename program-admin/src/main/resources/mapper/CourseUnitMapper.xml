@@ -5,9 +5,16 @@
 <mapper namespace="com.program.mapper.CourseUnitMapper">
 
 
+
     <select id="queryAudit" resultType="com.program.model.vo.CourseUnitVo">
         select cu.* , mf.audit_status
         from course_unit cu join media_files mf on cu.url = mf.url
         where cu.course_id = #{id}
+    </select>
+    <select id="auditStatusNumber" resultType="com.program.model.entity.CourseUnit">
+        select cu.*
+        from course_unit cu join media_files mf on cu.url = mf.url
+        where cu.course_id = #{id}
+        and   mf.audit_status = 3
     </select>
 </mapper>

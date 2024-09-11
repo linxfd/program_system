@@ -20,13 +20,11 @@ import com.program.model.dto.UserDto;
 import com.program.model.entity.CourseBase;
 import com.program.model.entity.CourseUnit;
 import com.program.model.entity.User;
-import com.program.model.vo.CourseUnitVo;
-import com.program.model.vo.PageResponse;
-import com.program.model.vo.TokenVo;
-import com.program.model.vo.UserInfoVo;
+import com.program.model.vo.*;
 import com.program.service.CourseBaseService;
 import com.program.utils.EmptyUtil;
 import com.program.utils.JwtUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -163,5 +161,40 @@ public class CourseBaseServiceImpl extends ServiceImpl<CourseBaseMapper, CourseB
             default:
                 throw new BusinessException(CommonErrorCode.E_100105);
         }
+    }
+
+    @Override
+    public CommonResult announce(Integer id) {
+        CourseBase courseBase = courseBaseMapper.selectById(id);
+        if (DictStatus.UNPUBLISHED.equals(courseBase.getCourseStatus())){
+            List<CourseUnit> courseUnits = courseUnitMapper.auditStatusNumber(id);
+            if (courseUnits.size() <=0 ){
+                return CommonResult.<Boolean>builder()
+                        .data(false)
+                        .message("失败，课程中的视频单元至少需要一个通过审核")
+                        .build();
+            }
+        }
+        courseBase.setCourseStatus(courseBase.getCourseStatus() == 1 ? 2 : 1);
+        courseBaseMapper.updateById(courseBase);
+        return CommonResult.<Boolean>builder()
+                .data(true)
+                .message(courseBase.getCourseStatus() == 1 ? "成功发布" : "成功下架")
+                .build();
+    }
+
+    @Override
+    public CourseInfoVO getCourseInfo(Integer id) {
+        CourseInfoVO courseInfoVO = new CourseInfoVO();
+        // 查询课程基础信息
+        CourseBase courseBase = courseBaseMapper.selectById(id);
+        if (EmptyUtil.isEmpty(courseBase)){
+            throw new BusinessException(CommonErrorCode.E_100105);
+        }
+        courseInfoVO.setCourseBase(courseBase);
+        // 查询课程视频信息
+        List<CourseUnit> courseUnits = courseUnitMapper.auditStatusNumber(id);
+        courseInfoVO.setCourseUnits(courseUnits);
+        return courseInfoVO;
     }
 }

@@ -397,7 +397,6 @@ export default {
             type: 'success',
             duration: 2000
           })
-          debugger
           this.audit = resp.data
         } 
         // 弹窗显示
@@ -406,7 +405,23 @@ export default {
     },
     //= ===========发布/下架====
     announce(val){
-
+      category.announce(val.id).then((resp) => {
+        if (resp.code === 200) {
+          if(resp.data){
+            this.$message({  
+              message: resp.message, 
+              type: 'success'  
+            });
+          }else{
+            this.$message({  
+                message: resp.message, 
+                type: 'error'  
+              });
+          }
+          
+          this.getListInfo()
+        } 
+      })
     },
     getAuditStatusText(status) {  
       switch (status) {  
