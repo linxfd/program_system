@@ -139,7 +139,7 @@
               :headers="headers"
               :on-success="handleUploadSuccess.bind(this, index)" 
               :before-upload="beforeUpload"
-              :on-change="onChange"
+              :on-change="onChange.bind(this, index)"
               :data="getExtraData(index)"
             >
                 <div>
@@ -203,8 +203,9 @@
 <script>
 import utils from '@/utils/utils'
 import { generateSign } from '@/utils/sign'
-import category from '@/api/category'
+import course from '@/api/course'
 import courseCategory from '@/api/courseCategory'
+import axios from 'axios'; 
 
 export default {
   name: 'CourseBaseModel',
@@ -281,7 +282,7 @@ export default {
     // 查询需要编辑的课程信息
     getCategoryInfo(){
       const id = this.$route.params.id
-      category.getCategoryInfo(id).then(res => {
+      course.getCategoryInfo(id).then(res => {
         if(res.code == 200){
           this.$notify({
             title: 'Tips',
@@ -356,7 +357,11 @@ export default {
     handleUploadSuccess(index, response, file, fileList) { 
       this.cards[index].url = response.data; // 假设服务器返回的url在data.url中
     },
-    onChange(file){
+    onChange(index,file){
+      const isVideo = file.raw.type.indexOf('video') === 0;
+      if (!isVideo) {
+        this.$message.error('只能上传视频文件！');
+      } 
       if (file.raw) {  
         // 创建一个视频元素来加载视频  
         const video = document.createElement('video');  
@@ -371,12 +376,32 @@ export default {
 
           // 格式化时长为 "分钟:秒"  
           this.videoDuration = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;  
+          
+          // 可以在这里触发手动上传  
+          this.uploadFile(index,file);
+          
           // 清理工作：释放创建的 URL 对象，避免内存泄漏  
           URL.revokeObjectURL(video.src);
         };  
         // 注意：这里不需要监听视频加载完成，因为metadata足够我们获取时长  
-      }  
+      } 
     },
+    uploadFile(index,file) { 
+      // 构造请求数据，包括额外的视频时长  
+      const formData = new FormData();  
+      formData.append('file', file.raw);  
+      formData.append('videoDuration', this.videoDuration);  
+
+      // 发送请求到服务器  
+      axios.post(this.uploadImageUrl + '/teacher/uploadVideo', formData, {  
+        headers: this.headers 
+      }).then(response => {  
+        // 处理响应  
+        this.cards[index].url = response.data.data; // 假设服务器返回的url在data.url中
+      }).catch(error => {  
+        // 处理错误  
+      });  
+    }  ,
     getExtraData(index) {
       // 返回一个对象，包含你想发送的额外数据
       return {
@@ -384,11 +409,8 @@ export default {
       };
     },
     beforeUpload(file) {
-      const isVideo = file.type.indexOf('video') === 0;
-      if (!isVideo) {
-        this.$message.error('只能上传视频文件！');
-      } 
-      return isVideo;
+      // 阻止自动上传  
+      return false;  
     },
     getIconUrl(iconPath) {
       // 检查iconPath是否包含协议头（例如http://或https://）
@@ -409,7 +431,7 @@ export default {
         cards: this.cards,
       }
       if(this.$route.params.id == 0 ){
-        category.addCategory(data).then((resp) => {
+        course.addCategory(data).then((resp) => {
           if (resp.code === 200) {
               this.$notify({
                 title: 'Tips',
@@ -421,7 +443,7 @@ export default {
             }
         })
       }else{
-        category.updateCourse(data).then((resp) => {
+        course.updateCourse(data).then((resp) => {
           if (resp.code === 200) {
               this.$notify({
                 title: 'Tips',

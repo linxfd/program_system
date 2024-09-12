@@ -8,6 +8,7 @@ export default {
       data: loginUser
     })
   },
+
   phoneLogin (phone) {
     return request({
       url: '/common/phoneLogin',

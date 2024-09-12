@@ -39,4 +39,14 @@ public interface DictStatus {
      */
     Integer PASS = 3;
 
+    /**
+     * 未兑换
+     */
+    Integer NOT_REDEEMED = 1;
+    /**
+     * 已兑换
+     */
+    Integer REDEEMED = 2;
+
+
 }

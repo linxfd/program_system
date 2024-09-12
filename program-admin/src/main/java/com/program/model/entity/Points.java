@@ -30,7 +30,7 @@ public class Points extends CommonEntity{
     @ApiModelProperty(value = "积分备注", example = "奖励")
     private String notes;
 
-    @ApiModelProperty(value = "获取积分类型", example = "0其他，1签到，2考试")
+    @ApiModelProperty(value = "获取积分类型", example = "0其他，1签到，2考试,3兑换扣减")
     private Integer obtainMethod;
 
 }

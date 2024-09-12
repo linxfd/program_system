@@ -39,4 +39,6 @@ public class CourseController {
                 .message(CommonResultEnum.SUCCESS_QUERY.getMessage())
                 .build();
     }
+
+
 }

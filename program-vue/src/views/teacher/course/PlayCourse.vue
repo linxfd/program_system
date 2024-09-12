@@ -1,17 +1,15 @@
 <template>
   <el-container>
     <!-- 顶部区域放置课程基本信息 -->
-    <el-header style="margin: 0 0 1.5% 0 ;">
+    <el-header >
       <h1>{{ courseBase.name }}</h1>
-      <p>{{ courseBase.description }}</p>
-      <!-- 可以添加更多课程基本信息 -->
     </el-header>
 
     <!-- 主体部分分为两列 -->
     <el-main>
       <el-row :gutter="20">
         <!-- 左侧视频播放器 -->
-        <el-col :span="16">
+        <el-col :span="15">
           <video :src="currentVideoUrl" controls width="100%" height="auto"></video>
         </el-col>
 
@@ -32,13 +30,17 @@
           </el-card>
         </el-col>
       </el-row>
+      <div>
+        <p>简介:{{ courseBase.description }}</p>
+      </div>
     </el-main>
   </el-container>
 </template>
 
 <script>
 
-import category from '@/api/category'
+
+import course from '@/api/course'
 import courseCategory from '@/api/courseCategory'
 
 export default {
@@ -59,9 +61,27 @@ export default {
       minioUrl: process.env.VUE_APP_MINIO_URL,
     }
   },
+  props: ['tagInfo'],
   created () {
+    const flag = localStorage.getItem(`PlayCourse/${this.$route.params.id}`)
+    if(!flag){
+      this.$confirm('请从官方渠道进入课程学习页面', '是否继续?', '提示', {  
+          confirmButtonText: '确定',  
+          cancelButtonText: '取消',  
+          type: 'warning'  
+        }).then(() => {  
+          // 用户点击了确定  
+        }).catch(() => {  
+          // 用户点击了取消  
+        });
+        this.$router.push('/course')
+    }
     // 查询第一次
     this.getCourseInfo()
+    // 一创建就改变头部的面包屑
+    this.$emit('giveChildChangeBreakInfo', "课程学习", "课程学习")
+    // 向父组件中添加头部的tags标签
+    this.createTagsInParent()
   },
   computed: {
     currentVideoUrl() {
@@ -69,9 +89,23 @@ export default {
     }
   },
   methods: {
+    // 向父组件中添加头部的tags标签
+    createTagsInParent () {
+      let flag = false
+      this.tagInfo.map(item => {
+        // 如果tags全部符合
+        if (item.name === "课程学习" && item.url === this.$route.path) {
+          flag = true
+        } else if (item.name === "课程学习" && item.url !== this.$route.path) {
+          this.$emit('updateTagInfo', "课程学习", this.$route.path)
+          flag = true
+        }
+      })
+      if (!flag) this.$emit('giveChildAddTag', "课程学习", this.$route.path)
+    },
     // 获取课程信息
     getCourseInfo () {
-      category.getCourseInfo(this.$route.params.id).then((resp) => {
+      course.getCourseInfo(this.$route.params.id).then((resp) => {
         if (resp.code === 200) {
           this.$notify({
             title: 'Tips',

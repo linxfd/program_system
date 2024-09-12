@@ -7,13 +7,12 @@
       type = "card"
       :interval="5000" 
       >
-        <el-carousel-item v-for="(item,index) 
-          in categoryInfo" 
+        <el-carousel-item v-for="(item,index) in categoryInfo" 
           :key="index" 
           :label = "item.name">
           <img :src="getIconUrl(item.pic)" :alt="item.description"
-          @click="$router.push(`/course/PlayCourse/${item.id}`)"
-          >
+            @click="goCourse(item)"
+            >
         </el-carousel-item>
       </el-carousel>
     </el-header>
@@ -23,7 +22,8 @@
 
 <script>
 
-import category from '@/api/category'
+import course from '@/api/course'
+import common from '@/api/common'
 import courseCategory from '@/api/courseCategory'
 
 export default {
@@ -49,12 +49,10 @@ export default {
   methods: {
     // 获取课程信息
     getListInfo () {
-      category.getCourseList(this.queryInfo).then((resp) => {
+      course.getCourseList(this.queryInfo).then((resp) => {
         if (resp.code === 200) {
-          console.log(resp.data)
           this.categoryInfo = resp.data.data
           this.total = resp.data.total
-
         } else {
           this.$notify({
             title: 'Tips',
@@ -65,7 +63,48 @@ export default {
         }
       })
     },
-    
+    goCourse(value){
+      if(value.charge == 1){
+        localStorage.setItem(`PlayCourse/${value.id}`,true)
+        this.$router.push(`/course/PlayCourse/${value.id}`)
+      }else{
+        common.getRedemptionStatus(1,{itemId:value.id}).then((resp) => {
+          if(resp.code == 200){
+            if(resp.data.isRedeemed == 1){
+              this.$confirm(`该课程需要${resp.data.pointsNumber}是否兑换?`, '提示', {  
+                confirmButtonText: '确定',  
+                cancelButtonText: '取消',  
+                type: 'warning'  
+              }).then(() => {
+                // 用户点击了确定,兑换课程
+                common.redemption(1,{itemId:value.id}).then((resp) => {
+                  if(resp.data == true){
+                    this.$message({
+                      type: 'success',
+                      message: '兑换成功!'
+                    })
+                    localStorage.setItem(`PlayCourse/${value.id}`,true)
+                    this.$router.push(`/course/PlayCourse/${value.id}`)
+                  }else{
+                    // 兑换失败，如用户积分不够
+                    this.$message({
+                      type: 'error',
+                      message: resp.message
+                    })
+                  }
+                })
+              }).catch(() => {  
+                // 用户点击了取消  
+              });
+            }else{
+              localStorage.setItem(`PlayCourse/${value.id}`,true)
+              this.$router.push(`/course/PlayCourse/${value.id}`)
+            }
+          }
+        })
+        
+      }
+    },
     getIconUrl(iconPath) {
       // 检查iconPath是否包含协议头（例如http://或https://）
       if (/^https?:\/\//.test(iconPath)) {

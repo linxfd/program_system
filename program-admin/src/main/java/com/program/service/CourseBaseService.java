@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 public interface CourseBaseService extends IService<CourseBase>{
 
-    // 分页查询
+    // 查询课程列表
     PageResponse<CourseBase> list(CourseBaseDto courseBaseDto);
 
     // 添加课程

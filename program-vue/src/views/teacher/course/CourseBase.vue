@@ -199,7 +199,8 @@
 
 <script>
 
-import category from '@/api/category'
+
+import course from '@/api/course'
 import courseCategory from '@/api/courseCategory'
 
 export default {
@@ -289,7 +290,7 @@ export default {
     },
     // 获取课程信息
     getListInfo () {
-      category.getListInfo(this.queryInfo).then((resp) => {
+      course.getListInfo(this.queryInfo).then((resp) => {
         if (resp.code === 200) {
           this.categoryInfo = resp.data.data
           this.total = resp.data.total
@@ -337,7 +338,7 @@ export default {
         ids.push(item.id)
       })
       if (val === 'delete') { // 删除用户
-        category.handle(3, { ids: ids.join(',') }).then((resp) => {
+        course.handle(3, { ids: ids.join(',') }).then((resp) => {
           if (resp.code === 200) {
             // 删除成功后,回调更新用户数据
             this.getListInfo()
@@ -374,7 +375,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(async () => {
-        category.deleteCourse(val.id).then((resp) => {
+        course.deleteCourse(val.id).then((resp) => {
           if (resp.code === 200) {
             this.$notify({
               title: 'Tips',
@@ -389,7 +390,7 @@ export default {
     },
     //= ===========审核====
     showAudit(val){
-      category.queryAudit(val.id).then((resp) => {
+      course.queryAudit(val.id).then((resp) => {
         if (resp.code === 200) {
           this.$notify({
             title: 'Tips',
@@ -405,7 +406,7 @@ export default {
     },
     //= ===========发布/下架====
     announce(val){
-      category.announce(val.id).then((resp) => {
+      course.announce(val.id).then((resp) => {
         if (resp.code === 200) {
           if(resp.data){
             this.$message({  

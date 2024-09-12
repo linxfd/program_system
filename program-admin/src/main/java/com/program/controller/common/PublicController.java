@@ -1,12 +1,14 @@
 package com.program.controller.common;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.program.model.dict.DictPoints;
+import com.program.model.dict.DictStatus;
 import com.program.model.dto.WebsiteDto;
-import com.program.model.entity.Exam;
-import com.program.model.entity.User;
-import com.program.model.entity.Website;
-import com.program.model.entity.WebsiteClassification;
+import com.program.model.entity.*;
 import com.program.service.*;
 import com.program.model.vo.*;
+import com.program.utils.EmptyUtil;
+import com.program.utils.JwtUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -14,6 +16,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,7 +34,14 @@ public class PublicController {
 
     private final QuestionBankService questionBankService;
 
+    @Autowired
+    private CourseBaseService courseBaseService;
 
+    @Autowired
+    private PointsOrderService pointsOrderService;
+
+    @Autowired
+    private PointsService pointsService;
 
     @Autowired
     private UserService userService;
@@ -118,4 +128,72 @@ public class PublicController {
                 .data(userService.getCreatePersonName())
                 .build();
     }
+
+    @ApiOperation(value = " 获取兑换状态")
+    @GetMapping("/getRedemptionStatus/{type}")
+    public CommonResult getRedemptionStatus(@PathVariable("type") Integer type, Integer itemId,HttpServletRequest request){
+        QueryWrapper<PointsOrder> orderQueryWrapper = new QueryWrapper<>();
+        orderQueryWrapper.eq("item_id", itemId);
+        orderQueryWrapper.eq("order_type", type);
+        orderQueryWrapper.eq("user_id", JwtUtils.getUserInfoByToken(request).getId());
+        PointsOrder one = pointsOrderService.getOne(orderQueryWrapper);
+        PointsVo pointsVo = new PointsVo();
+
+        if(EmptyUtil.isEmpty(one)){
+            CourseBase byId = courseBaseService.getById(itemId);
+            pointsVo.setIsRedeemed(DictStatus.NOT_REDEEMED);
+            pointsVo.setPointsNumber(byId.getPointsNumber());
+        }else{
+            pointsVo.setIsRedeemed(DictStatus.REDEEMED);
+        }
+        return CommonResult.<PointsVo>builder()
+                .data(pointsVo)
+                .build();
+    }
+
+
+    @ApiOperation(value = "兑换")
+    @GetMapping("/redemption/{type}")
+    @Transactional
+    public CommonResult redemption(@PathVariable("type") Integer type, Integer itemId,HttpServletRequest request){
+        Integer userId = JwtUtils.getUserInfoByToken(request).getId();
+        User user = userService.getById(userId);
+        //判断积分是否足够
+        CourseBase courseBase = courseBaseService.getById(itemId);
+        if(user.getPoints() < courseBase.getPointsNumber()){
+            return CommonResult.<Boolean>builder()
+                    .data(false)
+                    .message("积分不足")
+                    .build();
+        }else{
+            //积分扣减
+            user.setPoints(user.getPoints() - courseBase.getPointsNumber());
+            userService.updateById(user);
+
+            //保存积分流水
+            Points points = new Points();
+            points.setUserId(userId);
+            points.setUsername(user.getUsername());
+            points.setObtainMethod(DictPoints.METHOD_REDEMPTION);
+            points.setNotes("兑换课程："+courseBase.getName());
+            //积分流水,取负数
+            points.setPointsFlow(-courseBase.getPointsNumber());
+            pointsService.save(points);
+
+            //保存兑换记录
+            PointsOrder pointsOrder = new PointsOrder();
+            pointsOrder.setItemId(itemId);
+            pointsOrder.setOrderType(type);
+            pointsOrder.setUserId(userId);
+            pointsOrder.setPoints(courseBase.getPointsNumber());
+            pointsOrderService.save(pointsOrder);
+
+            return CommonResult.<Boolean>builder()
+                    .data(true)
+                    .message("成功兑换"+courseBase.getName())
+                    .build();
+        }
+
+    }
+
 }
