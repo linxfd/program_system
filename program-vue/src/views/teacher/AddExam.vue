@@ -281,14 +281,20 @@
           type="warning"
         />
 
-        <el-input
+        <!-- <el-input
           style="margin-top: 15px;width: 20%"
-          v-model="examPassword"
+          v-model="pointsNumber"
           v-show="examAuthority === 2"
           type="password"
           show-password
           placeholder="输入考试密码"
-        />
+        /> -->
+        <el-input-number
+            style="margin-top: 15px;width: 20%"
+            v-model="pointsNumber"
+            v-show="categoryInfo.type === 2"
+            placeholder="输入积分数量"
+          />
       </el-card>
 
       <!--设置考试信息-->
@@ -570,7 +576,7 @@ export default {
       // 考试权限(1公开, 2密码)
       examAuthority: 1,
       // 考试密码(权限为2时的密码)
-      examPassword: '',
+      pointsNumber: '',
       // 补充的考试信息
       examInfo: {
         examId: '',
@@ -764,11 +770,11 @@ export default {
           // 权限id设置
           exam.type = this.examAuthority
           if (this.examAuthority === 2) { // 考试密码
-            if (this.examPassword === '') { // 当前用户选择了需要密码权限,但是密码为空
+            if (this.pointsNumber === '') { // 当前用户选择了需要密码权限,但是密码为空
               this.$message.error('当前权限为需要密码,但是密码为空')
               return false
             }
-            exam.password = this.examPassword
+            exam.pointsNumber = this.pointsNumber
           }
           // 题库组卷模式
           if (this.makeModel === 1 && !this.addExamQuestion.some(item => item.bankId === '')) {

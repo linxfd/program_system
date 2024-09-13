@@ -11,6 +11,10 @@
         <!-- 左侧视频播放器 -->
         <el-col :span="15">
           <video :src="currentVideoUrl" controls width="100%" height="auto"></video>
+          <div class="like-button" >
+            <img :src="currentImage" alt="Like" @click="toggleLike"/>  
+            <span>{{ likeCount }}</span>
+          </div>
         </el-col>
 
         <!-- 右侧视频列表 -->
@@ -41,11 +45,16 @@
 
 
 import course from '@/api/course'
+import common from '@/api/common'
 import courseCategory from '@/api/courseCategory'
 
 export default {
   data() {
     return {
+      //用户是否点赞了
+      isLike: false,
+      // 点赞数量
+      likeCount: 0,
       // 课程信息
       courseBase: {},
       // 课程视频集合
@@ -59,6 +68,8 @@ export default {
       total: 0,
       // minio的主机名
       minioUrl: process.env.VUE_APP_MINIO_URL,
+      likedImage: require('@/assets/imgs/AfterLike.svg'),
+      dislikedImage: require('@/assets/imgs/BeforeLike.svg')
     }
   },
   props: ['tagInfo'],
@@ -84,8 +95,16 @@ export default {
     this.$emit('giveChildChangeBreakInfo', "课程学习", "课程学习")
     // 向父组件中添加头部的tags标签
     this.createTagsInParent()
+
+    //查询用户点赞情况和总点赞量
+    this.queryLikes()
   },
   computed: {
+    // 使用计算属性来根据 isLike 的值动态选择图片  
+    currentImage() {
+
+      return this.isLike ? this.likedImage : this.dislikedImage;  
+    },
     currentVideoUrl() {
       return this.getIconUrl(this.courseUnitList[this.currentVideoIndex]?.url);
     }
@@ -119,6 +138,28 @@ export default {
           this.courseBase = resp.data.courseBase
           this.courseUnitList = resp.data.courseUnitList
         } 
+      })
+    },
+    toggleLike() {
+      this.isLike = !this.isLike;
+      this.likeCount += this.isLike ? 1 : -1;
+      common.likeAndUnlike(1,{itemId:this.$route.params.id}).then(resp => {
+        if(resp.code == 200){
+          this.$notify({
+            title: 'Tips',
+            message: resp.message,
+            type: 'success',
+            duration: 2000
+          })
+        }
+      })
+    },
+    queryLikes(){
+      common.queryLikes(1,{itemId:this.$route.params.id}).then(resp => {  
+        if(resp.code == 200){
+            this.isLike = resp.data.isLike;
+            this.likeCount = resp.data.likeCount;
+        }
       })
     },
     changeVideo(unit) {
@@ -182,5 +223,23 @@ export default {
     transform: translateY(-50%);
     font-size: 12px;
     color: #909399;
+}
+
+/* 添加点赞按钮的样式 */
+.like-button {
+  display: flex;
+  align-items: center;
+  margin: 6px 0 3px 97%;
+}
+
+.like-button img {
+  width: 24px; /* 调整图标大小 */
+  height: 24px;
+  cursor: pointer;
+}
+
+.like-button span {
+  margin-left: 5px;
+  font-size: 14px;
 }
 </style>

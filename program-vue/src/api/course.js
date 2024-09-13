@@ -62,11 +62,11 @@ export default {
           method: 'get',
           params: params
         })
-      },
-      announce(id){
-        return request({
-            url: `/teacher/coursebase/announce/${id}`,
-            method: 'get'
-            })
-      },
+    },
+    announce(id){
+    return request({
+        url: `/teacher/coursebase/announce/${id}`,
+        method: 'get'
+        })
+    },
 }

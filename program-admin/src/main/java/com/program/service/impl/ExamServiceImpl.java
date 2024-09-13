@@ -101,7 +101,7 @@ public class ExamServiceImpl extends ServiceImpl<ExamMapper, Exam> implements Ex
                 .startTime(exam.getStartTime())
                 .endTime(exam.getEndTime())
                 .type(exam.getType())
-                .password(exam.getPassword())
+                .pointsNumber(exam.getPointsNumber())
                 .status(exam.getStatus())
                 .build();
 
@@ -151,8 +151,8 @@ public class ExamServiceImpl extends ServiceImpl<ExamMapper, Exam> implements Ex
         exam.setPassScore(addExamByBankVo.getPassScore());
         exam.setType(addExamByBankVo.getType());
         // 设置密码如果有
-        if (addExamByBankVo.getPassword() != null) {
-            exam.setPassword(addExamByBankVo.getPassword());
+        if (addExamByBankVo.getPointsNumber()!= null) {
+            exam.setPointsNumber(addExamByBankVo.getPointsNumber());
         }
         // 设置id
         ExamQuestion examQuestion = buildExamQuestion(exam);
@@ -216,8 +216,8 @@ public class ExamServiceImpl extends ServiceImpl<ExamMapper, Exam> implements Ex
         exam.setExamName(addExamByQuestionVo.getExamName());
         exam.setDuration(addExamByQuestionVo.getExamDuration());
         // 设置密码如果有
-        if (addExamByQuestionVo.getPassword() != null) {
-            exam.setPassword(addExamByQuestionVo.getPassword());
+        if (addExamByQuestionVo.getPointsNumber() != null) {
+            exam.setPointsNumber(addExamByQuestionVo.getPointsNumber());
         }
         exam.setStatus(addExamByQuestionVo.getStatus());
         // 设置id
@@ -245,10 +245,10 @@ public class ExamServiceImpl extends ServiceImpl<ExamMapper, Exam> implements Ex
         exam.setExamName(addExamByQuestionVo.getExamName());
         exam.setDuration(addExamByQuestionVo.getExamDuration());
         // 设置密码如果有
-        if (addExamByQuestionVo.getPassword() != null) {
-            exam.setPassword(addExamByQuestionVo.getPassword());
+        if (addExamByQuestionVo.getPointsNumber() != null) {
+            exam.setPointsNumber(addExamByQuestionVo.getPointsNumber());
         } else {
-            exam.setPassword(null);
+            exam.setPointsNumber(null);
         }
         exam.setStatus(addExamByQuestionVo.getStatus());
         exam.setExamId(addExamByQuestionVo.getExamId());

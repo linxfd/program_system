@@ -165,7 +165,7 @@
         <el-card>
 
           <el-radio-group
-            v-model="categoryInfo.charge"
+            v-model="categoryInfo.type"
             size="medium"
           >
             <el-radio
@@ -184,14 +184,14 @@
 
           <el-alert
             style="margin-top: 15px"
-            :title="categoryInfo.charge === 1? '开放的，任何人都可以进行考试！' : '半开放的,需要积分兑换课程!'"
+            :title="categoryInfo.type === 1? '开放的，任何人都可以进行考试！' : '半开放的,需要积分兑换课程!'"
             type="warning"
           />
 
           <el-input-number
             style="margin-top: 15px;width: 20%"
             v-model="categoryInfo.pointsNumber"
-            v-show="categoryInfo.charge === 2"
+            v-show="categoryInfo.type === 2"
             placeholder="输入积分数量"
           />
         </el-card>
@@ -232,7 +232,7 @@ export default {
       // 当前课程的信息
       categoryInfo: {
         pic : '',
-        charge: 1,
+        type: 1,
       },
       // 表单验证
       examInfoRules: {
@@ -426,6 +426,9 @@ export default {
       this.$router.push('/course/courseBase')
     },
     submit(){
+      if(this.categoryInfo.type == 1){
+        this.categoryInfo.pointsNumber = 0
+      }
       const data = {
         courseBase: this.categoryInfo,
         cards: this.cards,

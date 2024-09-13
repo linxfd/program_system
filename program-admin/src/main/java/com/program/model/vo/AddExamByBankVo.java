@@ -47,6 +47,7 @@ public class AddExamByBankVo {
 
     private Integer type;
 
-    private String password;
+//    private String password;
+    private Integer pointsNumber;
 
 }

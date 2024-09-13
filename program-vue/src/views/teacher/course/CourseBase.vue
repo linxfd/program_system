@@ -101,8 +101,8 @@
         </el-table-column>
         <el-table-column label="积分模式" align="center" width="100">
           <template v-slot:default="scope">
-            <div :class="['status-badge', {'status-badge-free': scope.row.charge === 1, 'status-badge-paid': scope.row.charge !== 1}]">
-              {{ scope.row.charge === 1 ? '免费' : '积分' }}
+            <div :class="['status-badge', {'status-badge-free': scope.row.type === 1, 'status-badge-paid': scope.row.type !== 1}]">
+              {{ scope.row.type === 1 ? '免费' : '积分' }}
             </div>
           </template>
         </el-table-column>

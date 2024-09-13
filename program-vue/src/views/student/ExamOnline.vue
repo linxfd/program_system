@@ -183,6 +183,7 @@
 <script>
 import exam from '@/api/exam'
 import role from '@/api/role'
+import common from '@/api/common'
 
 export default {
   name: 'ExamOnline',
@@ -288,23 +289,46 @@ export default {
       this.queryInfo.pageSize = 10
     },
     // 去考试准备页面
-    toStartExam (row) {
-      if (row.type === 2) {
-        this.$prompt('请提供考试密码', 'Tips', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消'
-        }).then(({ value }) => {
-          if (value === row.password) {
-            this.startExamDialog = true
-            this.currentSelectedExam = row
-          } else {
-            this.$message.error('密码错误o(╥﹏╥)o')
-          }
-        }).catch(() => {
-        })
-      } else {
+    toStartExam (value) {
+      if(value.type == 1){
         this.startExamDialog = true
-        this.currentSelectedExam = row
+        this.currentSelectedExam = value
+      }else{
+        common.getRedemptionStatus(2,{itemId:value.examId}).then((resp) => {
+          if(resp.code == 200){
+            if(resp.data.isRedeemed == 1){
+              this.$confirm(`该课程需要${resp.data.pointsNumber}积分，当前您拥有${resp.data.pointsTotal}积分，是否兑换?`,
+               '兑换课程', {  
+                confirmButtonText: '确定',  
+                cancelButtonText: '取消',  
+                type: 'warning'  
+              }).then(() => {
+                // 用户点击了确定,兑换题库
+                common.redemption(2,{itemId:value.examId}).then((resp) => {
+                  if(resp.data == true){
+                    this.$message({
+                      type: 'success',
+                      message: '兑换成功!'
+                    })
+                    this.startExamDialog = true
+                    this.currentSelectedExam = value
+                  }else{
+                    // 兑换失败，如用户积分不够
+                    this.$message({
+                      type: 'error',
+                      message: resp.message
+                    })
+                  }
+                })
+              }).catch(() => {  
+                // 用户点击了取消  
+              });
+            }else{
+              this.startExamDialog = true
+              this.currentSelectedExam = value
+            }
+          }
+        })
       }
     }
   },

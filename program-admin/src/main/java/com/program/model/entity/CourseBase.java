@@ -36,7 +36,7 @@ public class CourseBase extends CommonEntity{
 
 
     @ApiModelProperty(value = "是否需要积分，1不需要，2需要")
-    private Integer charge;
+    private Integer type;
 
     @ApiModelProperty(value = "积分数量")
     private Integer pointsNumber;

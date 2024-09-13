@@ -40,6 +40,16 @@ public interface DictStatus {
     Integer PASS = 3;
 
     /**
+     * 公共课程
+     */
+    Integer PUBLIC_COURSE = 1;
+
+    /**
+     * 积分课程
+     */
+    Integer POINTS_COURSE = 2;
+
+    /**
      * 未兑换
      */
     Integer NOT_REDEEMED = 1;
@@ -48,5 +58,14 @@ public interface DictStatus {
      */
     Integer REDEEMED = 2;
 
+    /**
+     * 兑换课程
+     */
+    Integer COURSE = 1;
+
+    /**
+     * 兑换题库
+     */
+    Integer EXAM = 2;
 
 }

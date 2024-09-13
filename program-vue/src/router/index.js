@@ -162,7 +162,7 @@ const routes = [
       {
         path: '/course/PlayCourse/:id',
         name: 'PlayCourse',
-        component: () => import('../views/teacher/course/PlayCourse')
+        component: () => import('../views/index/course/PlayCourse')
       },
       // 课程详情(学生)
       {

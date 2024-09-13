@@ -17,4 +17,22 @@ export default {
           params: itemId
         })
       },
+
+      // 点赞或取消点赞（type,itemId）
+      likeAndUnlike(type, itemId) {
+        return request({
+          url: `/public/userInteract/likeAndUnlike/${type}`,
+          method: 'get',
+          params: itemId
+        })
+      },
+      //查询用户点赞情况和总点赞量
+      queryLikes(type, itemId) {
+        return request({
+          url: `/public/userInteract/queryLikes/${type}`,
+          method: 'get',
+          params: itemId
+        })
+      },
+      
 }

@@ -31,12 +31,17 @@ public class Exam implements Serializable {
     @ApiModelProperty(value = "考试描述", example = "这是一场考试的描述")
     private String examDesc;
 
-    @ApiModelProperty(value = "考试类型1公开,2需密码", example = "1")
+//    @ApiModelProperty(value = "考试类型1公开,2需密码", example = "1")
+//    private Integer type;
+//
+//    @ApiModelProperty(value = "考试密码,当type=2时候存在", example = "12345")
+//    @TableField(strategy = FieldStrategy.IGNORED)
+//    private String password;
+    @ApiModelProperty(value = "考试类型是否需要积分，1不需要，2需要", example = "1")
     private Integer type;
 
-    @ApiModelProperty(value = "考试密码,当type=2时候存在", example = "12345")
-    @TableField(strategy = FieldStrategy.IGNORED)
-    private String password;
+    @ApiModelProperty(value = "积分数量")
+    private Integer pointsNumber;
 
     @ApiModelProperty(value = "考试时间", example = "125(分钟)")
     private Integer duration;

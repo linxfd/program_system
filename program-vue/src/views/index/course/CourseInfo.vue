@@ -64,7 +64,7 @@ export default {
       })
     },
     goCourse(value){
-      if(value.charge == 1){
+      if(value.type == 1){
         localStorage.setItem(`PlayCourse/${value.id}`,true)
         this.$router.push(`/course/PlayCourse/${value.id}`)
       }else{
@@ -103,7 +103,6 @@ export default {
             }
           }
         })
-        
       }
     },
     getIconUrl(iconPath) {

@@ -5,6 +5,7 @@ package com.program.model.dict;
  * @date 2024/8/17
  */
 public interface DictConstant {
+    Integer ZERO = 0;
     Integer ONE = 1;
     Integer TWO = 2;
     Integer THREE = 3;

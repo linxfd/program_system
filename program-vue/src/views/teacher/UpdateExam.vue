@@ -155,14 +155,13 @@
           type="warning"
         />
 
-        <el-input
-          style="margin-top: 15px;width: 20%"
-          v-model="examInfo.password"
-          v-show="examInfo.type === 2"
-          type="password"
-          show-password
-          placeholder="输入考试密码"
-        />
+        <el-input-number
+            style="margin-top: 15px;width: 20%"
+            v-model="examInfo.pointsNumber"
+            v-show="examInfo.type === 2"
+            placeholder="输入积分数量"
+          />
+
       </el-card>
 
       <!--设置考试信息-->
@@ -620,10 +619,10 @@ export default {
         const exam = this.examInfo
         if (this.updateExamQuestion.length !== 0) { // 自由组卷模式
           if (exam.type === 1) {
-            exam.password = null
+            exam.pointsNumber = null
           }
           console.log(exam)
-          if (exam.type === 2 && (exam.password === null || exam.password === '')) {
+          if (exam.type === 2 && (exam.pointsNumber === null || exam.pointsNumber === '')) {
             this.$message.error('当前权限为需要密码,但是密码为空')
             return false
           }

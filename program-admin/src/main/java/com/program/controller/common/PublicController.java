@@ -141,11 +141,17 @@ public class PublicController {
         PointsVo pointsVo = new PointsVo();
 
         if(EmptyUtil.isEmpty(one)){
-            CourseBase courseBase = courseBaseService.getById(itemId);
+            if(DictStatus.COURSE == type){
+                CourseBase courseBase = courseBaseService.getById(itemId);
+                //需要的积分
+                pointsVo.setPointsNumber(courseBase.getPointsNumber());
+            }else {
+                Exam byId = examService.getById(itemId);
+                pointsVo.setPointsNumber(byId.getPointsNumber());
+            }
             //是否兑换
             pointsVo.setIsRedeemed(DictStatus.NOT_REDEEMED);
-            //需要的积分
-            pointsVo.setPointsNumber(courseBase.getPointsNumber());
+
             //当前拥有积分
             pointsVo.setPointsTotal(user.getPoints());
         }else{
@@ -164,40 +170,81 @@ public class PublicController {
         Integer userId = JwtUtils.getUserInfoByToken(request).getId();
         User user = userService.getById(userId);
         //判断积分是否足够
-        CourseBase courseBase = courseBaseService.getById(itemId);
-        if(user.getPoints() < courseBase.getPointsNumber()){
-            return CommonResult.<Boolean>builder()
-                    .data(false)
-                    .message("积分不足")
-                    .build();
-        }else{
-            //积分扣减
-            user.setPoints(user.getPoints() - courseBase.getPointsNumber());
-            userService.updateById(user);
 
-            //保存积分流水
-            Points points = new Points();
-            points.setUserId(userId);
-            points.setUsername(user.getUsername());
-            points.setObtainMethod(DictPoints.METHOD_REDEMPTION);
-            points.setNotes("兑换课程："+courseBase.getName());
-            //积分流水,取负数
-            points.setPointsFlow(-courseBase.getPointsNumber());
-            pointsService.save(points);
+        if(DictStatus.COURSE == type){
+            CourseBase courseBase = courseBaseService.getById(itemId);
+            if(user.getPoints() < courseBase.getPointsNumber()){
+                return CommonResult.<Boolean>builder()
+                        .data(false)
+                        .message("积分不足")
+                        .build();
+            }else{
+                //积分扣减
+                user.setPoints(user.getPoints() - courseBase.getPointsNumber());
+                userService.updateById(user);
 
-            //保存兑换记录
-            PointsOrder pointsOrder = new PointsOrder();
-            pointsOrder.setItemId(itemId);
-            pointsOrder.setOrderType(type);
-            pointsOrder.setUserId(userId);
-            pointsOrder.setPoints(courseBase.getPointsNumber());
-            pointsOrderService.save(pointsOrder);
+                //保存积分流水
+                Points points = new Points();
+                points.setUserId(userId);
+                points.setUsername(user.getUsername());
+                points.setObtainMethod(DictPoints.METHOD_REDEMPTION);
+                points.setNotes("兑换课程："+courseBase.getName());
+                //积分流水,取负数
+                points.setPointsFlow(-courseBase.getPointsNumber());
+                pointsService.save(points);
 
-            return CommonResult.<Boolean>builder()
-                    .data(true)
-                    .message("成功兑换"+courseBase.getName())
-                    .build();
+                //保存兑换记录
+                PointsOrder pointsOrder = new PointsOrder();
+                pointsOrder.setItemId(itemId);
+                pointsOrder.setOrderType(type);
+                pointsOrder.setUserId(userId);
+                pointsOrder.setPoints(courseBase.getPointsNumber());
+                pointsOrderService.save(pointsOrder);
+
+                return CommonResult.<Boolean>builder()
+                        .data(true)
+                        .message("成功兑换"+courseBase.getName())
+                        .build();
+            }
+        }else {
+
+            Exam exam = examService.getById(itemId);
+            if(user.getPoints() < exam.getPointsNumber()){
+                return CommonResult.<Boolean>builder()
+                        .data(false)
+                        .message("积分不足")
+                        .build();
+            }else{
+                //积分扣减
+                user.setPoints(user.getPoints() - exam.getPointsNumber());
+                userService.updateById(user);
+
+                //保存积分流水
+                Points points = new Points();
+                points.setUserId(userId);
+                points.setUsername(user.getUsername());
+                points.setObtainMethod(DictPoints.METHOD_REDEMPTION);
+                points.setNotes("兑换题库："+exam.getExamName());
+                //积分流水,取负数
+                points.setPointsFlow(-exam.getPointsNumber());
+                pointsService.save(points);
+
+                //保存兑换记录
+                PointsOrder pointsOrder = new PointsOrder();
+                pointsOrder.setItemId(itemId);
+                pointsOrder.setOrderType(type);
+                pointsOrder.setUserId(userId);
+                pointsOrder.setPoints(exam.getPointsNumber());
+                pointsOrderService.save(pointsOrder);
+
+                return CommonResult.<Boolean>builder()
+                        .data(true)
+                        .message("成功兑换"+exam.getExamName())
+                        .build();
+            }
         }
+
+
 
     }
 
