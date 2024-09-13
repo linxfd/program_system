@@ -15,7 +15,12 @@ public class PointsVo {
     private Integer isRedeemed;
 
     /**
-     * 积分数量
+     * 兑换所需积分数量
      */
     private Integer pointsNumber;
+
+    /**
+     * 该用户的当前拥护的总积分
+     */
+    private Integer pointsTotal;
 }

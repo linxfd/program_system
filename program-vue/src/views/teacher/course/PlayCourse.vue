@@ -63,18 +63,20 @@ export default {
   },
   props: ['tagInfo'],
   created () {
-    const flag = localStorage.getItem(`PlayCourse/${this.$route.params.id}`)
+    let flag = localStorage.getItem(`PlayCourse/${this.$route.params.id}`)
     if(!flag){
-      this.$confirm('请从官方渠道进入课程学习页面', '是否继续?', '提示', {  
+      this.$confirm('请从官方渠道进入课程学习页面', '提示', {  
           confirmButtonText: '确定',  
           cancelButtonText: '取消',  
           type: 'warning'  
         }).then(() => {  
           // 用户点击了确定  
+          this.$router.push('/course')
         }).catch(() => {  
           // 用户点击了取消  
+          this.$router.push('/course')
         });
-        this.$router.push('/course')
+        
     }
     // 查询第一次
     this.getCourseInfo()

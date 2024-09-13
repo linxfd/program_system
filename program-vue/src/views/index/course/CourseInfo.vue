@@ -71,7 +71,8 @@ export default {
         common.getRedemptionStatus(1,{itemId:value.id}).then((resp) => {
           if(resp.code == 200){
             if(resp.data.isRedeemed == 1){
-              this.$confirm(`该课程需要${resp.data.pointsNumber}是否兑换?`, '提示', {  
+              this.$confirm(`该课程需要${resp.data.pointsNumber}积分，当前您拥有${resp.data.pointsTotal}积分，是否兑换?`,
+               '兑换课程', {  
                 confirmButtonText: '确定',  
                 cancelButtonText: '取消',  
                 type: 'warning'  

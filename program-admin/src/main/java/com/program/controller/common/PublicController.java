@@ -133,16 +133,21 @@ public class PublicController {
     @GetMapping("/getRedemptionStatus/{type}")
     public CommonResult getRedemptionStatus(@PathVariable("type") Integer type, Integer itemId,HttpServletRequest request){
         QueryWrapper<PointsOrder> orderQueryWrapper = new QueryWrapper<>();
+        User user = userService.getById(JwtUtils.getUserInfoByToken(request).getId());
         orderQueryWrapper.eq("item_id", itemId);
         orderQueryWrapper.eq("order_type", type);
-        orderQueryWrapper.eq("user_id", JwtUtils.getUserInfoByToken(request).getId());
+        orderQueryWrapper.eq("user_id", user.getId());
         PointsOrder one = pointsOrderService.getOne(orderQueryWrapper);
         PointsVo pointsVo = new PointsVo();
 
         if(EmptyUtil.isEmpty(one)){
-            CourseBase byId = courseBaseService.getById(itemId);
+            CourseBase courseBase = courseBaseService.getById(itemId);
+            //是否兑换
             pointsVo.setIsRedeemed(DictStatus.NOT_REDEEMED);
-            pointsVo.setPointsNumber(byId.getPointsNumber());
+            //需要的积分
+            pointsVo.setPointsNumber(courseBase.getPointsNumber());
+            //当前拥有积分
+            pointsVo.setPointsTotal(user.getPoints());
         }else{
             pointsVo.setIsRedeemed(DictStatus.REDEEMED);
         }
